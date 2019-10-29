@@ -1,0 +1,19 @@
+.md-header {
+    background-color: #F47920;
+}
+
+body {
+    color: #3C3C3B;
+}
+
+.md-typeset h1 {
+    color: #3C3C3B;
+}
+
+.md-nav__link--active {
+    color: #F47920;
+}
+
+.md-footer-nav {
+    background-color: #5E6671;
+}

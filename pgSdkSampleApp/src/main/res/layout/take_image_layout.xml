@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <Button
+            android:id="@+id/takeImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/take_image_button" />
+
+    <TextView
+            android:id="@+id/imageConfigurationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/takeImageButton"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/image_configurations" />
+
+    <RadioGroup
+            android:id="@+id/resolutionRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/imageConfigurationText"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp">
+
+        <RadioButton
+                android:id="@+id/highResolution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/resolution_high"/>
+
+        <RadioButton
+                android:id="@+id/mediumResolution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_weight="1"
+                android:text="@string/resolution_medium"/>
+
+        <RadioButton
+                android:id="@+id/lowResolution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/resolution_low"/>
+    </RadioGroup>
+
+    <TextView
+            android:id="@+id/jpegQualityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/imageConfigurationText"
+            app:layout_constraintEnd_toStartOf="@+id/timeoutText"
+            app:layout_constraintStart_toEndOf="@+id/resolutionRadioGroup"
+            android:layout_marginTop="16dp"
+            android:text="@string/image_quality_text"/>
+
+    <EditText
+            android:id="@+id/jpegQualityEditText"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/timeoutText"
+            app:layout_constraintStart_toEndOf="@+id/resolutionRadioGroup"
+            app:layout_constraintTop_toBottomOf="@+id/jpegQualityText"
+            android:inputType="number"
+            tools:ignore="Autofill,LabelFor"/>
+
+    <TextView
+            android:id="@+id/timeoutText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageConfigurationText"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/timeout_text"/>
+
+    <EditText
+            android:id="@+id/timeoutEditText"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/jpegQualityText"
+            android:layout_marginEnd="24dp"
+            android:inputType="number"
+            tools:ignore="Autofill,LabelFor"/>
+
+    <ImageView
+            android:id="@+id/imageTaken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resolutionRadioGroup"
+            android:contentDescription="@string/image_will_appear_here"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

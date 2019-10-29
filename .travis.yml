@@ -1,0 +1,37 @@
+language: android
+dist: xenial
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-29.0.0
+    - android-29
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-28
+before_install:
+  - echo -e "PROGLOVE_USER=$PROGLOVE_USER" >> pg_keystore.properties
+  - echo -e "PROGLOVE_PASSWORD=$PROGLOVE_PASSWORD" >> pg_keystore.properties
+jobs:
+  include:
+    - stage: build
+      if: type = "pull_request" OR branch = development
+      script:
+        - "./gradlew assembleDebug"
+    - stage: deploy
+      if: branch = master AND type != "pull_request"
+      script:
+        - "./gradlew assembleDebug"
+      before_deploy:
+        # install the libraries necessary for mkdocs (creating the documentation)
+        - pyenv install -s 3.6.0
+        - pyenv global 3.6.0
+        - pip install mkdocs mkdocs-material
+      deploy:
+        - provider: script
+          script: "./scripts/publish_code.sh"
+          skip_cleanup: true
+          on:
+            repo: workaroundgmbh/pg_api_android_examples_private
+            branch: master

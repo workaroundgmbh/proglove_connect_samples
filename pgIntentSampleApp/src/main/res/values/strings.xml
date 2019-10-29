@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">PG Intent Sample App</string>
+    <string name="title_activity_scanner_intent">Scanner Intent Activity</string>
+    <string name="title_activity_display_intent">Display Intent Activity</string>
+    <string name="scanner_connection_state_label">Scanner connection state</string>
+    <string name="display_connection_state_label">Display connection state</string>
+    <string name="display_state_unknown">Display state unknown</string>
+    <string name="disconnect_D3">Disconnect Device 3</string>
+    <string name="get_display_state">Get Display State</string>
+    <string name="send_screen">Send test screen to Device 3</string>
+    <string name="send_screen_failing">Send a erroneous test screen to Device 3</string>
+    <string name="d3_name_defaut_value">D3 hello world</string>
+    <string name="display_connected">Display connected</string>
+    <string name="display_disconnected">Display disconnected</string>
+    <string name="scanner_connected">Scanner connected</string>
+    <string name="scanner_disconnected">Scanner disconnected</string>
+    <string name="trigger_feedback_button">Trigger Feedback</string>
+    <string name="feedback_text_hint">feedback text</string>
+    <string name="feedback_id_1">Success</string>
+    <string name="feedback_id_2">Error</string>
+    <string name="feedback_id_3">Info</string>
+    <string name="get_scanner_state">Get Scanner State</string>
+    <string name="symbology_label">Symbology</string>
+    <string name="barcode_content">Barcode Content:</string>
+    <string name="barcode_output_default">…</string>
+    <string name="symbology_label_text">Symbology of last scan:</string>
+    <string name="scanner_state_unknown">Scanner state unknown</string>
+    <string name="lastcontact_label">Last Contact</string>
+    <string name="use_default_scan_feedback">Use Default Scan Feedback</string>
+
+</resources>

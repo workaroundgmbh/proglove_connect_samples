@@ -1,1 +1,1 @@
-include ':exampleApp'
+include ':pgIntentSampleApp', ':pgSlimIntentSampleApp',':pgSlimIntentSampleJavaApp', ':pgSdkSampleApp', ':common', ':pgSdkSampleJavaApp'

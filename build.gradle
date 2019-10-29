@@ -5,7 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
@@ -15,28 +15,39 @@ buildscript {
     }
 }
 
+// Create a variable called pgKeystorePropertiesFile, and initialize it to your
+// pg_keystore.properties file, in the rootProject folder.
+
+def pgKeystorePropertiesFile = rootProject.file("pg_keystore.properties")
+
+// Initialize a new Properties() object called pgKeystoreProperties.
+def pgKeystoreProperties = new Properties()
+
+// Load your pg_keystore.properties file into the pgKeystoreProperties object.
+pgKeystoreProperties.load(new FileInputStream(pgKeystorePropertiesFile))
+
 allprojects {
     repositories {
         google()
         jcenter()
         maven {
             credentials {
-                username "$proglove_user"
-                password "$proglove_password"
+                username pgKeystoreProperties['PROGLOVE_USER']
+                password pgKeystoreProperties['PROGLOVE_PASSWORD']
             }
             url "https://proglove.jfrog.io/proglove/gradle-release-local"
         }
         maven {
             credentials {
-                username "$proglove_user"
-                password "$proglove_password"
+                username pgKeystoreProperties['PROGLOVE_USER']
+                password pgKeystoreProperties['PROGLOVE_PASSWORD']
             }
             url "https://proglove.jfrog.io/proglove/gradle-dev-local"
         }
         maven {
             credentials {
-                username "$proglove_user"
-                password "$proglove_password"
+                username pgKeystoreProperties['PROGLOVE_USER']
+                password pgKeystoreProperties['PROGLOVE_PASSWORD']
             }
             url "https://proglove.jfrog.io/proglove/gradle-beta-local"
         }

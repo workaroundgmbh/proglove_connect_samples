@@ -1,0 +1,25 @@
+# Config file to create the user-facing documentation page.
+# uses the [mkdocs](https://www.mkdocs.org/) too to create static html pages from our markdown files
+#
+# to use, make sure you have python3 ready and
+# `pip install mkdocs mkdocs-material`
+#
+# to test locally, run `mkdocs serve` in this folder
+site_name: ProGlove Connect
+copyright: 'Copyright &copy; 2019 Workaround GmbH'
+site_author: Workaround Gmbh
+nav:
+        - Home: index.md
+        - Guides:
+                - Install: InstallationGuide.md
+                - Intent: IntentIntegration.md 
+                - SDK: SDKIntegration.md
+                - Automatic Config: AutomaticConfig.md 
+        # will be readded later
+        # - API: scannerapi/index.md
+# the theme we are using, install it using pip(3) install mkdocs-material
+theme:
+        name: 'material'
+        custom_dir: 'docs_theme'
+# apply the PG css settings to the material theme
+extra_css: [extra.css]
