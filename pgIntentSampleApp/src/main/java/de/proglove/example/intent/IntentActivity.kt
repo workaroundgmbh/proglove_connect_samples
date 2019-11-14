@@ -1,5 +1,6 @@
 package de.proglove.example.intent
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -36,6 +37,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         registerReceiver(messageHandler, messageHandler.filter)
         messageHandler.registerDisplayOutput(this)
         messageHandler.registerScannerOutput(this)
+
+        // Handle intent sent with start activity action which created this activity.
+        // That Intent will not trigger #onNewIntent.
+        messageHandler.handleNewIntent(intent)
 
         getScannerStateBtn.setOnClickListener {
             messageHandler.requestScannerState()
@@ -79,6 +84,11 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         sendTestScreenD3BtnFailing.setOnClickListener {
             messageHandler.sendTestScreen("PG2", "1|Header1|Content1|8|Header2|Content2", "|")
         }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        messageHandler.handleNewIntent(intent)
     }
 
     private fun getFeedbackId() = when (radioGroup.checkedRadioButtonId) {

@@ -36,16 +36,19 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * A method overridden from the [BroadcastReceiver] to intercept caught intents.
      */
     override fun onReceive(context: Context?, intent: Intent?) {
+        handleNewIntent(intent)
+    }
+
+    /**
+     * Parses new Intent and notifies [scannerReceivers] or [displayReceivers] on which action and data is received.
+     */
+    fun handleNewIntent(intent: Intent?) {
         intent?.let {
             // match actions specified in the intent filer and extract relevant data accordingly
             when (it.action) {
-                ApiConstants.ACTION_BARCODE_INTENT -> {
-                    val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
-                    val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
-                    barcodeContent?.let { s ->
-                        log("received Barcode pg: $s")
-                        notifyOnReceivedBarcode(s, symbology)
-                    }
+                ApiConstants.ACTION_BARCODE_INTENT,
+                ApiConstants.ACTION_BARCODE_VIA_START_ACTIVITY_INTENT -> {
+                    handleScannedBarcode(it)
                 }
                 ApiConstants.ACTION_SCANNER_STATE_INTENT -> {
                     log("got ACTION_SCANNER_STATE_INTENT")
@@ -86,7 +89,11 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     notifyOnSetScreenSuccess(success, errorMessage)
                 }
                 else -> {
-                    log("Unrecognized Intent")
+                    if (intent.hasExtra(ApiConstants.EXTRA_DATA_STRING_PG) || intent.hasExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)) {
+                        handleScannedBarcode(it)
+                    } else {
+                        log("Unrecognized Intent")
+                    }
                 }
             }
         }
@@ -184,6 +191,18 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
             it.putExtra(ApiConstants.EXTRA_DISPLAY_DURATION, 0)
         }
         sendBroadcast(intent)
+    }
+
+    /**
+     * Gets scanned barcode data received [Intent] and notifies [scannerReceivers].
+     */
+    private fun handleScannedBarcode(intent: Intent) {
+        val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
+        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
+        barcodeContent?.let { s ->
+            log("received Barcode pg: $s")
+            notifyOnReceivedBarcode(s, symbology)
+        }
     }
 
     /**

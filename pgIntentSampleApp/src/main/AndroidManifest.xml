@@ -16,6 +16,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Intent filter to enable startActivity() with Action -->
+            <intent-filter>
+                <action android:name="com.proglove.api.BARCODE_START_ACTIVITY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
     </application>
 

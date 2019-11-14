@@ -261,21 +261,12 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     }
 
     private fun updateScannerConnectionButtonState() {
-        when (serviceConnectionState) {
-            ServiceConnectionStatus.CONNECTING -> {
-                serviceConnectBtn.isEnabled = false
-                serviceConnectBtn.setText(R.string.service_connecting)
-            }
-            ServiceConnectionStatus.CONNECTED -> {
-                logger.log(Level.INFO, "Connection to ProGlove SDK Service successful.")
-
-                serviceConnectBtn.isEnabled = false
-                serviceConnectBtn.setText(R.string.service_connected)
-            }
-            ServiceConnectionStatus.DISCONNECTED -> {
-                serviceConnectBtn.isEnabled = true
-                serviceConnectBtn.setText(R.string.connect_service)
-            }
+        if (scannerConnected) {
+            connectScannerPinnedBtn.setText(R.string.scanner_connected)
+            connectScannerRegularBtn.setText(R.string.scanner_connected)
+        } else {
+            connectScannerPinnedBtn.setText(R.string.pair_scanner)
+            connectScannerRegularBtn.setText(R.string.pair_scanner)
         }
     }
 

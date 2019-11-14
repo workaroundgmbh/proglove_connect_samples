@@ -69,10 +69,10 @@ dependencies {
     } else {
         implementation "de.proglove:aidlconnect:1.1.0"
     }
-    if (findProject(':scannerapi') != null) {
-        implementation project(':scannerapi')
+    if (findProject(':connect-sdk') != null) {
+        implementation project(':connect-sdk')
     } else {
-        implementation "de.proglove:scannerapi:0.10.1"
+        implementation "de.proglove:connect-sdk:0.10.1"
     }
     implementation project(':common')
 }

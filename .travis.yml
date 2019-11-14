@@ -23,11 +23,6 @@ jobs:
       if: branch = master AND type != "pull_request"
       script:
         - "./gradlew assembleDebug"
-      before_deploy:
-        # install the libraries necessary for mkdocs (creating the documentation)
-        - pyenv install -s 3.6.0
-        - pyenv global 3.6.0
-        - pip install mkdocs mkdocs-material
       deploy:
         - provider: script
           script: "./scripts/publish_code.sh"

@@ -11,6 +11,7 @@ object ApiConstants {
     const val ACTION_FEEDBACK_PLAY_SEQUENCE_INTENT = "com.proglove.api.PLAY_FEEDBACK"
     const val ACTION_SCANNER_CONFIG = "com.proglove.api.CONFIG"
     const val ACTION_SCANNER_SET_CONFIG = "com.proglove.api.SET_CONFIG"
+    const val ACTION_BARCODE_VIA_START_ACTIVITY_INTENT = "com.proglove.api.BARCODE_START_ACTIVITY"
 
     const val ACTION_DISCONNECT_DISPLAY_INTENT = "com.proglove.api.DISPLAY_DISCONNECT"
     const val ACTION_GET_DISPLAY_STATE_INTENT = "com.proglove.api.GET_DISPLAY_STATE"

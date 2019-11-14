@@ -27,6 +27,3 @@ git rebase master
 # Push new code to target with tag
 git push target master --follow-tags
 
-#build the documentation and push it to target (branch gh-pages)
-mkdocs gh-deploy -r target --force
-

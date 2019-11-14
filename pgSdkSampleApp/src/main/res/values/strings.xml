@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PG Intent Sample App</string>
+    <string name="app_name">PG SDK Sample App</string>
     <string name="last_scanned_text">Last scanned text</string>
     <string name="display_connected">Display connected</string>
     <string name="display_disconnected">Display disconnected</string>
