@@ -40,7 +40,7 @@
     <string name="use_default_scan_feedback">Use Default Scan Feedback</string>
     <string name="new_scan_notification">New scan: %1$s (%2$s)</string>
     <string name="new_scan_no_symbology_notification">New scan: %1$s</string>
-    <string name="button_pressed">Button pressed: %1$i</string>
+    <string name="button_pressed">Button pressed: %1$d</string>
     <string name="no_display_connected">There is no connected display</string>
 
 </resources>

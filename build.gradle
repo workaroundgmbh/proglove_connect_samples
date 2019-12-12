@@ -31,25 +31,14 @@ allprojects {
         google()
         jcenter()
         maven {
+            url "https://dl.cloudsmith.io/basic/proglove/pgconnect-prod/maven/"
             credentials {
                 username pgKeystoreProperties['PROGLOVE_USER']
                 password pgKeystoreProperties['PROGLOVE_PASSWORD']
             }
-            url "https://proglove.jfrog.io/proglove/gradle-release-local"
-        }
-        maven {
-            credentials {
-                username pgKeystoreProperties['PROGLOVE_USER']
-                password pgKeystoreProperties['PROGLOVE_PASSWORD']
+            authentication {
+                basic(BasicAuthentication)
             }
-            url "https://proglove.jfrog.io/proglove/gradle-dev-local"
-        }
-        maven {
-            credentials {
-                username pgKeystoreProperties['PROGLOVE_USER']
-                password pgKeystoreProperties['PROGLOVE_PASSWORD']
-            }
-            url "https://proglove.jfrog.io/proglove/gradle-beta-local"
         }
     }
 }

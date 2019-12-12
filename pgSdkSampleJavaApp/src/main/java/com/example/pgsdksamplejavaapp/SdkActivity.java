@@ -17,7 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -143,7 +143,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
      * IScannerOutput Implementation:
      */
     @Override
-    public void onBarcodeScanned(@NotNull final BarcodeScanResults barcodeScanResults) {
+    public void onBarcodeScanned(@NonNull final BarcodeScanResults barcodeScanResults) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -163,7 +163,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     }
 
     @Override
-    public void onScannerStateChanged(@NotNull ConnectionStatus connectionStatus) {
+    public void onScannerStateChanged(@NonNull ConnectionStatus connectionStatus) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -179,7 +179,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
      * IButtonOutput Implementation:
      */
     @Override
-    public void onButtonPressed(@NotNull final ButtonPress buttonPress) {
+    public void onButtonPressed(@NonNull final ButtonPress buttonPress) {
         String msg = getString(R.string.button_pressed, buttonPress.getId());
         showMessage(msg, false);
     }
@@ -201,7 +201,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     }
 
     @Override
-    public void onDisplayStateChanged(@NotNull ConnectionStatus connectionStatus) {
+    public void onDisplayStateChanged(@NonNull ConnectionStatus connectionStatus) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -318,7 +318,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         new PgTemplateField(2, "Fahrzeug-Typ", "Hatchback"),
                         new PgTemplateField(3, "Teilenummer", "K867 86 027 H3")
                 };
-                PgScreenData screenData = new PgScreenData("PG1", data, RefreshType.DEFAULT);
+                PgScreenData screenData = new PgScreenData("PG3", data, RefreshType.DEFAULT);
                 sendScreen(screenData);
             }
         });
@@ -327,14 +327,10 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             @Override
             public void onClick(View v) {
                 PgTemplateField[] data = {
-                        new PgTemplateField(1, "Stueck", "1 Pk"),
-                        new PgTemplateField(2, "Bezeichnung", "Gemuesemischung"),
-                        new PgTemplateField(3, "Stueck", "420"),
-                        new PgTemplateField(4, "Bezeichnung", "Fruechte Muesli"),
-                        new PgTemplateField(5, "Stueck", "30"),
-                        new PgTemplateField(6, "Bezeichnung", "Gebaeck-Stangen")
+                        new PgTemplateField(1, "Bezeichnung", "Gemüsemischung"),
+                        new PgTemplateField(2, "Bezeichnung", "Früchte Müsli")
                 };
-                PgScreenData screenData = new PgScreenData("PG2", data, RefreshType.DEFAULT);
+                PgScreenData screenData = new PgScreenData("PG2", data, RefreshType.PARTIAL_REFRESH);
                 sendScreen(screenData);
             }
         });
@@ -378,7 +374,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             }
 
             @Override
-            public void onError(@NotNull PgError pgError) {
+            public void onError(@NonNull PgError pgError) {
                 final String msg = "An Error occurred during triggerFeedback: " + pgError;
                 showMessage(msg, true);
             }
@@ -391,7 +387,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         PgScannerConfig config = new PgScannerConfig(isDefault);
         pgManager.setScannerConfig(config, new IPgScannerConfigCallback() {
             @Override
-            public void onScannerConfigSuccess(@NotNull PgScannerConfig pgScannerConfig) {
+            public void onScannerConfigSuccess(@NonNull PgScannerConfig pgScannerConfig) {
                 Log.d(TAG, "Successfully updated config on scanner");
                 runOnUiThread(new Runnable() {
                     @Override
@@ -402,7 +398,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             }
 
             @Override
-            public void onError(@NotNull PgError pgError) {
+            public void onError(@NonNull PgError pgError) {
                 final String msg = "Could not set config on scanner: " + pgError;
                 showMessage(msg, true);
 
@@ -430,7 +426,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
 
         pgManager.takeImage(imageConfig, timeout, new IPgImageCallback() {
             @Override
-            public void onImageReceived(@NotNull final PgImage pgImage) {
+            public void onImageReceived(@NonNull final PgImage pgImage) {
                 final Bitmap bmp = BitmapFactory.decodeByteArray(pgImage.getBytes(), 0, pgImage.getBytes().length);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -441,7 +437,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             }
 
             @Override
-            public void onError(@NotNull final PgError pgError) {
+            public void onError(@NonNull final PgError pgError) {
                 final String msg = "Taking an image failed. Error code is: " + pgError;
                 showMessage(msg, true);
             }
@@ -459,7 +455,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 }
 
                 @Override
-                public void onError(@NotNull final PgError pgError) {
+                public void onError(@NonNull final PgError pgError) {
                     String msg = "Setting the screen failed. Error: " + pgError;
                     showMessage(msg, true);
                 }
@@ -528,7 +524,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         }
     }
 
-    private void updateScannedResults(@NotNull BarcodeScanResults barcodeScanResults) {
+    private void updateScannedResults(@NonNull BarcodeScanResults barcodeScanResults) {
         scannerResultTV.setText(barcodeScanResults.getBarcodeContent());
         String symbology = barcodeScanResults.getSymbology();
         if (symbology == null) {

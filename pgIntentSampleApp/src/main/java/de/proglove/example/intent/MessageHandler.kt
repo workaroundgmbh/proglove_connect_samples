@@ -11,7 +11,7 @@ import de.proglove.example.common.ApiConstants
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
-import java.util.*
+import java.util.Collections
 
 /**
  * Message handler is a helper class to work with broadcasts.
@@ -61,7 +61,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     log("got ACTION_SCANNER_CONFIG")
                     intent.getBundleExtra(ApiConstants.EXTRA_CONFIG_BUNDLE)?.let { bundle ->
                         val defaultScanFeedbackEnabled =
-                            bundle.getBoolean(ApiConstants.EXTRA_CONFIG_DISABLE_SCAN_FEEDBACK_STRING)
+                                bundle.getBoolean(ApiConstants.EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED)
                         notifyOnDefaultScanFeedbackChanged(defaultScanFeedbackEnabled)
                     }
                 }
@@ -146,7 +146,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
-     * Request current scanner state to be broadcasted and sent down to the registered scanner callback output.
+     * Request current scanner state to be broadcast and sent down to the registered scanner callback output.
      */
     fun requestScannerState() {
         val intent = Intent().also {
@@ -156,7 +156,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
-     * Request current display state to be broadcasted and sent down to the registered display callback output.
+     * Request current display state to be broadcast and sent down to the registered display callback output.
      */
     fun requestDisplayState() {
         val intent = Intent().also {
@@ -166,9 +166,9 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
-     * Disconnect display (D3).
+     * Disconnect display.
      */
-    fun sendDisconnectD3() {
+    fun sendDisconnectDisplay() {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_DISCONNECT_DISPLAY_INTENT
         }
@@ -181,14 +181,20 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * @param id template ID.
      * @param content data for display.
      * @param separator separator.
+     * @param durationMs the duration for which this screen should be displayed. 0 means indefinite display
+     * @param refreshType the refresh type to be used for this screen setting.
+     *      Valid values are: ["DEFAULT", "FULL_REFRESH", "PARTIAL_REFRESH"]
      */
-    fun sendTestScreen(id: String, content: String, separator: String) {
+    fun sendTestScreen(id: String, content: String, separator: String, durationMs: Int = 0, refreshType: String? = null) {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_SET_SCREEN_INTENT
             it.putExtra(ApiConstants.EXTRA_DISPLAY_TEMPLATE_ID, id)
             it.putExtra(ApiConstants.EXTRA_DISPLAY_DATA, content)
             it.putExtra(ApiConstants.EXTRA_DISPLAY_SEPARATOR, separator)
-            it.putExtra(ApiConstants.EXTRA_DISPLAY_DURATION, 0)
+            it.putExtra(ApiConstants.EXTRA_DISPLAY_DURATION, durationMs)
+            refreshType?.let { refreshType ->
+                it.putExtra(ApiConstants.EXTRA_DISPLAY_REFRESH_TYPE, refreshType)
+            }
         }
         sendBroadcast(intent)
     }
@@ -213,7 +219,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      */
     private fun notifyOnSetScreenSuccess(success: Boolean, errorMessage: String?) {
         Toast.makeText(context, "Did receive set screen success: $success; message: $errorMessage", Toast.LENGTH_LONG)
-            .show()
+                .show()
     }
 
     /**
@@ -258,7 +264,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * @param newState the new connection state.
      */
     private fun notifyOnScannerStateChange(newState: DeviceConnectionStatus) {
-        log("received scannerstate $newState")
+        log("received scannerState $newState")
         scannerReceivers.forEach {
             it.onScannerStateChanged(newState)
         }
@@ -310,13 +316,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     /**
      * Change the default scan feedback.
      *
-     * @param defaultScanFeedback new state.
+     * @param isDefaultScanFeedbackEnabled new state.
      */
-    fun updateScannerConfig(defaultScanFeedback: Boolean) {
+    fun updateScannerConfig(isDefaultScanFeedbackEnabled: Boolean) {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_SCANNER_SET_CONFIG
             val bundle = Bundle().apply {
-                putBoolean(ApiConstants.EXTRA_CONFIG_DISABLE_SCAN_FEEDBACK_STRING, defaultScanFeedback)
+                putBoolean(ApiConstants.EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED, isDefaultScanFeedbackEnabled)
             }
             it.putExtra(ApiConstants.EXTRA_CONFIG_BUNDLE, bundle)
         }

@@ -5,15 +5,32 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import de.proglove.example.common.DisplaySampleData
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.enums.DisplayConnectionStatus
 import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
-import kotlinx.android.synthetic.main.activity_intent.*
-import kotlinx.android.synthetic.main.feedback_selection_layout.*
+import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
+import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
+import kotlinx.android.synthetic.main.activity_intent.getDisplayState
+import kotlinx.android.synthetic.main.activity_intent.getScannerStateBtn
+import kotlinx.android.synthetic.main.activity_intent.intentInputField
+import kotlinx.android.synthetic.main.activity_intent.lastContactOutput
+import kotlinx.android.synthetic.main.activity_intent.lastSymbologyOutput
+import kotlinx.android.synthetic.main.activity_intent.scannerStateOutput
+import kotlinx.android.synthetic.main.activity_intent.sendNotificationTestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendPartialRefreshTestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.radioGroup
+import kotlinx.android.synthetic.main.feedback_selection_layout.triggerFeedbackButton
 import java.text.DateFormat
-import java.util.*
+import java.util.Date
 
 /**
  * PG Intent API usage example with a scanner and a display.
@@ -57,38 +74,70 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             messageHandler.updateScannerConfig(defaultScanFeedback)
         }
 
-        disconnectD3Btn.setOnClickListener {
-            messageHandler.sendDisconnectD3()
+        disconnectDisplayBtn.setOnClickListener {
+            messageHandler.sendDisconnectDisplay()
         }
 
         getDisplayState.setOnClickListener {
             messageHandler.requestDisplayState()
         }
 
-        sendTestScreenD3Btn.setOnClickListener {
-            messageHandler.sendTestScreen(
-                "PG1",
-                "1|Bezeichnung|Kopfairbag|2|Fahrzeug-Typ|Hatchback|3|Teilenummer|K867 86 027 H3",
-                "|"
-            )
+        sendTestScreenBtn.setOnClickListener {
+            val templateId = "PG2"
+            val separator = "|"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+            }.joinToString(separator)
+            messageHandler.sendTestScreen(templateId, templateFields, separator)
         }
 
-        sendTestScreenD3Btn2.setOnClickListener {
-            messageHandler.sendTestScreen(
-                "PG2",
-                "1|Stück|1 Pk|2|Bezeichnung|Gemüsemischung|3|Stück|420|4|Bezeichnung|Früchte Müsli|5|Stück|30|6|Bezeichnung|Gebäck-Stangen",
-                "|"
-            )
+        sendPartialRefreshTestScreenBtn.setOnClickListener {
+            val templateId = "PG3"
+            val separator = "|"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+            }.joinToString(separator)
+            messageHandler.sendTestScreen(templateId, templateFields, separator, 0,"PARTIAL_REFRESH")
         }
 
-        sendTestScreenD3BtnFailing.setOnClickListener {
-            messageHandler.sendTestScreen("PG2", "1|Header1|Content1|8|Header2|Content2", "|")
+        sendNotificationTestScreenBtn.setOnClickListener {
+            val templateId = "PG2I"
+            val separator = "|"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+            }.joinToString(separator)
+            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+        }
+
+        sendTestScreenBtnFailing.setOnClickListener {
+            messageHandler.sendTestScreen("PG2", "|||", ";")
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         messageHandler.handleNewIntent(intent)
+    }
+
+    private fun getSampleDataForTemplate(template: String): List<Pair<String, Array<String>>> {
+        return when (template) {
+            "PG2" -> listOf(
+                    DisplaySampleData.SAMPLE_STORAGE_UNIT,
+                    DisplaySampleData.SAMPLE_DESTINATION
+            )
+            "PG3" -> listOf(
+                    DisplaySampleData.SAMPLE_STORAGE_UNIT,
+                    DisplaySampleData.SAMPLE_ITEM,
+                    DisplaySampleData.SAMPLE_QUANTITY
+            )
+            "PG1I" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG1E" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG1C" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG2I" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG2E" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG2C" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            else -> listOf()
+        }
     }
 
     private fun getFeedbackId() = when (radioGroup.checkedRadioButtonId) {

@@ -25,12 +25,13 @@ object ApiConstants {
     const val EXTRA_SYMBOLOGY_STRING_PG = "com.proglove.api.extra.BARCODE_SYMBOLOGY"
 
     const val EXTRA_CONFIG_BUNDLE = "com.proglove.api.extra.CONFIG_BUNDLE"
-    const val EXTRA_CONFIG_DISABLE_SCAN_FEEDBACK_STRING = "com.proglove.api.extra.config.DISABLE_SCAN_FEEDBACK"
+    const val EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED = "com.proglove.api.extra.config.DEFAULT_SCAN_FEEDBACK_ENABLED"
 
     const val EXTRA_DISPLAY_TEMPLATE_ID = "com.proglove.api.extra.TEMPLATE_ID"
     const val EXTRA_DISPLAY_DATA = "com.proglove.api.extra.DATA"
     const val EXTRA_DISPLAY_SEPARATOR = "com.proglove.api.extra.SEPARATOR"
     const val EXTRA_DISPLAY_DURATION = "com.proglove.api.extra.DURATION"
+    const val EXTRA_DISPLAY_REFRESH_TYPE = "com.proglove.api.extra.REFRESH_TYPE"
     const val EXTRA_DISPLAY_STATE = "com.proglove.api.extra.DISPLAY_STATE"
     const val EXTRA_DISPLAY_BUTTON = "com.proglove.api.extra.DISPLAY_BUTTON"
     const val EXTRA_DISPLAY_DEVICE = "com.proglove.api.extra.DISPLAY_DEVICE_NAME"

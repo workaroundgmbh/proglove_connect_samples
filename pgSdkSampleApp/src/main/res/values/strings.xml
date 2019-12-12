@@ -21,10 +21,12 @@
     <string name="trigger_feedback_button">Trigger Feedback</string>
     <string name="display_connection_state_label">Display connection state</string>
     <string name="display_state_unknown">Display state unknown</string>
-    <string name="disconnect_D3">Disconnect Device 3</string>
+    <string name="disconnect_display">Disconnect Display</string>
     <string name="get_display_state">Get Display State</string>
-    <string name="send_screen">Send test screen to Device 3</string>
-    <string name="send_screen_failing">Send a erroneous test screen to Device 3</string>
+    <string name="send_screen">Send test screen to Display</string>
+    <string name="send_partial_refresh_screen">Send partial refresh test screen to Display</string>
+    <string name="send_notification_screen">Send notification test screen to Display</string>
+    <string name="send_screen_failing">Send an erroneous test screen to Display</string>
     <string name="device_name_hint">Device name</string>
     <string name="take_image_button">take image</string>
     <string name="image_configurations">Image Configurations</string>

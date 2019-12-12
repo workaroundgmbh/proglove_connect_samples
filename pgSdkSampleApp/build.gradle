@@ -64,15 +64,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    if (findProject(':aidlconnect') != null) {
-        implementation project(':aidlconnect')
-    } else {
-        implementation "de.proglove:aidlconnect:1.1.0"
-    }
     if (findProject(':connect-sdk') != null) {
         implementation project(':connect-sdk')
     } else {
-        implementation "de.proglove:connect-sdk:0.10.1"
+        implementation "de.proglove:connect-sdk:1.0.0"
     }
     implementation project(':common')
 }

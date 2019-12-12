@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import de.proglove.example.common.DisplaySampleData
 import de.proglove.sdk.ConnectionStatus
 import de.proglove.sdk.IServiceOutput
 import de.proglove.sdk.PgError
@@ -15,10 +16,39 @@ import de.proglove.sdk.display.IDisplayOutput
 import de.proglove.sdk.display.IPgSetScreenCallback
 import de.proglove.sdk.display.PgScreenData
 import de.proglove.sdk.display.PgTemplateField
-import de.proglove.sdk.scanner.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.feedback_selection_layout.*
-import kotlinx.android.synthetic.main.take_image_layout.*
+import de.proglove.sdk.display.RefreshType
+import de.proglove.sdk.scanner.BarcodeScanResults
+import de.proglove.sdk.scanner.IPgFeedbackCallback
+import de.proglove.sdk.scanner.IPgImageCallback
+import de.proglove.sdk.scanner.IPgScannerConfigCallback
+import de.proglove.sdk.scanner.IScannerOutput
+import de.proglove.sdk.scanner.ImageResolution
+import de.proglove.sdk.scanner.PgImage
+import de.proglove.sdk.scanner.PgImageConfig
+import de.proglove.sdk.scanner.PgPredefinedFeedback
+import de.proglove.sdk.scanner.PgScannerConfig
+import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
+import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
+import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
+import kotlinx.android.synthetic.main.activity_main.displayStateOutput
+import kotlinx.android.synthetic.main.activity_main.inputField
+import kotlinx.android.synthetic.main.activity_main.sendNotificationTestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendPartialRefreshTestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
+import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
+import kotlinx.android.synthetic.main.activity_main.symbologyResult
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
+import kotlinx.android.synthetic.main.feedback_selection_layout.radioGroup
+import kotlinx.android.synthetic.main.feedback_selection_layout.triggerFeedbackButton
+import kotlinx.android.synthetic.main.take_image_layout.imageTaken
+import kotlinx.android.synthetic.main.take_image_layout.jpegQualityEditText
+import kotlinx.android.synthetic.main.take_image_layout.resolutionRadioGroup
+import kotlinx.android.synthetic.main.take_image_layout.takeImageButton
+import kotlinx.android.synthetic.main.take_image_layout.timeoutEditText
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -67,21 +97,21 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         triggerFeedbackButton.setOnClickListener {
             val selectedFeedbackId = getFeedbackId()
             pgManager.triggerFeedback(
-                predefinedFeedback = selectedFeedbackId,
-                callback = object : IPgFeedbackCallback {
+                    predefinedFeedback = selectedFeedbackId,
+                    callback = object : IPgFeedbackCallback {
 
-                    override fun onSuccess() {
-                        logger.log(Level.INFO, "Feedback successfully played.")
-                    }
+                        override fun onSuccess() {
+                            logger.log(Level.INFO, "Feedback successfully played.")
+                        }
 
-                    override fun onError(error: PgError) {
-                        val errorMessage = "An Error occurred during triggerFeedback: $error"
-                        logger.log(Level.WARNING, errorMessage)
-                        runOnUiThread {
-                            Toast.makeText(this@SdkActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        override fun onError(error: PgError) {
+                            val errorMessage = "An Error occurred during triggerFeedback: $error"
+                            logger.log(Level.WARNING, errorMessage)
+                            runOnUiThread {
+                                Toast.makeText(this@SdkActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
-                }
             )
         }
         // setting first Item as selected by default
@@ -120,16 +150,17 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             })
         }
 
-        disconnectD3Btn.setOnClickListener {
-            pgManager.disconnectDisplay()
-        }
+        addDisplayClickListeners()
+    }
+
+    private fun addDisplayClickListeners() {
 
         val loggingCallback = object : IPgSetScreenCallback {
 
             override fun onError(error: PgError) {
                 runOnUiThread {
                     Toast.makeText(this@SdkActivity, "Got error setting text: $error", Toast.LENGTH_SHORT)
-                        .show()
+                            .show()
                 }
             }
 
@@ -140,47 +171,78 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             }
         }
 
-        sendTestScreenD3Btn.setOnClickListener {
+        disconnectDisplayBtn.setOnClickListener {
+            pgManager.disconnectDisplay()
+        }
+
+        sendTestScreenBtn.setOnClickListener {
+            val templateId = "PG2"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
             pgManager.setScreen(
-                data = PgScreenData(
-                    "PG1", arrayOf(
-                        PgTemplateField(1, "Bezeichnung", "Kopfairbag"),
-                        PgTemplateField(2, "Fahrzeug-Typ", "Hatchback"),
-                        PgTemplateField(3, "Teilenummer", "K867 86 027 H3")
-                    )
-                ),
-                callback = loggingCallback
+                    data = PgScreenData(templateId, templateFields),
+                    callback = loggingCallback
             )
         }
 
-        sendTestScreenD3Btn2.setOnClickListener {
+        sendPartialRefreshTestScreenBtn.setOnClickListener {
+            val templateId = "PG3"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
             pgManager.setScreen(
-                data = PgScreenData(
-                    "PG2", arrayOf(
-                        PgTemplateField(1, "Stueck", "1 Pk"),
-                        PgTemplateField(2, "Bezeichnung", "Gemuesemischung"),
-                        PgTemplateField(3, "Stueck", "420"),
-                        PgTemplateField(4, "Bezeichnung", "Fruechte Muesli"),
-                        PgTemplateField(5, "Stueck", "30"),
-                        PgTemplateField(6, "Bezeichnung", "Gebaeck-Stangen")
-                    )
-                ),
-                callback = loggingCallback
+                    data = PgScreenData(templateId, templateFields, RefreshType.PARTIAL_REFRESH),
+                    callback = loggingCallback
             )
         }
 
-        sendTestScreenD3BtnFailing.setOnClickListener {
-            pgManager.setScreen(
-                data = PgScreenData(
-                    "PG1", arrayOf(
-                        PgTemplateField(1, "now this is the story", "all about how"),
-                        PgTemplateField(2, "my life got flipped", "turned upside down"),
-                        PgTemplateField(3, "and I'd like to take", "a minute just sit right there"),
-                        PgTemplateField(4, "I'll tell you how I become", "the prince of a town called Bel Air")
-                    )
-                ),
-                callback = loggingCallback
+        sendNotificationTestScreenBtn.setOnClickListener {
+            val templateId = "PG2"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
+            pgManager.setNotificationScreen(
+                    data = PgScreenData("PG2", templateFields),
+                    callback = loggingCallback,
+                    durationMs = 3000
             )
+        }
+
+        sendTestScreenBtnFailing.setOnClickListener {
+            pgManager.setScreen(
+                    data = PgScreenData(
+                            "PG1",
+                            listOf(
+                                    PgTemplateField(1, "not going to be displayed", "not going to be displayed"),
+                                    PgTemplateField(2, "not going to be displayed", "not going to be displayed"),
+                                    PgTemplateField(3, "not going to be displayed", "not going to be displayed"),
+                                    PgTemplateField(4, "not going to be displayed", "not going to be displayed")
+                            )
+                    ),
+                    callback = loggingCallback
+            )
+        }
+    }
+
+    private fun getSampleDataForTemplate(template: String): List<Pair<String, Array<String>>> {
+        return when (template) {
+            "PG2" -> listOf(
+                    DisplaySampleData.SAMPLE_STORAGE_UNIT,
+                    DisplaySampleData.SAMPLE_DESTINATION
+            )
+            "PG3" -> listOf(
+                    DisplaySampleData.SAMPLE_STORAGE_UNIT,
+                    DisplaySampleData.SAMPLE_ITEM,
+                    DisplaySampleData.SAMPLE_QUANTITY
+            )
+            "PG1I" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG1E" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG1C" -> listOf(DisplaySampleData.SAMPLE_ITEM)
+            "PG2I" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG2E" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG2C" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            else -> listOf()
         }
     }
 
@@ -342,15 +404,15 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 symbologyResult.text = symbology
                 if (symbology.isNotEmpty()) {
                     Toast.makeText(
-                        this,
-                        "Got barcode: ${barcodeScanResults.barcodeContent} with symbology ${barcodeScanResults.symbology}",
-                        Toast.LENGTH_LONG
+                            this,
+                            "Got barcode: ${barcodeScanResults.barcodeContent} with symbology ${barcodeScanResults.symbology}",
+                            Toast.LENGTH_LONG
                     ).show()
                 } else {
                     Toast.makeText(
-                        this,
-                        "Got barcode: ${barcodeScanResults.barcodeContent} with no symbology",
-                        Toast.LENGTH_LONG
+                            this,
+                            "Got barcode: ${barcodeScanResults.barcodeContent} with no symbology",
+                            Toast.LENGTH_LONG
                     ).show()
                 }
             }
