@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.activity_intent.getScannerStateBtn
 import kotlinx.android.synthetic.main.activity_intent.intentInputField
 import kotlinx.android.synthetic.main.activity_intent.lastContactOutput
 import kotlinx.android.synthetic.main.activity_intent.lastSymbologyOutput
+import kotlinx.android.synthetic.main.activity_intent.pickDisplayOrientationDialogBtn
 import kotlinx.android.synthetic.main.activity_intent.scannerStateOutput
+import kotlinx.android.synthetic.main.activity_intent.sendFeedbackWithReplaceQueueSwitch
 import kotlinx.android.synthetic.main.activity_intent.sendNotificationTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPartialRefreshTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
@@ -64,7 +66,8 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         }
         triggerFeedbackButton.setOnClickListener {
             val selectedFeedbackId = getFeedbackId()
-            messageHandler.triggerFeedback(selectedFeedbackId)
+            val shouldReplaceQueue = sendFeedbackWithReplaceQueueSwitch.isChecked
+            messageHandler.triggerFeedback(selectedFeedbackId, shouldReplaceQueue)
         }
         //setting first Item as selected by default
         radioGroup.check(feedbackId1RB.id)
@@ -97,7 +100,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator, 0,"PARTIAL_REFRESH")
+            messageHandler.sendTestScreen(templateId, templateFields, separator, 0, "PARTIAL_REFRESH")
         }
 
         sendNotificationTestScreenBtn.setOnClickListener {
@@ -111,6 +114,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
         sendTestScreenBtnFailing.setOnClickListener {
             messageHandler.sendTestScreen("PG2", "|||", ";")
+        }
+
+        pickDisplayOrientationDialogBtn.setOnClickListener {
+            messageHandler.showPickDisplayOrientationDialog()
         }
     }
 
@@ -187,9 +194,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         runOnUiThread {
             intentInputField?.text = barcode
             Toast.makeText(this, "Got barcode: $barcode", Toast.LENGTH_LONG).show()
-            symbology?.let { s ->
-                lastSymbologyOutput.text = s
-            }
+            lastSymbologyOutput.text = symbology ?: ""
         }
         updateLastContact()
     }

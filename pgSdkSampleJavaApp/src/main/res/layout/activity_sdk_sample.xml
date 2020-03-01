@@ -157,8 +157,7 @@
             android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/defaultFeedbackSwitch"/>
-
+            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch"/>
 
         <Switch
             android:id="@+id/defaultFeedbackSwitch"
@@ -171,7 +170,21 @@
             android:text="@string/use_default_scan_feedback"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/feedBackLayout"/>
+            app:layout_constraintTop_toBottomOf="@+id/feedBackLayout" />
+
+        <Switch
+            android:id="@+id/sendFeedbackWithReplaceQueueSwitch"
+            android:layout_width="0dp"
+            android:layout_height="27dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:checked="false"
+            android:text="@string/send_with_replace_queue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/defaultFeedbackSwitch" />
+
 
         <TextView
             android:id="@+id/displayStateLabel"
@@ -236,6 +249,21 @@
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3Btn2"/>
+
+        <Button
+            android:id="@+id/pickDisplayOrientationDialogBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/pick_display_orientation"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3BtnFailing" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

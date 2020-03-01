@@ -37,5 +37,7 @@
     <string name="timeout_text">timeout ms</string>
     <string name="image_will_appear_here">image will appear here</string>
     <string name="use_default_scan_feedback">Use Default Scan Feedback</string>
+    <string name="send_with_replace_queue">Send feedback with replaceQueue?</string>
+    <string name="pick_display_orientation">Pick display orientation</string>
 
 </resources>

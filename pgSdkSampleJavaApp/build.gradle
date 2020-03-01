@@ -9,8 +9,8 @@ android {
         applicationId "de.proglove.example.sdk.java"
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,7 +37,7 @@ dependencies {
     if (findProject(':connect-sdk') != null) {
         implementation project(':connect-sdk')
     } else {
-        implementation "de.proglove:connect-sdk:1.0.0"
+        implementation "de.proglove:connect-sdk:1.1.0"
     }
     implementation project(':common')
 }

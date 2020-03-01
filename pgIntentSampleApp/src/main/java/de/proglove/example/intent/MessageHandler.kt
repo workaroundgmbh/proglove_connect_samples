@@ -1,6 +1,8 @@
 package de.proglove.example.intent
 
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -304,11 +306,14 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * Trigger feedback on a scanner.
      *
      * @param feedbackSequenceId desired feedback sequence ID.
+     * @param shouldReplaceQueue (optional) If true all currently queued up commands are canceled and only this command
+     *  will be enqueued
      */
-    fun triggerFeedback(feedbackSequenceId: Int) {
+    fun triggerFeedback(feedbackSequenceId: Int, shouldReplaceQueue: Boolean = false) {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_FEEDBACK_PLAY_SEQUENCE_INTENT
             it.putExtra(ApiConstants.EXTRA_FEEDBACK_SEQUENCE_ID, feedbackSequenceId)
+            it.putExtra(ApiConstants.EXTRA_REPLACE_QUEUE, shouldReplaceQueue)
         }
         sendBroadcast(intent)
     }
@@ -327,6 +332,21 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
             it.putExtra(ApiConstants.EXTRA_CONFIG_BUNDLE, bundle)
         }
         sendBroadcast(intent)
+    }
+
+    fun showPickDisplayOrientationDialog() {
+        val intent = Intent()
+
+        intent.component = ComponentName(
+                ApiConstants.DISPLAY_ORIENTATION_ACTIVITY_PACKAGE_NAME,
+                ApiConstants.DISPLAY_ORIENTATION_ACTIVITY_CLASS_NAME
+        )
+
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            log("Error: No or wrong version of PgConnect!")
+        }
     }
 
     companion object {

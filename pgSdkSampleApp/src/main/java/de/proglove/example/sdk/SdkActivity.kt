@@ -12,6 +12,7 @@ import de.proglove.sdk.PgError
 import de.proglove.sdk.PgManager
 import de.proglove.sdk.button.ButtonPress
 import de.proglove.sdk.button.IButtonOutput
+import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.display.IDisplayOutput
 import de.proglove.sdk.display.IPgSetScreenCallback
 import de.proglove.sdk.display.PgScreenData
@@ -33,6 +34,8 @@ import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
 import kotlinx.android.synthetic.main.activity_main.inputField
+import kotlinx.android.synthetic.main.activity_main.sendFeedbackWithReplaceQueueSwitch
+import kotlinx.android.synthetic.main.activity_main.pickDisplayOrientationDialogBtn
 import kotlinx.android.synthetic.main.activity_main.sendNotificationTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPartialRefreshTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
@@ -96,8 +99,15 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
         triggerFeedbackButton.setOnClickListener {
             val selectedFeedbackId = getFeedbackId()
+
+            // Creating new PgCommandParams setting the queueing behaviour
+            val pgCommandParams = PgCommandParams(sendFeedbackWithReplaceQueueSwitch.isChecked)
+
+            // Wrapping the feedback data in a PgCommand with the PgCommandData
+            val triggerFeedbackCommand = selectedFeedbackId.toCommand(pgCommandParams)
+
             pgManager.triggerFeedback(
-                    predefinedFeedback = selectedFeedbackId,
+                    command = triggerFeedbackCommand,
                     callback = object : IPgFeedbackCallback {
 
                         override fun onSuccess() {
@@ -151,6 +161,13 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         }
 
         addDisplayClickListeners()
+
+        pickDisplayOrientationDialogBtn.setOnClickListener {
+            val error = pgManager.showPickDisplayOrientationDialog(this)
+            if (error != null) {
+                Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun addDisplayClickListeners() {
@@ -400,21 +417,19 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     override fun onBarcodeScanned(barcodeScanResults: BarcodeScanResults) {
         runOnUiThread {
             inputField.text = barcodeScanResults.barcodeContent
-            barcodeScanResults.symbology?.let { symbology ->
-                symbologyResult.text = symbology
-                if (symbology.isNotEmpty()) {
-                    Toast.makeText(
-                            this,
-                            "Got barcode: ${barcodeScanResults.barcodeContent} with symbology ${barcodeScanResults.symbology}",
-                            Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    Toast.makeText(
-                            this,
-                            "Got barcode: ${barcodeScanResults.barcodeContent} with no symbology",
-                            Toast.LENGTH_LONG
-                    ).show()
-                }
+            symbologyResult.text = barcodeScanResults.symbology ?: ""
+            if (barcodeScanResults.symbology?.isNotEmpty() == true) {
+                Toast.makeText(
+                        this,
+                        "Got barcode: ${barcodeScanResults.barcodeContent} with symbology ${barcodeScanResults.symbology}",
+                        Toast.LENGTH_LONG
+                ).show()
+            } else {
+                Toast.makeText(
+                        this,
+                        "Got barcode: ${barcodeScanResults.barcodeContent} with no symbology",
+                        Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

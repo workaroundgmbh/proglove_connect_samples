@@ -130,6 +130,8 @@ public class SlimJavaActivity extends AppCompatActivity {
         }
         if (scannedBarcodeSymbology != null) {
             scannedBarcodeSymbology.setText(symbologyString);
+        } else {
+            scannedBarcodeSymbology.setText("");
         }
     }
 }

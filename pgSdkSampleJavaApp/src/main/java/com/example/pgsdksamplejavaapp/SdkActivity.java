@@ -1,49 +1,24 @@
 package com.example.pgsdksamplejavaapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import de.proglove.sdk.*;
+import de.proglove.sdk.button.ButtonPress;
+import de.proglove.sdk.button.IButtonOutput;
+import de.proglove.sdk.commands.PgCommand;
+import de.proglove.sdk.commands.PgCommandParams;
+import de.proglove.sdk.display.*;
+import de.proglove.sdk.scanner.*;
 
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
-
-import de.proglove.sdk.ConnectionStatus;
-import de.proglove.sdk.IPgManager;
-import de.proglove.sdk.IServiceOutput;
-import de.proglove.sdk.PgError;
-import de.proglove.sdk.PgManager;
-import de.proglove.sdk.button.ButtonPress;
-import de.proglove.sdk.button.IButtonOutput;
-import de.proglove.sdk.display.IDisplayOutput;
-import de.proglove.sdk.display.IPgSetScreenCallback;
-import de.proglove.sdk.display.PgScreenData;
-import de.proglove.sdk.display.PgTemplateField;
-import de.proglove.sdk.display.RefreshType;
-import de.proglove.sdk.scanner.BarcodeScanResults;
-import de.proglove.sdk.scanner.IPgFeedbackCallback;
-import de.proglove.sdk.scanner.IPgImageCallback;
-import de.proglove.sdk.scanner.IPgScannerConfigCallback;
-import de.proglove.sdk.scanner.IScannerOutput;
-import de.proglove.sdk.scanner.ImageResolution;
-import de.proglove.sdk.scanner.PgImage;
-import de.proglove.sdk.scanner.PgImageConfig;
-import de.proglove.sdk.scanner.PgPredefinedFeedback;
-import de.proglove.sdk.scanner.PgScannerConfig;
 
 public class SdkActivity extends AppCompatActivity implements IServiceOutput, IScannerOutput, IButtonOutput, IDisplayOutput {
 
@@ -79,7 +54,10 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     // Display
     private TextView displayStateTV;
     private Button disconnectDisplayBtn;
-    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn;
+    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, pickDisplayOrientationDialogBtn;
+
+    // CommandParams
+    private Switch sendFeedbackWithReplaceQueueSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,6 +211,8 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         sendTestScreenBtn = findViewById(R.id.sendTestScreenD3Btn);
         sendAnotherTestScreenBtn = findViewById(R.id.sendTestScreenD3Btn2);
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
+        pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
+        sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
     }
 
     private void initClickListeners() {
@@ -348,6 +328,16 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 sendScreen(screenData);
             }
         });
+
+        pickDisplayOrientationDialogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PgError error = pgManager.showPickDisplayOrientationDialog(SdkActivity.this);
+                if (error != null) {
+                    Toast.makeText(SdkActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void onScannerConnectBtnClick(boolean isPinnedMode) {
@@ -367,7 +357,12 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     }
 
     private void triggerFeedback() {
-        pgManager.triggerFeedback(getSelectedFeedback(), new IPgFeedbackCallback() {
+        boolean replaceQueueSwitchChecked = sendFeedbackWithReplaceQueueSwitch.isChecked();
+        // Creating new PgCommandParams setting the queueing behaviour
+        PgCommandParams params = new PgCommandParams(replaceQueueSwitchChecked);
+        // Wrapping the feedback data in a PgCommand with the PgCommandData
+        PgCommand<PgPredefinedFeedback> feedbackCommand = getSelectedFeedback().toCommand(params);
+        pgManager.triggerFeedback(feedbackCommand, new IPgFeedbackCallback() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "Feedback successfully played.");

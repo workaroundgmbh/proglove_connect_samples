@@ -38,4 +38,10 @@ object ApiConstants {
     const val EXTRA_DISPLAY_SET_SCREEN_SUCCESS = "com.proglove.api.extra.DISPLAY_SET_SCREEN_SUCCESS"
     const val EXTRA_DISPLAY_SET_SCREEN_ERROR_TEXT = "com.proglove.api.extra.DISPLAY_SET_SCREEN_ERROR"
     const val EXTRA_FEEDBACK_SEQUENCE_ID = "com.proglove.api.extra.FEEDBACK_SEQUENCE_ID"
+
+    const val EXTRA_REPLACE_QUEUE = "com.proglove.api.extra.REPLACE_QUEUE"
+
+    // Pick display orientation
+    const val DISPLAY_ORIENTATION_ACTIVITY_PACKAGE_NAME = "de.proglove.connect"
+    const val DISPLAY_ORIENTATION_ACTIVITY_CLASS_NAME = "de.proglove.coreui.activities.DisplayOrientationActivity"
 }
