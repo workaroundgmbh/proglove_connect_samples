@@ -11,7 +11,10 @@ import de.proglove.example.intent.enums.DisplayConnectionStatus
 import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
+import kotlinx.android.synthetic.main.activity_intent.altCustomProfileButton
+import kotlinx.android.synthetic.main.activity_intent.customProfileButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_intent.defaultProfileButton
 import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
 import kotlinx.android.synthetic.main.activity_intent.getDisplayState
@@ -75,6 +78,18 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         defaultFeedbackSwitch.setOnClickListener {
             val defaultScanFeedback = defaultFeedbackSwitch.isChecked
             messageHandler.updateScannerConfig(defaultScanFeedback)
+        }
+
+        defaultProfileButton.setOnClickListener {
+            messageHandler.changeConfigProfile("profile0")
+        }
+
+        customProfileButton.setOnClickListener {
+            messageHandler.changeConfigProfile("profile1")
+        }
+
+        altCustomProfileButton.setOnClickListener {
+            messageHandler.changeConfigProfile("profile2")
         }
 
         disconnectDisplayBtn.setOnClickListener {

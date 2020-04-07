@@ -13,6 +13,9 @@ import de.proglove.sdk.PgManager
 import de.proglove.sdk.button.ButtonPress
 import de.proglove.sdk.button.IButtonOutput
 import de.proglove.sdk.commands.PgCommandParams
+import de.proglove.sdk.commands.PgCommand
+import de.proglove.sdk.configuration.IPgConfigProfileCallback
+import de.proglove.sdk.configuration.PgConfigProfile
 import de.proglove.sdk.display.IDisplayOutput
 import de.proglove.sdk.display.IPgSetScreenCallback
 import de.proglove.sdk.display.PgScreenData
@@ -28,9 +31,12 @@ import de.proglove.sdk.scanner.PgImage
 import de.proglove.sdk.scanner.PgImageConfig
 import de.proglove.sdk.scanner.PgPredefinedFeedback
 import de.proglove.sdk.scanner.PgScannerConfig
+import kotlinx.android.synthetic.main.activity_main.altCustomProfileButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
+import kotlinx.android.synthetic.main.activity_main.customProfileButton
 import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_main.defaultProfileButton
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
 import kotlinx.android.synthetic.main.activity_main.inputField
@@ -158,6 +164,18 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                     }
                 }
             })
+        }
+
+        defaultProfileButton.setOnClickListener {
+            changeConfigProfile("profile0")
+        }
+
+        customProfileButton.setOnClickListener {
+            changeConfigProfile("profile1")
+        }
+
+        altCustomProfileButton.setOnClickListener {
+            changeConfigProfile("profile2")
         }
 
         addDisplayClickListeners()
@@ -375,6 +393,33 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 connectScannerRegularBtn.setText(R.string.pair_scanner)
             }
         }
+    }
+
+    private fun changeConfigProfile(profileId: String) {
+        pgManager.changeConfigProfile(
+            PgCommand(PgConfigProfile(profileId)),
+            object : IPgConfigProfileCallback {
+                override fun onConfigProfileChanged(profile: PgConfigProfile) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "${profile.profileId} set successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                override fun onError(error: PgError) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Failed to set $profileId - $error",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        )
     }
 
     override fun onDestroy() {

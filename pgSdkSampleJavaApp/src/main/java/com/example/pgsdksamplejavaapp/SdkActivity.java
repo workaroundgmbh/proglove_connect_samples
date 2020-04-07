@@ -14,9 +14,10 @@ import de.proglove.sdk.button.ButtonPress;
 import de.proglove.sdk.button.IButtonOutput;
 import de.proglove.sdk.commands.PgCommand;
 import de.proglove.sdk.commands.PgCommandParams;
+import de.proglove.sdk.configuration.IPgConfigProfileCallback;
+import de.proglove.sdk.configuration.PgConfigProfile;
 import de.proglove.sdk.display.*;
 import de.proglove.sdk.scanner.*;
-
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
@@ -43,6 +44,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     private Button triggerFeedbackBtn;
     private RadioGroup feedbackRadioGroup;
     private Switch defaultFeedbackSwitch;
+
+    // Profiles
+    private Button defaultProfileBtn;
+    private Button customProfileBtn;
+    private Button altCustomProfileBtn;
 
     // Taking image
     private Button takeImageButtonBtn;
@@ -213,6 +219,9 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
         pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
         sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
+        defaultProfileBtn = findViewById(R.id.defaultProfileButton);
+        customProfileBtn = findViewById(R.id.customProfileButton);
+        altCustomProfileBtn = findViewById(R.id.altCustomProfileButton);
     }
 
     private void initClickListeners() {
@@ -265,6 +274,28 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         }
                     });
                 }
+            }
+        });
+
+        // Changing the configuration profile
+        defaultProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeConfigProfile("profile0");
+            }
+        });
+
+        customProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeConfigProfile("profile1");
+            }
+        });
+
+        altCustomProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeConfigProfile("profile2");
             }
         });
 
@@ -553,5 +584,40 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void changeConfigProfile(final String profileId) {
+        pgManager.changeConfigProfile(
+                new PgCommand<>(new PgConfigProfile(profileId)),
+                new IPgConfigProfileCallback() {
+                    @Override
+                    public void onConfigProfileChanged(@NonNull PgConfigProfile pgConfigProfile) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        profileId+" set successfully",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull final PgError pgError) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        "Failed to set "+profileId+": "+pgError.toString(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+                }
+        );
     }
 }

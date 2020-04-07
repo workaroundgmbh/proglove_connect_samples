@@ -156,7 +156,7 @@
             android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch" />
+            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
 
 
         <Switch
@@ -184,6 +184,43 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/defaultFeedbackSwitch" />
+
+
+        <LinearLayout
+            android:id="@+id/profilesLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch" >
+
+            <Button
+                android:id="@+id/defaultProfileButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/default_profile" />
+
+            <Button
+                android:id="@+id/customProfileButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/custom_profile" />
+
+            <Button
+                android:id="@+id/altCustomProfileButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/alt_custom_profile" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/displayStateLabel"

@@ -10,6 +10,11 @@ pgSdkSampleApp
 
 This modules contains a sample app for the scanner and display SDK.
 
+pgSdkSampleJavaApp
+------------------
+
+This modules contains a sample app for the scanner and display SDK, written n Java.
+
 pgIntentSampleApp
 -----------------
 
@@ -25,6 +30,20 @@ pgSlimIntentSampleJavaApp
 
 This modules contains a minimal sample app for the scanner using intent API, written in Java.
 
+How To Run
+==========
+- clone this repository
+- in the root directory create a file named "pg_keystore.properties" with the following content:
+```
+PROGLOVE_USER={user}
+PROGLOVE_PASSWORD={password}
+```
+- {user} and {password} should be replaced by the credentials that were provided to you for downloading the ProGlove Connect app and the android connect-sdk
+- open the project (root directory of this project) in your favourite IDE (we recommend IntelliJ or Android Studio)
+- build and run any of the modules
+- common problems and solutions
+    - for the advanced features like photo-feature and worker-feedback you need an early-access license installed in ProGlove Connect
+    - for receiving scan events in the sample apps, you need to set the corresponding integration path in the ProGlove Connect app
 
 Copyright
 =========

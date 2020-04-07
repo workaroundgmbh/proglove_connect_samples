@@ -31,21 +31,6 @@
                 android:text="@string/feedback_id_3"/>
     </RadioGroup>
 
-
-    <EditText
-            android:id="@+id/triggerFeedbackText"
-            android:hint="@string/feedback_text_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/radioGroup"
-            android:inputType="text"/>
-
     <Button
             android:id="@+id/triggerFeedbackButton"
             android:layout_width="wrap_content"
@@ -55,7 +40,6 @@
             android:layout_marginEnd="16dp"
             android:layout_toEndOf="@+id/radioGroup"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/triggerFeedbackText"
             android:text="@string/trigger_feedback_button"/>
 
 </RelativeLayout>

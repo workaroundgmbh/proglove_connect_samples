@@ -349,6 +349,19 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         }
     }
 
+    /**
+     * Changes configuration profile.
+     *
+     * @param profileId profiles unique id.
+     */
+    fun changeConfigProfile(profileId: String) {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_CHANGE_CONFIG_PROFILE
+            putExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ID, profileId)
+        }
+        sendBroadcast(intent)
+    }
+
     companion object {
 
         private const val TAG = "IntentApiApp:MsgHandler"
