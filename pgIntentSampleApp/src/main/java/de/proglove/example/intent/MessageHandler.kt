@@ -13,6 +13,7 @@ import de.proglove.example.common.ApiConstants
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
+import de.proglove.example.intent.interfaces.IStatusOutput
 import java.util.Collections
 
 /**
@@ -33,6 +34,8 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         it.addAction(ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
+
+    private var statusListener: IStatusOutput? = null
 
     /**
      * A method overridden from the [BroadcastReceiver] to intercept caught intents.
@@ -87,6 +90,9 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     var errorMessage: String? = null
                     if (!success) {
                         errorMessage = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SET_SCREEN_ERROR_TEXT)
+                        statusListener?.onStatusReceived("set screen error")
+                    } else {
+                        statusListener?.onStatusReceived("set screen success")
                     }
                     notifyOnSetScreenSuccess(success, errorMessage)
                 }
@@ -99,6 +105,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 }
             }
         }
+    }
+
+    fun setStatusListener(statusListener: IStatusOutput) {
+        this.statusListener = statusListener
     }
 
     /**
@@ -222,6 +232,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     private fun notifyOnSetScreenSuccess(success: Boolean, errorMessage: String?) {
         Toast.makeText(context, "Did receive set screen success: $success; message: $errorMessage", Toast.LENGTH_LONG)
                 .show()
+
     }
 
     /**

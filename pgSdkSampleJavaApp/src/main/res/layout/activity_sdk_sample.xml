@@ -242,8 +242,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/displayStateLabel"/>
 
         <Button
-            android:id="@+id/disconnectD3Btn"
-            android:text="@string/disconnect_D3"
+            android:id="@+id/disconnectDisplayBtn"
+            android:text="@string/disconnect_display"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
             android:layout_marginTop="8dp"/>
 
         <Button
-            android:id="@+id/sendTestScreenD3Btn"
+            android:id="@+id/sendTestScreenBtn"
             android:text="@string/send_screen"
             android:textStyle="bold"
             android:layout_width="wrap_content"
@@ -261,10 +261,10 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/disconnectD3Btn"/>
+            app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn"/>
 
         <Button
-            android:id="@+id/sendTestScreenD3Btn2"
+            android:id="@+id/sendTestScreenBtn2"
             android:text="@string/send_screen"
             android:textStyle="bold"
             android:layout_width="wrap_content"
@@ -272,7 +272,30 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3Btn"/>
+            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenBtn"/>
+
+
+        <Button
+            android:id="@+id/sendPg1TestScreenBtn"
+            android:text="@string/send_pg1_screen"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenBtn2" />
+
+        <Button
+            android:id="@+id/sendPg1ATestScreenBtn"
+            android:text="@string/send_pg1a_screen"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendPg1TestScreenBtn" />
 
         <Button
             android:id="@+id/sendTestScreenD3BtnFailing"
@@ -283,7 +306,22 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3Btn2"/>
+            app:layout_constraintTop_toBottomOf="@+id/sendPg1ATestScreenBtn"/>
+
+        <Button
+            android:id="@+id/pickDisplayOrientationDialogBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/pick_display_orientation"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3BtnFailing" />
 
         <Button
             android:id="@+id/pickDisplayOrientationDialogBtn"

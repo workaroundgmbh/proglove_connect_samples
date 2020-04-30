@@ -12,8 +12,8 @@ import de.proglove.sdk.PgError
 import de.proglove.sdk.PgManager
 import de.proglove.sdk.button.ButtonPress
 import de.proglove.sdk.button.IButtonOutput
-import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.commands.PgCommand
+import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.configuration.IPgConfigProfileCallback
 import de.proglove.sdk.configuration.PgConfigProfile
 import de.proglove.sdk.display.IDisplayOutput
@@ -40,10 +40,13 @@ import kotlinx.android.synthetic.main.activity_main.defaultProfileButton
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
 import kotlinx.android.synthetic.main.activity_main.inputField
-import kotlinx.android.synthetic.main.activity_main.sendFeedbackWithReplaceQueueSwitch
+import kotlinx.android.synthetic.main.activity_main.lastResponseValue
 import kotlinx.android.synthetic.main.activity_main.pickDisplayOrientationDialogBtn
+import kotlinx.android.synthetic.main.activity_main.sendFeedbackWithReplaceQueueSwitch
 import kotlinx.android.synthetic.main.activity_main.sendNotificationTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPartialRefreshTestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendPg1ATestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendPg1TestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
@@ -118,6 +121,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
                         override fun onSuccess() {
                             logger.log(Level.INFO, "Feedback successfully played.")
+                            lastResponseValue.text = getString(R.string.feedback_success)
                         }
 
                         override fun onError(error: PgError) {
@@ -126,6 +130,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                             runOnUiThread {
                                 Toast.makeText(this@SdkActivity, errorMessage, Toast.LENGTH_SHORT).show()
                             }
+                            lastResponseValue.text = error.toString()
                         }
                     }
             )
@@ -150,6 +155,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                     runOnUiThread {
                         logger.log(Level.INFO, "Successfully updated config on scanner")
                         defaultFeedbackSwitch.isEnabled = true
+                        lastResponseValue.text = getString(R.string.scanner_config_success)
                     }
                 }
 
@@ -161,6 +167,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                         // restore old state
                         defaultFeedbackSwitch.toggle()
                         defaultFeedbackSwitch.isEnabled = true
+                        lastResponseValue.text = error.toString()
                     }
                 }
             })
@@ -184,6 +191,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             val error = pgManager.showPickDisplayOrientationDialog(this)
             if (error != null) {
                 Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show()
+                lastResponseValue.text = error.toString()
             }
         }
     }
@@ -196,12 +204,14 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 runOnUiThread {
                     Toast.makeText(this@SdkActivity, "Got error setting text: $error", Toast.LENGTH_SHORT)
                             .show()
+                    lastResponseValue.text = error.toString()
                 }
             }
 
             override fun onSuccess() {
                 runOnUiThread {
                     Toast.makeText(this@SdkActivity, "set screen successfully", Toast.LENGTH_SHORT).show()
+                    lastResponseValue.text = getString(R.string.set_screen_success)
                 }
             }
         }
@@ -258,6 +268,28 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                     callback = loggingCallback
             )
         }
+
+        sendPg1TestScreenBtn.setOnClickListener {
+            val templateId = "PG1"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
+            pgManager.setScreen(
+                    PgScreenData(templateId, templateFields).toCommand(),
+                    loggingCallback
+            )
+        }
+
+        sendPg1ATestScreenBtn.setOnClickListener {
+            val templateId = "PG1A"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
+            pgManager.setScreen(
+                    PgScreenData(templateId, templateFields).toCommand(),
+                    loggingCallback
+            )
+        }
     }
 
     private fun getSampleDataForTemplate(template: String): List<Pair<String, Array<String>>> {
@@ -277,6 +309,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             "PG2I" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
             "PG2E" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
             "PG2C" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG1" -> listOf(arrayOf(DisplaySampleData.SAMPLE_MESSAGES, DisplaySampleData.SAMPLE_MESSAGES_2, DisplaySampleData.SAMPLE_ITEM).random())
+            "PG1A" -> listOf(DisplaySampleData.SAMPLE_MESSAGES_NO_HEADER)
             else -> listOf()
         }
     }
@@ -312,12 +346,14 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 val bmp = BitmapFactory.decodeByteArray(image.bytes, 0, image.bytes.size)
                 runOnUiThread {
                     imageTaken.setImageBitmap(bmp)
+                    lastResponseValue.text = getString(R.string.image_success)
                 }
             }
 
             override fun onError(error: PgError) {
                 runOnUiThread {
                     Toast.makeText(this@SdkActivity, "error code is $error", Toast.LENGTH_LONG).show()
+                    lastResponseValue.text = error.toString()
                 }
             }
         }
@@ -397,28 +433,30 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
     private fun changeConfigProfile(profileId: String) {
         pgManager.changeConfigProfile(
-            PgCommand(PgConfigProfile(profileId)),
-            object : IPgConfigProfileCallback {
-                override fun onConfigProfileChanged(profile: PgConfigProfile) {
-                    runOnUiThread {
-                        Toast.makeText(
-                            applicationContext,
-                            "${profile.profileId} set successfully",
-                            Toast.LENGTH_LONG
-                        ).show()
+                PgCommand(PgConfigProfile(profileId)),
+                object : IPgConfigProfileCallback {
+                    override fun onConfigProfileChanged(profile: PgConfigProfile) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "${profile.profileId} set successfully",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = getString(R.string.change_profile_success)
+                        }
                     }
-                }
 
-                override fun onError(error: PgError) {
-                    runOnUiThread {
-                        Toast.makeText(
-                            applicationContext,
-                            "Failed to set $profileId - $error",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Failed to set $profileId - $error",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
                     }
                 }
-            }
         )
     }
 

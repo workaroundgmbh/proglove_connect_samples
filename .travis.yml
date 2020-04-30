@@ -13,6 +13,7 @@ android:
 before_install:
   - echo -e "PROGLOVE_USER=$PROGLOVE_USER" >> pg_keystore.properties
   - echo -e "PROGLOVE_PASSWORD=$PROGLOVE_PASSWORD" >> pg_keystore.properties
+  - echo -e "PROGLOVE_URL=$PROGLOVE_URL" >> pg_keystore.properties
 jobs:
   include:
     - stage: build

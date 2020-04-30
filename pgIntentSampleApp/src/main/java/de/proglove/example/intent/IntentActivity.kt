@@ -11,6 +11,7 @@ import de.proglove.example.intent.enums.DisplayConnectionStatus
 import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
+import de.proglove.example.intent.interfaces.IStatusOutput
 import kotlinx.android.synthetic.main.activity_intent.altCustomProfileButton
 import kotlinx.android.synthetic.main.activity_intent.customProfileButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
@@ -21,12 +22,15 @@ import kotlinx.android.synthetic.main.activity_intent.getDisplayState
 import kotlinx.android.synthetic.main.activity_intent.getScannerStateBtn
 import kotlinx.android.synthetic.main.activity_intent.intentInputField
 import kotlinx.android.synthetic.main.activity_intent.lastContactOutput
+import kotlinx.android.synthetic.main.activity_intent.lastResponseValue
 import kotlinx.android.synthetic.main.activity_intent.lastSymbologyOutput
 import kotlinx.android.synthetic.main.activity_intent.pickDisplayOrientationDialogBtn
 import kotlinx.android.synthetic.main.activity_intent.scannerStateOutput
 import kotlinx.android.synthetic.main.activity_intent.sendFeedbackWithReplaceQueueSwitch
 import kotlinx.android.synthetic.main.activity_intent.sendNotificationTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPartialRefreshTestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendPg1ATestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendPg1TestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
@@ -40,7 +44,7 @@ import java.util.Date
 /**
  * PG Intent API usage example with a scanner and a display.
  */
-class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScannerOutput {
+class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScannerOutput, IStatusOutput {
 
     override var defaultFeedbackEnabled: Boolean
         get() = defaultFeedbackSwitch.isChecked
@@ -59,6 +63,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         registerReceiver(messageHandler, messageHandler.filter)
         messageHandler.registerDisplayOutput(this)
         messageHandler.registerScannerOutput(this)
+        messageHandler.setStatusListener(this)
 
         // Handle intent sent with start activity action which created this activity.
         // That Intent will not trigger #onNewIntent.
@@ -127,6 +132,24 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
         }
 
+        sendPg1TestScreenBtn.setOnClickListener {
+            val templateId = "PG1"
+            val separator = "|"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+            }.joinToString(separator)
+            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+        }
+
+        sendPg1ATestScreenBtn.setOnClickListener {
+            val templateId = "PG1A"
+            val separator = "|"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+            }.joinToString(separator)
+            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+        }
+
         sendTestScreenBtnFailing.setOnClickListener {
             messageHandler.sendTestScreen("PG2", "|||", ";")
         }
@@ -158,6 +181,8 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             "PG2I" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
             "PG2E" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
             "PG2C" -> listOf(DisplaySampleData.SAMPLE_ITEM, DisplaySampleData.SAMPLE_QUANTITY)
+            "PG1" -> listOf(arrayOf(DisplaySampleData.SAMPLE_MESSAGES, DisplaySampleData.SAMPLE_MESSAGES_2, DisplaySampleData.SAMPLE_ITEM).random())
+            "PG1A" -> listOf(DisplaySampleData.SAMPLE_MESSAGES_NO_HEADER)
             else -> listOf()
         }
     }
@@ -249,6 +274,12 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             }
         }
         updateConnectionLabel()
+    }
+
+    override fun onStatusReceived(status: String) {
+        runOnUiThread {
+            lastResponseValue.text = status
+        }
     }
 
     companion object {

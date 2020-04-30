@@ -10,6 +10,8 @@
     <string name="send_screen">Send test screen to Display</string>
     <string name="send_partial_refresh_screen">Send partial refresh test screen to Display</string>
     <string name="send_notification_screen">Send notification test screen to Display</string>
+    <string name="send_pg1_screen">Send PG1 test screen to Display</string>
+    <string name="send_pg1a_screen">Send PG1A test screen to Display</string>
     <string name="send_screen_failing">Send an erroneous test screen to Display</string>
     <string name="display_connected">Display connected</string>
     <string name="display_disconnected">Display disconnected</string>
@@ -33,5 +35,6 @@
     <string name="default_profile">Profile 0 (default)</string>
     <string name="custom_profile">Profile 1</string>
     <string name="alt_custom_profile">Profile 2</string>
+    <string name="last_response_status">last response</string>
 
 </resources>

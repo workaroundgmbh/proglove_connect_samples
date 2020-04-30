@@ -9,10 +9,10 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name=".IntentActivity"
-                android:label="@string/title_activity_scanner_intent"
-                android:launchMode="singleInstance">
+                android:label="@string/title_activity_scanner_intent">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN"
+                    android:launchMode="singleTask"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>

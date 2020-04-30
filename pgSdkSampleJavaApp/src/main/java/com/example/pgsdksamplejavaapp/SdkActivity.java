@@ -60,7 +60,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     // Display
     private TextView displayStateTV;
     private Button disconnectDisplayBtn;
-    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, pickDisplayOrientationDialogBtn;
+    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, sendPG1TestScreen, sendPG1ATestScreen, pickDisplayOrientationDialogBtn;
 
     // CommandParams
     private Switch sendFeedbackWithReplaceQueueSwitch;
@@ -213,9 +213,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         timeoutET = findViewById(R.id.timeoutEditText);
         imageTakenIV = findViewById(R.id.imageTaken);
         displayStateTV = findViewById(R.id.displayStateOutput);
-        disconnectDisplayBtn = findViewById(R.id.disconnectD3Btn);
-        sendTestScreenBtn = findViewById(R.id.sendTestScreenD3Btn);
-        sendAnotherTestScreenBtn = findViewById(R.id.sendTestScreenD3Btn2);
+        disconnectDisplayBtn = findViewById(R.id.disconnectDisplayBtn);
+        sendTestScreenBtn = findViewById(R.id.sendTestScreenBtn);
+        sendAnotherTestScreenBtn = findViewById(R.id.sendTestScreenBtn2);
+        sendPG1TestScreen = findViewById(R.id.sendPg1TestScreenBtn);
+        sendPG1ATestScreen = findViewById(R.id.sendPg1ATestScreenBtn);
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
         pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
         sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
@@ -342,6 +344,28 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         new PgTemplateField(2, "Bezeichnung", "Früchte Müsli")
                 };
                 PgScreenData screenData = new PgScreenData("PG2", data, RefreshType.PARTIAL_REFRESH);
+                sendScreen(screenData);
+            }
+        });
+
+        sendPG1TestScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PgTemplateField[] data = {
+                        new PgTemplateField(1, "LOGIN", "Scan to login and select a process")
+                };
+                PgScreenData screenData = new PgScreenData("PG1", data, RefreshType.DEFAULT);
+                sendScreen(screenData);
+            }
+        });
+
+        sendPG1ATestScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PgTemplateField[] data = {
+                        new PgTemplateField(1, "", "Scan order to begin")
+                };
+                PgScreenData screenData = new PgScreenData("PG1A", data, RefreshType.DEFAULT);
                 sendScreen(screenData);
             }
         });

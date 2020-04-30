@@ -30,4 +30,18 @@ object DisplaySampleData {
             "10000",
             "546555"
     )
+
+    val SAMPLE_MESSAGES = "LOGIN" to arrayOf(
+            "Scan to login and select a process"
+    )
+
+    val SAMPLE_MESSAGES_2 = "PICKING" to arrayOf(
+            "Scan next part"
+    )
+
+    val SAMPLE_MESSAGES_NO_HEADER = "" to arrayOf(
+            "Log in and scan first order to begin pick",
+            "Scan part",
+            "Scan order to begin"
+    )
 }
