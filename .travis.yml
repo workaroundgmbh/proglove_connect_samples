@@ -11,9 +11,8 @@ android:
     - extra-android-m2repository
     - addon-google_apis-google-28
 before_install:
-  - echo -e "PROGLOVE_USER=$PROGLOVE_USER" >> pg_keystore.properties
-  - echo -e "PROGLOVE_PASSWORD=$PROGLOVE_PASSWORD" >> pg_keystore.properties
-  - echo -e "PROGLOVE_URL=$PROGLOVE_URL" >> pg_keystore.properties
+  # Replacing the public repo url with the alpha repo url. The url must contain a entitlement token
+  - sed -i "s,url \".*\",url \"$PROGLOVE_URL\",g" build.gradle
 jobs:
   include:
     - stage: build

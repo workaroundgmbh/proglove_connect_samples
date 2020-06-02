@@ -16,8 +16,8 @@
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,8 +26,8 @@
             android:text="@string/scanner_state_unknown"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,8 +37,8 @@
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/scannerStateLabel" />
 
@@ -46,7 +46,7 @@
             android:id="@+id/lastContactOutput"
             android:layout_width="160dp"
             android:layout_height="18dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/lastContactLabel"
             app:layout_constraintTop_toTopOf="@+id/lastContactLabel" />
@@ -57,8 +57,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
             app:layout_constraintTop_toBottomOf="@+id/lastContactLabel"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,7 +66,7 @@
             android:id="@+id/lastSymbologyOutput"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/lastSymbologyLabel"
             app:layout_constraintBottom_toBottomOf="@+id/lastSymbologyLabel" />
@@ -77,8 +77,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lastSymbologyLabel" />
 
@@ -88,9 +88,9 @@
             android:textSize="36sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:layout_weight="1"
             android:ems="10"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,8 +104,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/intentInputField" />
 
@@ -114,7 +114,7 @@
             android:id="@+id/feedBackLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/getScannerStateBtn" />
@@ -123,9 +123,9 @@
             android:id="@+id/defaultFeedbackSwitch"
             android:layout_width="0dp"
             android:layout_height="27dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:checked="true"
             android:text="@string/use_default_scan_feedback"
             app:layout_constraintEnd_toEndOf="parent"
@@ -136,27 +136,37 @@
             android:id="@+id/sendFeedbackWithReplaceQueueSwitch"
             android:layout_width="0dp"
             android:layout_height="27dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:checked="false"
             android:text="@string/send_with_replace_queue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/defaultFeedbackSwitch" />
 
+        <TextView
+            android:id="@+id/profilesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="@string/profile_label"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch" />
+
         <LinearLayout
             android:id="@+id/profilesLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch">
+            app:layout_constraintTop_toBottomOf="@+id/profilesLabel">
 
             <Button
                 android:id="@+id/defaultProfileButton"
@@ -182,22 +192,54 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/blockTriggerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="@string/block_trigger_label"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+
+        <Button
+            android:id="@+id/blockTriggerButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginStart="@dimen/margin_large"
+            android:text="@string/trigger_block"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/unblockTriggerButton"/>
+
+        <Button
+            android:id="@+id/unblockTriggerButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:text="@string/trigger_unblock"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/blockTriggerButton"/>
+
+        <TextView
             android:id="@+id/lastResponseLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/last_response_status"
-            android:layout_margin="16dp"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerButton" />
 
         <TextView
             android:id="@+id/lastResponseValue"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             app:layout_constraintStart_toEndOf="@+id/lastResponseLabel"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+            app:layout_constraintTop_toTopOf="@+id/lastResponseLabel" />
 
         <TextView
             android:id="@+id/displayStateLabel"
@@ -205,8 +247,8 @@
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lastResponseLabel" />
@@ -216,7 +258,7 @@
             android:text="@string/display_state_unknown"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="@+id/displayStateLabel"
             app:layout_constraintTop_toTopOf="@+id/displayStateLabel"
             app:layout_constraintBottom_toBottomOf="@+id/displayStateLabel" />
@@ -227,9 +269,9 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_normal"
             app:layout_constraintTop_toBottomOf="@+id/displayStateLabel" />
 
         <Button
@@ -238,8 +280,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
 
@@ -249,8 +291,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/getDisplayState" />
 
@@ -260,8 +302,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenBtn" />
 
@@ -271,8 +313,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPartialRefreshTestScreenBtn" />
 
@@ -282,8 +324,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendNotificationTestScreenBtn" />
 
@@ -293,8 +335,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPg1TestScreenBtn" />
 
@@ -304,8 +346,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPg1ATestScreenBtn" />
 
@@ -313,10 +355,10 @@
             android:id="@+id/pickDisplayOrientationDialogBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginBottom="@dimen/margin_extra_large"
             android:text="@string/pick_display_orientation"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

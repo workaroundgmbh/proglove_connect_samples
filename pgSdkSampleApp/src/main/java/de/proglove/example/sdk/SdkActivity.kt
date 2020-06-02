@@ -10,8 +10,12 @@ import de.proglove.sdk.ConnectionStatus
 import de.proglove.sdk.IServiceOutput
 import de.proglove.sdk.PgError
 import de.proglove.sdk.PgManager
+import de.proglove.sdk.button.BlockPgTriggersParams
 import de.proglove.sdk.button.ButtonPress
+import de.proglove.sdk.button.IBlockPgTriggersCallback
 import de.proglove.sdk.button.IButtonOutput
+import de.proglove.sdk.button.IPgTriggersUnblockedOutput
+import de.proglove.sdk.button.PredefinedPgTrigger
 import de.proglove.sdk.commands.PgCommand
 import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.configuration.IPgConfigProfileCallback
@@ -32,6 +36,7 @@ import de.proglove.sdk.scanner.PgImageConfig
 import de.proglove.sdk.scanner.PgPredefinedFeedback
 import de.proglove.sdk.scanner.PgScannerConfig
 import kotlinx.android.synthetic.main.activity_main.altCustomProfileButton
+import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
 import kotlinx.android.synthetic.main.activity_main.customProfileButton
@@ -51,6 +56,7 @@ import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
 import kotlinx.android.synthetic.main.activity_main.symbologyResult
+import kotlinx.android.synthetic.main.activity_main.unblockTriggerButton
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
@@ -67,7 +73,7 @@ import java.util.logging.Logger
 /**
  * PG SDK example for a scanner.
  */
-class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDisplayOutput, IButtonOutput {
+class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDisplayOutput, IButtonOutput, IPgTriggersUnblockedOutput {
 
     private val logger = Logger.getLogger("sample-logger")
     private val pgManager = PgManager(logger)
@@ -84,6 +90,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         pgManager.subscribeToScans(this)
         pgManager.subscribeToDisplayEvents(this)
         pgManager.subscribeToButtonPresses(this)
+        pgManager.subscribeToPgTriggersUnblocked(this)
 
         serviceConnectBtn.setOnClickListener {
             pgManager.ensureConnectionToService(this.applicationContext)
@@ -183,6 +190,14 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
         altCustomProfileButton.setOnClickListener {
             changeConfigProfile("profile2")
+        }
+
+        blockTriggerButton.setOnClickListener {
+            blockTrigger()
+        }
+
+        unblockTriggerButton.setOnClickListener {
+            unblockTrigger()
         }
 
         addDisplayClickListeners()
@@ -460,6 +475,62 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         )
     }
 
+    private fun blockTrigger() {
+        pgManager.blockPgTrigger(
+                PgCommand(BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger)),
+                object : IBlockPgTriggersCallback {
+                    override fun onBlockTriggersCommandSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Blocking trigger success",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = getString(R.string.block_trigger_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Failed to block the trigger: $error",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                })
+    }
+
+    private fun unblockTrigger() {
+        pgManager.blockPgTrigger(
+                PgCommand(BlockPgTriggersParams(null)),
+                object : IBlockPgTriggersCallback {
+                    override fun onBlockTriggersCommandSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Unblocking trigger success",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = getString(R.string.unblock_trigger_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Failed to unblock the trigger: $error",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                })
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -467,6 +538,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         pgManager.unsubscribeFromDisplayEvents(this)
         pgManager.unsubscribeFromServiceEvents(this)
         pgManager.unsubscribeFromButtonPresses(this)
+        pgManager.unsubscribeFromPgTriggersUnblocked(this)
     }
 
     /*
@@ -581,6 +653,18 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     }
     /*
      * End of IButtonOutput Implementation
+     */
+
+    /*
+     * ITriggersUnblockedOutput Implementation:
+     */
+    override fun onPgTriggersUnblocked() {
+        runOnUiThread {
+            Toast.makeText(this, "Trigger unblocked", Toast.LENGTH_SHORT).show()
+        }
+    }
+    /*
+     * End of ITriggersUnblockedOutput Implementation
      */
 
     companion object {

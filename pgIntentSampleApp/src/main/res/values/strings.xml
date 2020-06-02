@@ -32,9 +32,13 @@
     <string name="use_default_scan_feedback">Use Default Scan Feedback</string>
     <string name="send_with_replace_queue">Send feedback with replaceQueue?</string>
     <string name="pick_display_orientation">Pick display orientation</string>
+    <string name="profile_label">Change profile:</string>
     <string name="default_profile">Profile 0 (default)</string>
     <string name="custom_profile">Profile 1</string>
     <string name="alt_custom_profile">Profile 2</string>
     <string name="last_response_status">last response</string>
+    <string name="block_trigger_label">Block trigger:</string>
+    <string name="trigger_block">Block</string>
+    <string name="trigger_unblock">Unblock</string>
 
 </resources>

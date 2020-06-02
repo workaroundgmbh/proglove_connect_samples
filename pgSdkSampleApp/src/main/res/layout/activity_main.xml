@@ -14,8 +14,8 @@
             android:id="@+id/pairNormalLbl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/pair_scanner_regular"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/connectScannerRegularBtn"
@@ -26,8 +26,8 @@
             android:id="@+id/connectScannerRegularBtn"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/connect_scanner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/serviceConnectBtn" />
@@ -36,9 +36,9 @@
             android:id="@+id/lastScannedLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/last_scanned_text"
             android:textStyle="bold"
             android:visibility="visible"
@@ -51,8 +51,8 @@
             android:id="@+id/symbologyLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_huge"
             android:text="@string/symbology_label_text"
             android:textStyle="bold"
             android:visibility="visible"
@@ -63,8 +63,8 @@
             android:id="@+id/symbologyResult"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_huge"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/barcode_output_default"
             android:textStyle="bold"
             android:visibility="visible"
@@ -75,9 +75,9 @@
             android:id="@+id/inputField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:layout_weight="1"
             android:ems="10"
             android:text="@string/barcode_output_default"
@@ -92,8 +92,8 @@
             android:id="@+id/serviceConnectBtn"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/connect_service"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -102,8 +102,8 @@
             android:id="@+id/serviceConnectionLbl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/service_connection_lbl"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/serviceConnectBtn"
@@ -114,8 +114,8 @@
             android:id="@+id/pairFromPinnedActivityLbl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/pair_from_pinned_activity"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@+id/connectScannerPinnedBtn"
@@ -127,8 +127,8 @@
             android:id="@+id/connectScannerPinnedBtn"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/connect_scanner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/connectScannerRegularBtn" />
@@ -143,7 +143,7 @@
             layout="@layout/feedback_selection_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/feedbackTitleTw" />
@@ -153,18 +153,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/last_response_status"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerButton" />
 
         <TextView
             android:id="@+id/lastResponseValue"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintStart_toEndOf="@+id/lastResponseLabel"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerButton" />
 
 
         <include
@@ -172,7 +172,7 @@
             layout="@layout/take_image_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lastResponseLabel" />
@@ -182,9 +182,9 @@
             android:id="@+id/defaultFeedbackSwitch"
             android:layout_width="0dp"
             android:layout_height="27dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:checked="true"
             android:text="@string/use_default_scan_feedback"
             app:layout_constraintEnd_toEndOf="parent"
@@ -195,15 +195,24 @@
             android:id="@+id/sendFeedbackWithReplaceQueueSwitch"
             android:layout_width="0dp"
             android:layout_height="27dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:checked="false"
             android:text="@string/send_with_replace_queue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/defaultFeedbackSwitch" />
 
+        <TextView
+            android:id="@+id/profilesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="@string/profile_label"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch" />
 
         <LinearLayout
             android:id="@+id/profilesLayout"
@@ -211,12 +220,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendFeedbackWithReplaceQueueSwitch" >
+            app:layout_constraintTop_toBottomOf="@+id/profilesLabel" >
 
             <Button
                 android:id="@+id/defaultProfileButton"
@@ -242,12 +251,45 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/blockTriggerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:text="@string/block_trigger_label"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profilesLayout" />
+
+        <Button
+            android:id="@+id/blockTriggerButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginStart="@dimen/margin_large"
+            android:text="@string/trigger_block"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/unblockTriggerButton"/>
+
+        <Button
+            android:id="@+id/unblockTriggerButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:text="@string/trigger_unblock"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/blockTriggerButton"/>
+
+
+        <TextView
             android:id="@+id/displayStateLabel"
             android:text="@string/display_connection_state_label"
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/takeImageLayout" />
 
@@ -256,7 +298,7 @@
             android:text="@string/display_state_unknown"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/displayStateLabel"
             app:layout_constraintBottom_toBottomOf="@+id/displayStateLabel" />
@@ -267,9 +309,9 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_normal"
             app:layout_constraintTop_toBottomOf="@+id/displayStateLabel" />
 
         <Button
@@ -278,8 +320,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
 
@@ -289,8 +331,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/getDisplayState" />
 
@@ -300,8 +342,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenBtn" />
 
@@ -311,8 +353,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPartialRefreshTestScreenBtn" />
 
@@ -322,8 +364,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendNotificationTestScreenBtn" />
 
@@ -333,8 +375,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPg1TestScreenBtn" />
 
@@ -344,8 +386,8 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendPg1ATestScreenBtn" />
 
@@ -353,9 +395,9 @@
             android:id="@+id/feedbackTitleTw"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
             android:text="Worker Feedback"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
@@ -366,10 +408,10 @@
             android:id="@+id/pickDisplayOrientationDialogBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginBottom="@dimen/margin_extra_large"
             android:text="@string/pick_display_orientation"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

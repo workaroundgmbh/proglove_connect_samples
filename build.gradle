@@ -2,7 +2,6 @@
 
 buildscript {
     ext.kotlin_version = '1.3.50'
-    ext.repositoryUrl = "https://dl.cloudsmith.io/basic/proglove/pgconnect-prod/maven/"
 
     repositories {
         google()
@@ -17,34 +16,12 @@ buildscript {
     }
 }
 
-// Create a variable called pgKeystorePropertiesFile, and initialize it to your
-// pg_keystore.properties file, in the rootProject folder.
-
-def pgKeystorePropertiesFile = rootProject.file("pg_keystore.properties")
-
-// Initialize a new Properties() object called pgKeystoreProperties.
-def pgKeystoreProperties = new Properties()
-
-// Load your pg_keystore.properties file into the pgKeystoreProperties object.
-pgKeystoreProperties.load(new FileInputStream(pgKeystorePropertiesFile))
-
-if (pgKeystoreProperties["PROGLOVE_URL"]) {
-    repositoryUrl = pgKeystoreProperties["PROGLOVE_URL"]
-}
-
 allprojects {
     repositories {
         google()
         jcenter()
         maven {
-            url repositoryUrl
-            credentials {
-                username pgKeystoreProperties['PROGLOVE_USER']
-                password pgKeystoreProperties['PROGLOVE_PASSWORD']
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
+            url "https://dl.cloudsmith.io/public/proglove/pgconnect-public/maven/"
         }
     }
 }

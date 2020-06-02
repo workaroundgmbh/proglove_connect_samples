@@ -323,21 +323,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3BtnFailing" />
 
-        <Button
-            android:id="@+id/pickDisplayOrientationDialogBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="24dp"
-            android:text="@string/pick_display_orientation"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3BtnFailing" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

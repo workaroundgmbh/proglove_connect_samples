@@ -13,6 +13,9 @@ object ApiConstants {
     const val ACTION_SCANNER_SET_CONFIG = "com.proglove.api.SET_CONFIG"
     const val ACTION_BARCODE_VIA_START_ACTIVITY_INTENT = "com.proglove.api.BARCODE_START_ACTIVITY"
     const val ACTION_CHANGE_CONFIG_PROFILE = "com.proglove.api.CHANGE_CONFIG_PROFILE"
+    const val ACTION_BLOCK_TRIGGER = "com.proglove.api.BLOCK_TRIGGER"
+    const val ACTION_UNBLOCK_TRIGGER = "com.proglove.api.UNBLOCK_TRIGGER"
+    const val ACTION_TRIGGER_UNBLOCKED_INTENT = "com.proglove.api.TRIGGER_UNBLOCKED"
 
     const val ACTION_DISCONNECT_DISPLAY_INTENT = "com.proglove.api.DISPLAY_DISCONNECT"
     const val ACTION_GET_DISPLAY_STATE_INTENT = "com.proglove.api.GET_DISPLAY_STATE"

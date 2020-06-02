@@ -13,6 +13,7 @@ import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
 import kotlinx.android.synthetic.main.activity_intent.altCustomProfileButton
+import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_intent.customProfileButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
 import kotlinx.android.synthetic.main.activity_intent.defaultProfileButton
@@ -33,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_intent.sendPg1ATestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPg1TestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
+import kotlinx.android.synthetic.main.activity_intent.unblockTriggerButton
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
@@ -95,6 +97,14 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
         altCustomProfileButton.setOnClickListener {
             messageHandler.changeConfigProfile("profile2")
+        }
+
+        blockTriggerButton.setOnClickListener {
+            messageHandler.blockTrigger()
+        }
+
+        unblockTriggerButton.setOnClickListener {
+            messageHandler.unblockTrigger()
         }
 
         disconnectDisplayBtn.setOnClickListener {

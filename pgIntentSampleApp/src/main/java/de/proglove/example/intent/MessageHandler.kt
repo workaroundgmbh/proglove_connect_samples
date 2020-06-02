@@ -32,6 +32,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         it.addAction(ApiConstants.ACTION_DISPLAY_STATE_INTENT)
         it.addAction(ApiConstants.ACTION_BUTTON_PRESSED_INTENT)
         it.addAction(ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT)
+        it.addAction(ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
 
@@ -95,6 +96,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                         statusListener?.onStatusReceived("set screen success")
                     }
                     notifyOnSetScreenSuccess(success, errorMessage)
+                }
+                ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT -> {
+                    log("got ACTION_TRIGGER_UNBLOCKED_INTENT")
+                    notifyOnTriggerUnblocked()
                 }
                 else -> {
                     if (intent.hasExtra(ApiConstants.EXTRA_DATA_STRING_PG) || intent.hasExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)) {
@@ -235,6 +240,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
 
     }
 
+    private fun notifyOnTriggerUnblocked() {
+        Toast.makeText(context, "Trigger unblocked", Toast.LENGTH_LONG).show()
+    }
+
     /**
      * Notify display receivers of a button press on D3.
      */
@@ -369,6 +378,26 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         val intent = Intent().apply {
             action = ApiConstants.ACTION_CHANGE_CONFIG_PROFILE
             putExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ID, profileId)
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
+     * Blocks (default) trigger.
+     */
+    fun blockTrigger() {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_BLOCK_TRIGGER
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
+     * Unblocks (all) triggers.
+     */
+    fun unblockTrigger() {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_UNBLOCK_TRIGGER
         }
         sendBroadcast(intent)
     }
