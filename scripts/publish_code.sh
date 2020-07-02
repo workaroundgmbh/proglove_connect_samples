@@ -10,6 +10,8 @@ set -o xtrace
 
 TARGET=git@github.com:workaroundgmbh/proglove_connect_samples.git
 
+# Cleaning current branch in case files were changed which could cause merge conflicts
+git reset HEAD --hard
 # Checkout master in the current branch (private one).
 git checkout master
 # Add a tag for the release
