@@ -7,6 +7,7 @@ object ApiConstants {
 
     const val ACTION_SCANNER_STATE_INTENT = "com.proglove.api.SCANNER_STATE"
     const val ACTION_BARCODE_INTENT = "com.proglove.api.BARCODE"
+    const val ACTION_BARCODE_INTENT_IVANTI = "com.wavelink.intent.action.BARCODE"
     const val ACTION_GET_STATE_INTENT = "com.proglove.api.GET_SCANNER_STATE"
     const val ACTION_FEEDBACK_PLAY_SEQUENCE_INTENT = "com.proglove.api.PLAY_FEEDBACK"
     const val ACTION_SCANNER_CONFIG = "com.proglove.api.CONFIG"
@@ -16,6 +17,8 @@ object ApiConstants {
     const val ACTION_BLOCK_TRIGGER = "com.proglove.api.BLOCK_TRIGGER"
     const val ACTION_UNBLOCK_TRIGGER = "com.proglove.api.UNBLOCK_TRIGGER"
     const val ACTION_TRIGGER_UNBLOCKED_INTENT = "com.proglove.api.TRIGGER_UNBLOCKED"
+    const val ACTION_GET_CONFIG_PROFILES = "com.proglove.api.GET_CONFIG_PROFILES"
+    const val ACTION_CONFIG_PROFILES = "com.proglove.api.CONFIG_PROFILES"
 
     const val ACTION_DISCONNECT_DISPLAY_INTENT = "com.proglove.api.DISPLAY_DISCONNECT"
     const val ACTION_GET_DISPLAY_STATE_INTENT = "com.proglove.api.GET_DISPLAY_STATE"
@@ -31,6 +34,7 @@ object ApiConstants {
     const val EXTRA_CONFIG_BUNDLE = "com.proglove.api.extra.CONFIG_BUNDLE"
     const val EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED = "com.proglove.api.extra.config.DEFAULT_SCAN_FEEDBACK_ENABLED"
     const val EXTRA_CONFIG_PROFILE_ID = "com.proglove.api.extra.CONFIG_PROFILE_ID"
+    const val EXTRA_CONFIG_PROFILE_ACTIVE_ID = "com.proglove.api.extra.CONFIG_PROFILE_ACTIVE_ID"
 
     const val EXTRA_DISPLAY_TEMPLATE_ID = "com.proglove.api.extra.TEMPLATE_ID"
     const val EXTRA_DISPLAY_DATA = "com.proglove.api.extra.DATA"

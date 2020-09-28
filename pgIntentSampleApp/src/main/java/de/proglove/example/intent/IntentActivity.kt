@@ -3,8 +3,11 @@ package de.proglove.example.intent
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import de.proglove.example.common.DisplaySampleData
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.enums.DisplayConnectionStatus
@@ -12,11 +15,8 @@ import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
-import kotlinx.android.synthetic.main.activity_intent.altCustomProfileButton
 import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
-import kotlinx.android.synthetic.main.activity_intent.customProfileButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
-import kotlinx.android.synthetic.main.activity_intent.defaultProfileButton
 import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
 import kotlinx.android.synthetic.main.activity_intent.getDisplayState
@@ -40,6 +40,9 @@ import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.radioGroup
 import kotlinx.android.synthetic.main.feedback_selection_layout.triggerFeedbackButton
+import kotlinx.android.synthetic.main.profiles_layout.changeProfileLabel
+import kotlinx.android.synthetic.main.profiles_layout.profilesRecycler
+import kotlinx.android.synthetic.main.profiles_layout.refreshConfigProfilesButton
 import java.text.DateFormat
 import java.util.Date
 
@@ -53,6 +56,8 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         set(value) {
             defaultFeedbackSwitch.isChecked = value
         }
+
+    private lateinit var profilesAdapter: ProfilesAdapter
 
     private var scannerConnectionState = ScannerConnectionStatus.DISCONNECTED
     private var displayConnectionState = DisplayConnectionStatus.DISCONNECTED
@@ -87,17 +92,11 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             messageHandler.updateScannerConfig(defaultScanFeedback)
         }
 
-        defaultProfileButton.setOnClickListener {
-            messageHandler.changeConfigProfile("profile0")
+        refreshConfigProfilesButton.setOnClickListener {
+            messageHandler.getActiveConfigProfile()
         }
 
-        customProfileButton.setOnClickListener {
-            messageHandler.changeConfigProfile("profile1")
-        }
-
-        altCustomProfileButton.setOnClickListener {
-            messageHandler.changeConfigProfile("profile2")
-        }
+        setupProfilesRecycler()
 
         blockTriggerButton.setOnClickListener {
             messageHandler.blockTrigger()
@@ -266,6 +265,27 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         updateLastContact()
     }
 
+    override fun onConfigProfilesReceived(profileIds: Array<String>, activeProfileId: String) {
+        val profiles: List<ProfileUiData> = profileIds.map { profileId ->
+            ProfileUiData(profileId, profileId == activeProfileId)
+        }
+
+        runOnUiThread {
+            changeProfileLabel.visibility = if (profiles.isEmpty()) GONE else VISIBLE
+            profilesAdapter.updateProfiles(profiles)
+        }
+    }
+
+    private fun setupProfilesRecycler() {
+        profilesAdapter = ProfilesAdapter(
+            onProfileClicked = { profileId ->
+                messageHandler.changeConfigProfile(profileId)
+            }
+        )
+        profilesRecycler.adapter = profilesAdapter
+        profilesRecycler.layoutManager = LinearLayoutManager(this)
+    }
+
     override fun onButtonPressed(buttonId: String) {
         Toast.makeText(this, "Button $buttonId pressed", Toast.LENGTH_SHORT).show()
     }
@@ -297,3 +317,8 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         const val TAG = "PGIntentActivity"
     }
 }
+
+/**
+ * Profile data for displaying on UI.
+ */
+data class ProfileUiData(val profileId: String, var active: Boolean)

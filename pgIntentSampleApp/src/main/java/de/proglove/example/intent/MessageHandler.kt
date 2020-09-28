@@ -28,11 +28,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     // intent filer to filer out PG Intent API actions
     val filter = IntentFilter().also {
         it.addAction(ApiConstants.ACTION_BARCODE_INTENT)
+        it.addAction(ApiConstants.ACTION_BARCODE_INTENT_IVANTI)
         it.addAction(ApiConstants.ACTION_SCANNER_STATE_INTENT)
         it.addAction(ApiConstants.ACTION_DISPLAY_STATE_INTENT)
         it.addAction(ApiConstants.ACTION_BUTTON_PRESSED_INTENT)
         it.addAction(ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT)
         it.addAction(ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT)
+        it.addAction(ApiConstants.ACTION_CONFIG_PROFILES)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
 
@@ -55,6 +57,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 ApiConstants.ACTION_BARCODE_INTENT,
                 ApiConstants.ACTION_BARCODE_VIA_START_ACTIVITY_INTENT -> {
                     handleScannedBarcode(it)
+                }
+                ApiConstants.ACTION_BARCODE_INTENT_IVANTI -> {
+                    log("got ACTION_BARCODE_INTENT_IVANTI")
+                    handleIvantiBarcode(it)
                 }
                 ApiConstants.ACTION_SCANNER_STATE_INTENT -> {
                     log("got ACTION_SCANNER_STATE_INTENT")
@@ -100,6 +106,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT -> {
                     log("got ACTION_TRIGGER_UNBLOCKED_INTENT")
                     notifyOnTriggerUnblocked()
+                }
+                ApiConstants.ACTION_CONFIG_PROFILES -> {
+                    log("got ACTION_CONFIG_PROFILES")
+                    val configProfilesIds : Array<String> = intent.getStringArrayExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ID) ?: emptyArray()
+                    val activeProfileId = intent.getStringExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ACTIVE_ID) ?: ""
+
+                    notifyOnConfigProfilesReceived(configProfilesIds, activeProfileId)
                 }
                 else -> {
                     if (intent.hasExtra(ApiConstants.EXTRA_DATA_STRING_PG) || intent.hasExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)) {
@@ -217,14 +230,36 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
-     * Gets scanned barcode data received [Intent] and notifies [scannerReceivers].
+     * Gets scanned barcode data from received [Intent] and notifies [scannerReceivers].
      */
     private fun handleScannedBarcode(intent: Intent) {
         val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
         val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
+
         barcodeContent?.let { s ->
             log("received Barcode pg: $s")
             notifyOnReceivedBarcode(s, symbology)
+        }
+    }
+
+    /**
+     * Gets barcode data and button ID from received [Intent] and notifies [scannerReceivers].
+     */
+    private fun handleIvantiBarcode(intent: Intent) {
+        val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
+        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
+
+        // When configured, Ivanti barcode intent is triggered by double click
+        // on a connected device. In this case button ID is added as extra
+        val buttonId = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_BUTTON)
+
+        barcodeContent?.let { s ->
+            log("received Ivanti Barcode: $s")
+            notifyOnReceivedBarcode(s, symbology)
+        }
+
+        buttonId?.let {
+            log("button ID attached to Ivanti Barcode: $buttonId")
         }
     }
 
@@ -304,6 +339,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         }
     }
 
+    private fun notifyOnConfigProfilesReceived(profileIds: Array<String>, activeProfileId: String) {
+        log("received ${profileIds.size} config profiles with \"$activeProfileId\" as the active one")
+        scannerReceivers.forEach {
+            it.onConfigProfilesReceived(profileIds, activeProfileId)
+        }
+    }
+
     /**
      * A small short-cut function for sending broadcasts.
      *
@@ -367,6 +409,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         } catch (e: ActivityNotFoundException) {
             log("Error: No or wrong version of PgConnect!")
         }
+    }
+
+    fun getActiveConfigProfile() {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_GET_CONFIG_PROFILES
+        }
+        sendBroadcast(intent)
     }
 
     /**

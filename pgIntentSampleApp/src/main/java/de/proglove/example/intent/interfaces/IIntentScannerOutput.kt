@@ -29,4 +29,12 @@ interface IIntentScannerOutput {
      * @param status The reported status of the device.
      */
     fun onScannerStateChanged(status: DeviceConnectionStatus)
+
+    /**
+     * A callback method, that is called when information about configuration profiles is received.
+     *
+     * @param profileIds Collection of all configuration profiles' names (IDs)
+     * @param activeProfileId Active profile's ID
+     */
+    fun onConfigProfilesReceived(profileIds: Array<String>, activeProfileId: String)
 }

@@ -3,8 +3,11 @@ package de.proglove.example.sdk
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import de.proglove.example.common.DisplaySampleData
 import de.proglove.sdk.ConnectionStatus
 import de.proglove.sdk.IServiceOutput
@@ -19,6 +22,7 @@ import de.proglove.sdk.button.PredefinedPgTrigger
 import de.proglove.sdk.commands.PgCommand
 import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.configuration.IPgConfigProfileCallback
+import de.proglove.sdk.configuration.IPgGetConfigProfilesCallback
 import de.proglove.sdk.configuration.PgConfigProfile
 import de.proglove.sdk.display.IDisplayOutput
 import de.proglove.sdk.display.IPgSetScreenCallback
@@ -35,13 +39,10 @@ import de.proglove.sdk.scanner.PgImage
 import de.proglove.sdk.scanner.PgImageConfig
 import de.proglove.sdk.scanner.PgPredefinedFeedback
 import de.proglove.sdk.scanner.PgScannerConfig
-import kotlinx.android.synthetic.main.activity_main.altCustomProfileButton
 import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
-import kotlinx.android.synthetic.main.activity_main.customProfileButton
 import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
-import kotlinx.android.synthetic.main.activity_main.defaultProfileButton
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
 import kotlinx.android.synthetic.main.activity_main.inputField
@@ -62,6 +63,9 @@ import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.radioGroup
 import kotlinx.android.synthetic.main.feedback_selection_layout.triggerFeedbackButton
+import kotlinx.android.synthetic.main.profiles_layout.changeProfileLabel
+import kotlinx.android.synthetic.main.profiles_layout.profilesRecycler
+import kotlinx.android.synthetic.main.profiles_layout.refreshConfigProfilesButton
 import kotlinx.android.synthetic.main.take_image_layout.imageTaken
 import kotlinx.android.synthetic.main.take_image_layout.jpegQualityEditText
 import kotlinx.android.synthetic.main.take_image_layout.resolutionRadioGroup
@@ -81,6 +85,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     private var serviceConnectionState = ServiceConnectionStatus.DISCONNECTED
     private var scannerConnected = false
     private var displayConnected = false
+
+    private lateinit var profilesAdapter: ProfilesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,17 +186,11 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             })
         }
 
-        defaultProfileButton.setOnClickListener {
-            changeConfigProfile("profile0")
+        refreshConfigProfilesButton.setOnClickListener {
+            getConfigProfiles()
         }
 
-        customProfileButton.setOnClickListener {
-            changeConfigProfile("profile1")
-        }
-
-        altCustomProfileButton.setOnClickListener {
-            changeConfigProfile("profile2")
-        }
+        setupProfilesRecycler()
 
         blockTriggerButton.setOnClickListener {
             blockTrigger()
@@ -337,6 +337,16 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         timeoutEditText.setText(defaultTimeout.toString())
     }
 
+    private fun setupProfilesRecycler() {
+        profilesAdapter = ProfilesAdapter(
+                onProfileClicked = { profileId ->
+                    changeConfigProfile(profileId)
+                }
+        )
+        profilesRecycler.adapter = profilesAdapter
+        profilesRecycler.layoutManager = LinearLayoutManager(this)
+    }
+
     private fun takeImage() {
         var timeout = DEFAULT_IMAGE_TIMEOUT
         var quality = 20
@@ -466,6 +476,36 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                             Toast.makeText(
                                     applicationContext,
                                     "Failed to set $profileId - $error",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                }
+        )
+    }
+
+    private fun getConfigProfiles() {
+        pgManager.getConfigProfiles(
+                object : IPgGetConfigProfilesCallback {
+                    override fun onConfigProfilesReceived(profiles: Array<PgConfigProfile>) {
+                        logger.log(Level.INFO, "received ${profiles.size} config profiles")
+                        val uiProfiles: List<ProfileUiData> = profiles.map { profile ->
+                            ProfileUiData(profile.profileId, profile.isActive)
+                        }
+
+                        runOnUiThread {
+                            changeProfileLabel.visibility = if (profiles.isEmpty()) GONE else VISIBLE
+                            profilesAdapter.updateProfiles(uiProfiles)
+                            lastResponseValue.text = getString(R.string.get_profiles_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Failed to get profiles - $error",
                                     Toast.LENGTH_LONG
                             ).show()
                             lastResponseValue.text = error.toString()
@@ -672,4 +712,9 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         const val DEFAULT_IMAGE_TIMEOUT = 10000
     }
 }
+
+/**
+ * Profile data for displaying on UI.
+ */
+data class ProfileUiData(val profileId: String, var active: Boolean)
 

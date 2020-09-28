@@ -7,21 +7,33 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.proglove.sdk.*;
+import de.proglove.sdk.button.BlockPgTriggersParams;
 import de.proglove.sdk.button.ButtonPress;
+import de.proglove.sdk.button.IBlockPgTriggersCallback;
 import de.proglove.sdk.button.IButtonOutput;
+import de.proglove.sdk.button.IPgTriggersUnblockedOutput;
+import de.proglove.sdk.button.PredefinedPgTrigger;
 import de.proglove.sdk.commands.PgCommand;
 import de.proglove.sdk.commands.PgCommandParams;
 import de.proglove.sdk.configuration.IPgConfigProfileCallback;
+import de.proglove.sdk.configuration.IPgGetConfigProfilesCallback;
 import de.proglove.sdk.configuration.PgConfigProfile;
 import de.proglove.sdk.display.*;
 import de.proglove.sdk.scanner.*;
+
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-public class SdkActivity extends AppCompatActivity implements IServiceOutput, IScannerOutput, IButtonOutput, IDisplayOutput {
+public class SdkActivity extends AppCompatActivity implements IServiceOutput, IScannerOutput, IButtonOutput,
+        IPgTriggersUnblockedOutput, IDisplayOutput {
 
     private static final String TAG = SdkActivity.class.getSimpleName();
     private static int DEFAULT_IMAGE_TIMEOUT = 10000;
@@ -46,9 +58,14 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     private Switch defaultFeedbackSwitch;
 
     // Profiles
-    private Button defaultProfileBtn;
-    private Button customProfileBtn;
-    private Button altCustomProfileBtn;
+    private Button refreshConfigProfilesBtn;
+    private TextView changeProfileLabel;
+    private RecyclerView profilesRecycler;
+    private ProfilesAdapter profilesAdapter;
+
+    // Blocking trigger
+    private Button blockTriggerBtn;
+    private Button unblockTriggerBtn;
 
     // Taking image
     private Button takeImageButtonBtn;
@@ -73,12 +90,15 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         initViews();
         initClickListeners();
 
+        setupProfilesRecycler();
+
         updateButtonStates();
         setDefaultImageConfiguration();
 
         pgManager.subscribeToServiceEvents(this);
         pgManager.subscribeToScans(this);
         pgManager.subscribeToButtonPresses(this);
+        pgManager.subscribeToPgTriggersUnblocked(this);
     }
 
     @Override
@@ -94,6 +114,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         pgManager.unsubscribeFromServiceEvents(this);
         pgManager.unsubscribeFromScans(this);
         pgManager.unsubscribeFromButtonPresses(this);
+        pgManager.unsubscribeFromPgTriggersUnblocked(this);
         super.onDestroy();
     }
 
@@ -197,6 +218,27 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
      * End of IDisplayOutput Implementation
      */
 
+    /*
+     * IPgTriggersUnblockedOutput Implementation:
+     */
+
+    @Override
+    public void onPgTriggersUnblocked() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(
+                        SdkActivity.this.getApplicationContext(),
+                        "Trigger unblocked",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+    /*
+     * End of IPgTriggersUnblockedOutput Implementation
+     */
+
     private void initViews() {
         serviceConnectBtn = findViewById(R.id.serviceConnectBtn);
         scannerConnectBtn = findViewById(R.id.connectScannerRegularBtn);
@@ -221,9 +263,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
         pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
         sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
-        defaultProfileBtn = findViewById(R.id.defaultProfileButton);
-        customProfileBtn = findViewById(R.id.customProfileButton);
-        altCustomProfileBtn = findViewById(R.id.altCustomProfileButton);
+        refreshConfigProfilesBtn = findViewById(R.id.refreshConfigProfilesButton);
+        changeProfileLabel = findViewById(R.id.changeProfileLabel);
+        profilesRecycler = findViewById(R.id.profilesRecycler);
+        blockTriggerBtn = findViewById(R.id.blockTriggerButton);
+        unblockTriggerBtn = findViewById(R.id.unblockTriggerButton);
     }
 
     private void initClickListeners() {
@@ -279,25 +323,27 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             }
         });
 
-        // Changing the configuration profile
-        defaultProfileBtn.setOnClickListener(new View.OnClickListener() {
+        // Getting the configuration profiles
+        refreshConfigProfilesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeConfigProfile("profile0");
+                getConfigProfiles();
             }
         });
 
-        customProfileBtn.setOnClickListener(new View.OnClickListener() {
+        // Blocking trigger
+        blockTriggerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeConfigProfile("profile1");
+                blockTrigger();
             }
         });
 
-        altCustomProfileBtn.setOnClickListener(new View.OnClickListener() {
+        // Unblocking trigger
+        unblockTriggerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeConfigProfile("profile2");
+                unblockTrigger();
             }
         });
 
@@ -588,6 +634,17 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         showMessage(msg, false);
     }
 
+    private void setupProfilesRecycler() {
+        profilesAdapter = new ProfilesAdapter(new ArrayList<ProfileUiData>(), new ProfileClickListener() {
+            @Override
+            public void onProfileClicked(String profileId) {
+                changeConfigProfile(profileId);
+            }
+        });
+        profilesRecycler.setAdapter(profilesAdapter);
+        profilesRecycler.setLayoutManager(new LinearLayoutManager(this));
+    }
+
     @SuppressLint("SetTextI18n")
     private void setDefaultImageConfiguration() {
         PgImageConfig defaultImageConfig = new PgImageConfig();
@@ -621,7 +678,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                             public void run() {
                                 Toast.makeText(
                                         getApplicationContext(),
-                                        profileId+" set successfully",
+                                        profileId + " set successfully",
                                         Toast.LENGTH_LONG
                                 ).show();
                             }
@@ -635,7 +692,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                             public void run() {
                                 Toast.makeText(
                                         getApplicationContext(),
-                                        "Failed to set "+profileId+": "+pgError.toString(),
+                                        "Failed to set " + profileId + ": " + pgError.toString(),
                                         Toast.LENGTH_LONG
                                 ).show();
                             }
@@ -643,5 +700,132 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                     }
                 }
         );
+    }
+
+    private void getConfigProfiles() {
+        pgManager.getConfigProfiles(
+                new IPgGetConfigProfilesCallback() {
+                    @Override
+                    public void onConfigProfilesReceived(@NonNull PgConfigProfile[] profiles) {
+                        Log.d(TAG, "received " + profiles.length + " config profiles");
+
+                        final ArrayList<ProfileUiData> uiProfiles = new ArrayList<>();
+                        for (PgConfigProfile profile : profiles) {
+                            uiProfiles.add(new ProfileUiData(profile.getProfileId(), profile.isActive()));
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (uiProfiles.isEmpty()) {
+                                    changeProfileLabel.setVisibility(View.INVISIBLE);
+                                } else {
+                                    changeProfileLabel.setVisibility(View.VISIBLE);
+                                }
+                                profilesAdapter.updateProfiles(uiProfiles);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull final PgError pgError) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        "Failed to get configuration profiles: " + pgError.toString(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+                }
+        );
+    }
+
+    private void blockTrigger() {
+        pgManager.blockPgTrigger(
+                new PgCommand<>(new BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger.INSTANCE)),
+                new IBlockPgTriggersCallback() {
+                    @Override
+                    public void onBlockTriggersCommandSuccess() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        SdkActivity.this.getApplicationContext(),
+                                        "Blocking trigger success",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull final PgError error) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        SdkActivity.this.getApplicationContext(),
+                                        "Failed to block the trigger: " + error,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+                });
+    }
+
+    private void unblockTrigger() {
+        pgManager.blockPgTrigger(
+                new PgCommand<>(new BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger.INSTANCE)),
+                new IBlockPgTriggersCallback() {
+                    @Override
+                    public void onBlockTriggersCommandSuccess() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        SdkActivity.this.getApplicationContext(),
+                                        "Unblocking trigger success",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull final PgError error) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                        SdkActivity.this.getApplicationContext(),
+                                        "Failed to unblock the trigger: " + error,
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+                });
+    }
+}
+
+interface ProfileClickListener {
+    void onProfileClicked(String profileId);
+}
+
+/**
+ * Profile data for displaying on UI.
+ */
+final class ProfileUiData {
+    String profileId;
+    Boolean active;
+
+    ProfileUiData(String profileId, Boolean active) {
+        this.profileId = profileId;
+        this.active = active;
     }
 }

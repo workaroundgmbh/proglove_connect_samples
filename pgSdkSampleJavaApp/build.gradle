@@ -32,12 +32,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 
     // Integrating ProGlove SDK
     if (findProject(':connect-sdk') != null) {
         implementation project(':connect-sdk')
     } else {
-        implementation "de.proglove:connect-sdk:1.2.+"
+        implementation "de.proglove:connect-sdk:1.4.+"
     }
     implementation project(':common')
 }
