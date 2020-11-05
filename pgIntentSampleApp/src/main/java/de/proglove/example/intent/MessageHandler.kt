@@ -35,6 +35,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         it.addAction(ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT)
         it.addAction(ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT)
         it.addAction(ApiConstants.ACTION_CONFIG_PROFILES)
+        it.addAction(ApiConstants.ACTION_RECEIVE_DEVICE_VISIBILITY_INFO)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
 
@@ -109,10 +110,17 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 }
                 ApiConstants.ACTION_CONFIG_PROFILES -> {
                     log("got ACTION_CONFIG_PROFILES")
-                    val configProfilesIds : Array<String> = intent.getStringArrayExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ID) ?: emptyArray()
-                    val activeProfileId = intent.getStringExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ACTIVE_ID) ?: ""
+                    val configProfilesIds: Array<String> = intent.getStringArrayExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ID)
+                            ?: emptyArray()
+                    val activeProfileId = intent.getStringExtra(ApiConstants.EXTRA_CONFIG_PROFILE_ACTIVE_ID)
+                            ?: ""
 
                     notifyOnConfigProfilesReceived(configProfilesIds, activeProfileId)
+                }
+                ApiConstants.ACTION_RECEIVE_DEVICE_VISIBILITY_INFO -> {
+                    log("got ACTION_RECEIVE_DEVICE_VISIBILITY_INFO")
+
+                    notifyOnDeviceVisibilityInfoReceived(intent)
                 }
                 else -> {
                     if (intent.hasExtra(ApiConstants.EXTRA_DATA_STRING_PG) || intent.hasExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)) {
@@ -301,6 +309,32 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         }
     }
 
+    private fun notifyOnDeviceVisibilityInfoReceived(intent: Intent) {
+        val serialNumber =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_SERIAL_NUMBER) ?: ""
+        val firmwareRevision =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_FIRMWARE_REVISION)
+                        ?: ""
+        val batteryLevel =
+                intent.getIntExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_BATTERY_LEVEL, 0)
+        val bceRevision =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_BCE_REVISION) ?: ""
+        val modelNumber =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_MODEL_NUMBER) ?: ""
+        val appVersion =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION) ?: ""
+
+        scannerReceivers.forEach {
+            it.onDeviceVisibilityInfoReceived(
+                    serialNumber,
+                    firmwareRevision,
+                    batteryLevel,
+                    bceRevision,
+                    modelNumber,
+                    appVersion)
+        }
+    }
+
     /**
      * Notify scanner receivers when a barcode scan has been received.
      *
@@ -447,6 +481,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     fun unblockTrigger() {
         val intent = Intent().apply {
             action = ApiConstants.ACTION_UNBLOCK_TRIGGER
+        }
+        sendBroadcast(intent)
+    }
+
+    fun obtainDeviceVisibility() {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_OBTAIN_DEVICE_VISIBILITY_INFO
         }
         sendBroadcast(intent)
     }

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,7 @@ import de.proglove.sdk.scanner.*;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SdkActivity extends AppCompatActivity implements IServiceOutput, IScannerOutput, IButtonOutput,
@@ -81,6 +83,9 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
 
     // CommandParams
     private Switch sendFeedbackWithReplaceQueueSwitch;
+
+    // Device Visibility
+    private Button deviceVisibilityBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +273,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         profilesRecycler = findViewById(R.id.profilesRecycler);
         blockTriggerBtn = findViewById(R.id.blockTriggerButton);
         unblockTriggerBtn = findViewById(R.id.unblockTriggerButton);
+        deviceVisibilityBtn = findViewById(R.id.deviceVisibilityBtn);
     }
 
     private void initClickListeners() {
@@ -437,6 +443,13 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 if (error != null) {
                     Toast.makeText(SdkActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        deviceVisibilityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                obtainDeviceVisibilityInfo();
             }
         });
     }
@@ -810,6 +823,51 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         });
                     }
                 });
+    }
+
+    private void obtainDeviceVisibilityInfo() {
+        pgManager.obtainDeviceVisibilityInfo(new IPgDeviceVisibilityCallback() {
+            @Override
+            public void onError(final PgError error) {
+                // Handle error
+                logger.log(Level.SEVERE, "Error during obtainDeviceVisibilityInfo: " + error.toString());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SdkActivity.this);
+
+                        builder.setTitle(R.string.device_visibility_alert_title);
+                        builder.setMessage(getString(
+                                R.string.device_visibility_alert_content_error, error
+                        ));
+                        builder.create().show();
+                    }
+                });
+            }
+
+            @Override
+            public void onDeviceVisibilityInfoObtained(@NonNull final DeviceVisibilityInfo deviceVisibilityInfo) {
+                // content of deviceVisibilityInfo
+                logger.log(Level.INFO, "deviceVisibilityInfo: " + deviceVisibilityInfo.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SdkActivity.this);
+
+                        builder.setTitle("Device Visibility");
+                        builder.setMessage(getString(R.string.device_visibility_alert_content,
+                                deviceVisibilityInfo.getSerialNumber(),
+                                deviceVisibilityInfo.getFirmwareRevision(),
+                                deviceVisibilityInfo.getBatteryLevel(),
+                                deviceVisibilityInfo.getBceRevision(),
+                                deviceVisibilityInfo.getModelNumber(),
+                                deviceVisibilityInfo.getAppVersion()));
+                        builder.create().show();
+                    }
+                });
+            }
+        });
     }
 }
 

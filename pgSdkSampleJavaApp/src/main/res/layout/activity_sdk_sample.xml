@@ -324,10 +324,26 @@
             android:layout_marginBottom="@dimen/margin_extra_large"
             android:text="@string/pick_display_orientation"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenD3BtnFailing" />
+
+        <Button
+            android:id="@+id/deviceVisibilityBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:layout_marginBottom="@dimen/margin_extra_large"
+            android:text="@string/showDeviceVisibilityInfo"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pickDisplayOrientationDialogBtn" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

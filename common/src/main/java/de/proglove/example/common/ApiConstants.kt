@@ -53,4 +53,21 @@ object ApiConstants {
     // Pick display orientation
     const val DISPLAY_ORIENTATION_ACTIVITY_PACKAGE_NAME = "de.proglove.connect"
     const val DISPLAY_ORIENTATION_ACTIVITY_CLASS_NAME = "de.proglove.coreui.activities.DisplayOrientationActivity"
+
+    const val ACTION_OBTAIN_DEVICE_VISIBILITY_INFO =
+            "com.proglove.api.OBTAIN_DEVICE_VISIBILITY_INFO"
+    const val ACTION_RECEIVE_DEVICE_VISIBILITY_INFO =
+            "com.proglove.api.RECEIVE_DEVICE_VISIBILITY_INFO"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_SERIAL_NUMBER =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_SERIAL_NUMBER"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_MODEL_NUMBER =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_MODEL_NUMBER"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_FIRMWARE_REVISION =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_FIRMWARE_REVISION"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_BCE_REVISION =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_BCE_REVISION"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_BATTERY_LEVEL =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_BATTERY_LEVEL"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_APP_VERSION"
 }

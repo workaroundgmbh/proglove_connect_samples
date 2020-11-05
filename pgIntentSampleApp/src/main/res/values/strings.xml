@@ -40,5 +40,9 @@
     <string name="block_trigger_label">Block trigger:</string>
     <string name="trigger_block">Block</string>
     <string name="trigger_unblock">Unblock</string>
+    <string name="device_visibility_alert_title">Device Visibility</string>
+    <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nApp version: %6$s\n</string>
+    <string name="device_visibility_alert_content_error">Error: %1$s</string>
+    <string name="showDeviceVisibilityInfo">Device Visibility Info</string>
 
 </resources>

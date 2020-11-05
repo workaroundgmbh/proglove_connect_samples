@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.proglove.example.common.DisplaySampleData
@@ -17,6 +18,7 @@ import de.proglove.example.intent.interfaces.IIntentScannerOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
 import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_intent.deviceVisibilityBtn
 import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
 import kotlinx.android.synthetic.main.activity_intent.getDisplayState
@@ -166,6 +168,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         pickDisplayOrientationDialogBtn.setOnClickListener {
             messageHandler.showPickDisplayOrientationDialog()
         }
+
+        deviceVisibilityBtn.setOnClickListener {
+            messageHandler.obtainDeviceVisibility()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -239,6 +245,38 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         }
     }
 
+    override fun onDeviceVisibilityInfoReceived(
+            serialNumber: String,
+            firmwareRevision: String,
+            batteryLevel: Int,
+            bceRevision: String,
+            modelNumber: String,
+            appVersion: String
+    ) {
+        // Display content of deviceVisibilityInfo
+        Log.i(TAG, "Did receive device visibility info: " +
+                "Serial number: ${serialNumber}\n" +
+                "Firmware revision: ${firmwareRevision}\n" +
+                "Battery level: ${batteryLevel}\n" +
+                "Bce revision: ${bceRevision}\n" +
+                "Model number: ${modelNumber}\n" +
+                "App Version: $appVersion"
+        )
+        runOnUiThread {
+            AlertDialog.Builder(this@IntentActivity).apply {
+                setTitle(R.string.device_visibility_alert_title)
+                setMessage(getString(R.string.device_visibility_alert_content,
+                        serialNumber,
+                        firmwareRevision,
+                        batteryLevel,
+                        bceRevision,
+                        modelNumber,
+                        appVersion
+                ))
+            }.create().show()
+        }
+    }
+
     override fun onBarcodeScanned(barcode: String, symbology: String?) {
         runOnUiThread {
             intentInputField?.text = barcode
@@ -278,9 +316,9 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
     private fun setupProfilesRecycler() {
         profilesAdapter = ProfilesAdapter(
-            onProfileClicked = { profileId ->
-                messageHandler.changeConfigProfile(profileId)
-            }
+                onProfileClicked = { profileId ->
+                    messageHandler.changeConfigProfile(profileId)
+                }
         )
         profilesRecycler.adapter = profilesAdapter
         profilesRecycler.layoutManager = LinearLayoutManager(this)

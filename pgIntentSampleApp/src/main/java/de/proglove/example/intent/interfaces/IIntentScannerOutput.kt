@@ -37,4 +37,15 @@ interface IIntentScannerOutput {
      * @param activeProfileId Active profile's ID
      */
     fun onConfigProfilesReceived(profileIds: Array<String>, activeProfileId: String)
+
+
+    /**
+     * A callback method, that is called after DeviceVisibilityInfo were obtained.
+     */
+    fun onDeviceVisibilityInfoReceived(serialNumber: String,
+                                       firmwareRevision: String,
+                                       batteryLevel: Int,
+                                       bceRevision: String,
+                                       modelNumber: String,
+                                       appVersion: String)
 }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import de.proglove.example.common.DisplaySampleData
@@ -30,6 +31,8 @@ import de.proglove.sdk.display.PgScreenData
 import de.proglove.sdk.display.PgTemplateField
 import de.proglove.sdk.display.RefreshType
 import de.proglove.sdk.scanner.BarcodeScanResults
+import de.proglove.sdk.scanner.DeviceVisibilityInfo
+import de.proglove.sdk.scanner.IPgDeviceVisibilityCallback
 import de.proglove.sdk.scanner.IPgFeedbackCallback
 import de.proglove.sdk.scanner.IPgImageCallback
 import de.proglove.sdk.scanner.IPgScannerConfigCallback
@@ -43,6 +46,7 @@ import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
 import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
+import kotlinx.android.synthetic.main.activity_main.deviceVisibilityBtn
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
 import kotlinx.android.synthetic.main.activity_main.inputField
@@ -134,7 +138,9 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
                         override fun onSuccess() {
                             logger.log(Level.INFO, "Feedback successfully played.")
-                            lastResponseValue.text = getString(R.string.feedback_success)
+                            runOnUiThread {
+                                lastResponseValue.text = getString(R.string.feedback_success)
+                            }
                         }
 
                         override fun onError(error: PgError) {
@@ -142,8 +148,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                             logger.log(Level.WARNING, errorMessage)
                             runOnUiThread {
                                 Toast.makeText(this@SdkActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                                lastResponseValue.text = error.toString()
                             }
-                            lastResponseValue.text = error.toString()
                         }
                     }
             )
@@ -208,6 +214,10 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show()
                 lastResponseValue.text = error.toString()
             }
+        }
+
+        deviceVisibilityBtn.setOnClickListener {
+            obtainDeviceVisibilityInfo()
         }
     }
 
@@ -569,6 +579,42 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                         }
                     }
                 })
+    }
+
+    private fun obtainDeviceVisibilityInfo() {
+        pgManager.obtainDeviceVisibilityInfo(callback = object : IPgDeviceVisibilityCallback {
+            override fun onDeviceVisibilityInfoObtained(deviceVisibilityInfo: DeviceVisibilityInfo) {
+                // Display content of deviceVisibilityInfo
+                logger.log(Level.INFO, "deviceVisibilityInfo: $deviceVisibilityInfo")
+                runOnUiThread {
+                    AlertDialog.Builder(this@SdkActivity).apply {
+                        setTitle("Device Visibility")
+                        setMessage(getString(R.string.device_visibility_alert_content,
+                                deviceVisibilityInfo.serialNumber,
+                                deviceVisibilityInfo.firmwareRevision,
+                                deviceVisibilityInfo.batteryLevel,
+                                deviceVisibilityInfo.bceRevision,
+                                deviceVisibilityInfo.modelNumber,
+                                deviceVisibilityInfo.appVersion
+                        ))
+                    }.create().show()
+                }
+            }
+
+            override fun onError(error: PgError) {
+                // Handle error
+                logger.log(Level.SEVERE, "Error during obtainDeviceVisibilityInfo: $error")
+                runOnUiThread {
+                    AlertDialog.Builder(this@SdkActivity).apply {
+                        setTitle(R.string.device_visibility_alert_title)
+                        setMessage(
+                                getString(
+                                        R.string.device_visibility_alert_content_error, error
+                                ))
+                    }.create().show()
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
