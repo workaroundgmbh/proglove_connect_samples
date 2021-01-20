@@ -1,43 +1,31 @@
-# ProGlove API examples and documentation
+# ProGlove Sample app  
 
-This project contains example apps with integration for ProGlove devices on Android using ProGlove SDK and Intent API.
+This project contains example apps with integration for ProGlove devices on Android using ProGlove SDK and Intent API.  
+Select the appropriate module of the sample app and use it as a starting point to build your own native Android scanning apps or to validate your SDK and Intent API integration.  
 
-Modules
-=======
+## Modules
 
-pgSdkSampleApp
------------------
+- **pgSdkSampleApp** - an SDK sample app for the scanner and display, written in Kotlin
+- **pgSdkSampleJavaApp** - an SDK sample app for the scanner and display, written in Java
+- **pgIntentSampleApp** - an Intent API sample app for the scanner and display, written in Kotlin
+- **pgSlimIntentSampleApp** - an Intent API minimal feature scope sample app for the scanner
+- **pgSlimIntentSampleJavaApp** - an Intent APi minimal feature scope sample app for the scanner, written in Java.  
 
-This modules contains a sample app for the scanner and display SDK.
+## Run the sample app 
 
-pgSdkSampleJavaApp
-------------------
+1. Clone the repository.  
+2. Open the project's root directory in your desired IDE (e.g. Android Studio or IntelliJ).  
+3. Build and run the selected module.  
 
-This modules contains a sample app for the scanner and display SDK, written n Java.
+>**Note**: Certain features may require a license in order to work. To get it, go to [How to apply for early access](https://developers.proglove.com/insight-mobile/android/latest/Licences.html).  
 
-pgIntentSampleApp
------------------
+## Ready-to-use Sample app  
 
-This modules contains a sample app for the scanner and display Intent API.
+You can download the .apk files of the two versions of our ready-to-use Sample app and explore the features instantly:  
 
-pgSlimIntentSampleApp
------------------
+- [PG SDK Sample App](https://dl.cloudsmith.io/arWxoIZyDMYoumQv/proglove/pgconnect-prod/raw/versions/latest/SDK%20Sample)
 
-This modules contains a minimal sample app for the scanner using intent API.
-
-pgSlimIntentSampleJavaApp
------------------
-
-This modules contains a minimal sample app for the scanner using intent API, written in Java.
-
-How To Run
-==========
-- clone this repository
-- open the project (root directory of this project) in your favourite IDE (we recommend IntelliJ or Android Studio)
-- build and run any of the modules
-- common problems and solutions
-    - for the advanced features like photo-feature and worker-feedback you need an early-access license installed in ProGlove Connect
-    - for receiving scan events in the sample apps, you need to set the corresponding integration path in the ProGlove Connect app
+- [PG Intent Sample App](https://dl.cloudsmith.io/arWxoIZyDMYoumQv/proglove/pgconnect-prod/raw/versions/latest/Intent%20Sample)  
 
 Copyright
 =========
