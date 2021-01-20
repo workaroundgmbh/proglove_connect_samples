@@ -19,14 +19,6 @@ Select the appropriate module of the sample app and use it as a starting point t
 
 >**Note**: Certain features may require a license in order to work. To get it, go to [How to apply for early access](https://developers.proglove.com/insight-mobile/android/latest/Licences.html).  
 
-## Ready-to-use Sample app  
-
-You can download the .apk files of the two versions of our ready-to-use Sample app and explore the features instantly:  
-
-- [PG SDK Sample App](https://dl.cloudsmith.io/arWxoIZyDMYoumQv/proglove/pgconnect-prod/raw/versions/latest/SDK%20Sample)
-
-- [PG Intent Sample App](https://dl.cloudsmith.io/arWxoIZyDMYoumQv/proglove/pgconnect-prod/raw/versions/latest/Intent%20Sample)  
-
 Copyright
 =========
 (c) Workaround GmbH 2020
