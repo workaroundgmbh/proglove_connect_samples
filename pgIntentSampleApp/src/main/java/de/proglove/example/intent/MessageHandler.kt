@@ -492,6 +492,16 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         sendBroadcast(intent)
     }
 
+    fun updateGoals(totalStepsGoal: Int, totalScansGoal: Int, averageScantimeGoal: Float) {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_CONFIGURE_ACTIVITY_GOALS
+            putExtra(ApiConstants.EXTRA_ACTIVITY_GOAL_TOTAL_STEPS, totalStepsGoal)
+            putExtra(ApiConstants.EXTRA_ACTIVITY_GOAL_TOTAL_SCANS, totalScansGoal)
+            putExtra(ApiConstants.EXTRA_ACTIVITY_GOAL_AVERAGE_SCAN_SPEED, averageScantimeGoal)
+        }
+        sendBroadcast(intent)
+    }
+
     companion object {
 
         private const val TAG = "IntentApiApp:MsgHandler"

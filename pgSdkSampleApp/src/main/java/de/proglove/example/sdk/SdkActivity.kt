@@ -42,6 +42,12 @@ import de.proglove.sdk.scanner.PgImage
 import de.proglove.sdk.scanner.PgImageConfig
 import de.proglove.sdk.scanner.PgPredefinedFeedback
 import de.proglove.sdk.scanner.PgScannerConfig
+import de.proglove.sdk.utils.IPgSetActivityGoalsCallback
+import de.proglove.sdk.workerperformance.PgActivityGoals
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
 import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
@@ -218,6 +224,10 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
         deviceVisibilityBtn.setOnClickListener {
             obtainDeviceVisibilityInfo()
+        }
+
+        setActivityGoalsBtn.setOnClickListener {
+            setActivityGoals()
         }
     }
 
@@ -612,6 +622,31 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                                         R.string.device_visibility_alert_content_error, error
                                 ))
                     }.create().show()
+                }
+            }
+        })
+    }
+
+    private fun setActivityGoals() {
+        val activityGoals = PgActivityGoals(
+                activityGoalsStepsGoalEdit.text.toString().toIntOrNull() ?: 650,
+                activityGoalsScansGoalEdit.text.toString().toIntOrNull() ?: 10000,
+                activityGoalsAverageScansGoalEdit.text.toString().toDoubleOrNull() ?: 1.5
+        )
+        pgManager.setActivityGoals(activityGoals.toCommand(), callback = object : IPgSetActivityGoalsCallback {
+            override fun onSuccess() {
+                logger.log(Level.INFO, "Goals set successfully.")
+            }
+
+            override fun onError(error: PgError) {
+                logger.log(Level.SEVERE, "Error during setActivityGoals: $error")
+                runOnUiThread {
+                    Toast.makeText(
+                            applicationContext,
+                            "Failed to update goals: $error",
+                            Toast.LENGTH_LONG
+                    ).show()
+                    lastResponseValue.text = error.toString()
                 }
             }
         })

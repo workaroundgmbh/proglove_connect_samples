@@ -70,4 +70,10 @@ object ApiConstants {
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_BATTERY_LEVEL"
     const val EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION =
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_APP_VERSION"
+
+
+    const val ACTION_CONFIGURE_ACTIVITY_GOALS = "com.proglove.api.CONFIGURE_WORKER_GOALS"
+    const val EXTRA_ACTIVITY_GOAL_TOTAL_STEPS = "com.proglove.api.extra.WORKER_GOAL_TOTAL_STEPS"
+    const val EXTRA_ACTIVITY_GOAL_TOTAL_SCANS = "com.proglove.api.extra.WORKER_GOAL_TOTAL_SCANS"
+    const val EXTRA_ACTIVITY_GOAL_AVERAGE_SCAN_SPEED = "com.proglove.api.extra.WORKER_GOAL_AVERAGE_SCAN_SPEED"
 }

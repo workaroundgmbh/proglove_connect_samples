@@ -339,9 +339,20 @@
             android:layout_marginBottom="@dimen/margin_extra_large"
             android:text="@string/showDeviceVisibilityInfo"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pickDisplayOrientationDialogBtn" />
+
+        <include
+            android:id="@+id/activity_goals"
+            layout="@layout/activity_goals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deviceVisibilityBtn" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

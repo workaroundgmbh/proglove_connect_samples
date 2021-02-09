@@ -16,6 +16,10 @@ import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
+import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
 import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
 import kotlinx.android.synthetic.main.activity_intent.deviceVisibilityBtn
@@ -172,6 +176,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         deviceVisibilityBtn.setOnClickListener {
             messageHandler.obtainDeviceVisibility()
         }
+
+        setActivityGoalsBtn.setOnClickListener {
+            setActivityGoals()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -322,6 +330,14 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         )
         profilesRecycler.adapter = profilesAdapter
         profilesRecycler.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun setActivityGoals() {
+        val totalStepsGoal = activityGoalsStepsGoalEdit.text.toString().toIntOrNull() ?: 650
+        val totalScansGoal = activityGoalsScansGoalEdit.text.toString().toIntOrNull() ?: 10000
+        val averageScantimeGoal = activityGoalsAverageScansGoalEdit.text.toString().toFloatOrNull() ?: 1.5f
+
+        messageHandler.updateGoals(totalStepsGoal, totalScansGoal, averageScantimeGoal)
     }
 
     override fun onButtonPressed(buttonId: String) {
