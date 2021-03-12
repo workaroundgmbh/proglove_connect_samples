@@ -21,11 +21,13 @@ import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
 import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
+import kotlinx.android.synthetic.main.activity_intent.connectScannerBtn
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
 import kotlinx.android.synthetic.main.activity_intent.deviceVisibilityBtn
 import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
+import kotlinx.android.synthetic.main.activity_intent.disconnectScannerBtn
 import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
-import kotlinx.android.synthetic.main.activity_intent.getDisplayState
+import kotlinx.android.synthetic.main.activity_intent.getDisplayStateBtn
 import kotlinx.android.synthetic.main.activity_intent.getScannerStateBtn
 import kotlinx.android.synthetic.main.activity_intent.intentInputField
 import kotlinx.android.synthetic.main.activity_intent.lastContactOutput
@@ -85,6 +87,15 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         getScannerStateBtn.setOnClickListener {
             messageHandler.requestScannerState()
         }
+
+        connectScannerBtn.setOnClickListener {
+            messageHandler.sendConnect()
+        }
+
+        disconnectScannerBtn.setOnClickListener {
+            messageHandler.sendDisconnectScanner()
+        }
+
         triggerFeedbackButton.setOnClickListener {
             val selectedFeedbackId = getFeedbackId()
             val shouldReplaceQueue = sendFeedbackWithReplaceQueueSwitch.isChecked
@@ -116,7 +127,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             messageHandler.sendDisconnectDisplay()
         }
 
-        getDisplayState.setOnClickListener {
+        getDisplayStateBtn.setOnClickListener {
             messageHandler.requestDisplayState()
         }
 
@@ -308,7 +319,6 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             }
         }
         updateConnectionLabel()
-        updateLastContact()
     }
 
     override fun onConfigProfilesReceived(profileIds: Array<String>, activeProfileId: String) {

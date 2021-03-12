@@ -80,9 +80,9 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 }
 
                 ApiConstants.ACTION_DISPLAY_STATE_INTENT -> {
-                    log("got ACTION_D3_STATE_INTENT")
+                    log("got ACTION_DISPLAY_STATE_INTENT")
                     intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_STATE)?.let { s ->
-                        log(DeviceConnectionStatus.valueOf(s).name)
+                        log("got display $s")
                         notifyOnDisplayStateChange(DeviceConnectionStatus.valueOf(s))
                     }
                 }
@@ -204,6 +204,30 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
+     * Connect scanner or display.
+     */
+    fun sendConnect() {
+        val intent = Intent().also {
+            it.component = ComponentName(
+                PAIRING_ACTIVITY_PACKAGE_NAME,
+                PAIRING_ACTIVITY_CLASS_NAME
+            )
+        }
+        // Make sure to use the activity context here and not the application context.
+        context.startActivity(intent)
+    }
+
+    /**
+     * Disconnect scanner.
+     */
+    fun sendDisconnectScanner() {
+        val intent = Intent().also {
+            it.action = ApiConstants.ACTION_DISCONNECT_INTENT
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
      * Disconnect display.
      */
     fun sendDisconnectDisplay() {
@@ -304,6 +328,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * @param newState the new connection state.
      */
     private fun notifyOnDisplayStateChange(newState: DeviceConnectionStatus) {
+        log("received displayState $newState")
         displayReceivers.forEach {
             it.onDisplayStateChanged(newState)
         }
@@ -505,5 +530,8 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     companion object {
 
         private const val TAG = "IntentApiApp:MsgHandler"
+
+        private const val PAIRING_ACTIVITY_PACKAGE_NAME = "de.proglove.connect"
+        private const val PAIRING_ACTIVITY_CLASS_NAME = "de.proglove.coreui.activities.PairingActivity"
     }
 }

@@ -26,10 +26,56 @@
             android:text="@string/scanner_state_unknown"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_large"
+            android:gravity="end"
+            app:layout_constraintStart_toEndOf="@+id/scannerStateLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/scannerStateLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/scannerStateLabel" />
+
+        <Button
+            android:id="@+id/getScannerStateBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/get_scanner_state"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scannerStateLabel" />
+
+        <TextView
+            android:id="@+id/pairLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/pair_scanner"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/getScannerStateBtn" />
+
+        <Button
+            android:id="@+id/connectScannerBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/pair_scanner"
+            app:layout_constraintEnd_toStartOf="@+id/disconnectScannerBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pairLabel" />
+
+        <Button
+            android:id="@+id/disconnectScannerBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:text="@string/disconnect_scanner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/connectScannerBtn"
+            app:layout_constraintTop_toBottomOf="@+id/pairLabel" />
 
         <TextView
             android:id="@+id/lastContactLabel"
@@ -37,15 +83,15 @@
             android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_huge"
             android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scannerStateLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/connectScannerBtn" />
 
         <TextView
             android:id="@+id/lastContactOutput"
-            android:layout_width="160dp"
-            android:layout_height="18dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/lastContactLabel"
@@ -53,18 +99,18 @@
 
         <TextView
             android:id="@+id/lastSymbologyLabel"
-            android:text="@string/symbology_label"
+            android:text="@string/barcode_symbology"
             android:textStyle="bold"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_extra_large"
             app:layout_constraintTop_toBottomOf="@+id/lastContactLabel"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/lastSymbologyOutput"
-            android:layout_width="160dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_extra_large"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lastSymbologyLabel" />
 
@@ -88,7 +134,7 @@
             android:textSize="36sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginEnd="@dimen/margin_large"
             android:layout_weight="1"
@@ -98,14 +144,16 @@
             app:layout_constraintTop_toBottomOf="@+id/barcodeContentLabel"
             tools:ignore="Autofill,LabelFor" />
 
-        <Button
-            android:id="@+id/getScannerStateBtn"
-            android:text="@string/get_scanner_state"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/feedbackTitleTw"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
             android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:text="@string/worker_feedback"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/intentInputField" />
 
@@ -117,12 +165,12 @@
             android:layout_margin="@dimen/margin_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/getScannerStateBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/feedbackTitleTw" />
 
         <Switch
             android:id="@+id/defaultFeedbackSwitch"
             android:layout_width="0dp"
-            android:layout_height="27dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_large"
@@ -135,7 +183,7 @@
         <Switch
             android:id="@+id/sendFeedbackWithReplaceQueueSwitch"
             android:layout_width="0dp"
-            android:layout_height="27dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_large"
@@ -189,7 +237,7 @@
 
         <TextView
             android:id="@+id/lastResponseLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/last_response_status"
             android:textStyle="bold"
@@ -199,11 +247,15 @@
 
         <TextView
             android:id="@+id/lastResponseValue"
-            android:layout_width="200dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_large"
+            android:gravity="end"
             app:layout_constraintStart_toEndOf="@+id/lastResponseLabel"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/lastResponseLabel" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lastResponseLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/lastResponseLabel" />
 
         <TextView
             android:id="@+id/displayStateLabel"
@@ -213,7 +265,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_large"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lastResponseLabel" />
 
@@ -222,32 +273,33 @@
             android:text="@string/display_state_unknown"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_large"
-            app:layout_constraintEnd_toEndOf="@+id/displayStateLabel"
+            android:gravity="end"
+            app:layout_constraintStart_toEndOf="@+id/displayStateLabel"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/displayStateLabel"
             app:layout_constraintBottom_toBottomOf="@+id/displayStateLabel" />
 
         <Button
-            android:id="@+id/disconnectDisplayBtn"
-            android:text="@string/disconnect_display"
-            android:textStyle="bold"
+            android:id="@+id/getDisplayStateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_large"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/get_display_state"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/displayStateLabel" />
 
         <Button
-            android:id="@+id/getDisplayState"
-            android:text="@string/get_display_state"
-            android:textStyle="bold"
+            android:id="@+id/disconnectDisplayBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
             android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/disconnect_display"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/getDisplayStateBtn" />
 
         <Button
             android:id="@+id/sendTestScreenBtn"
@@ -258,7 +310,7 @@
             android:layout_marginTop="@dimen/margin_large"
             android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/getDisplayState" />
+            app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
 
         <Button
             android:id="@+id/sendPartialRefreshTestScreenBtn"

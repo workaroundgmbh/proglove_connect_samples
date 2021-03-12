@@ -5,10 +5,11 @@ package de.proglove.example.common
  */
 object ApiConstants {
 
+    const val ACTION_DISCONNECT_INTENT = "com.proglove.api.DISCONNECT"
+    const val ACTION_GET_STATE_INTENT = "com.proglove.api.GET_SCANNER_STATE"
     const val ACTION_SCANNER_STATE_INTENT = "com.proglove.api.SCANNER_STATE"
     const val ACTION_BARCODE_INTENT = "com.proglove.api.BARCODE"
     const val ACTION_BARCODE_INTENT_IVANTI = "com.wavelink.intent.action.BARCODE"
-    const val ACTION_GET_STATE_INTENT = "com.proglove.api.GET_SCANNER_STATE"
     const val ACTION_FEEDBACK_PLAY_SEQUENCE_INTENT = "com.proglove.api.PLAY_FEEDBACK"
     const val ACTION_SCANNER_CONFIG = "com.proglove.api.CONFIG"
     const val ACTION_SCANNER_SET_CONFIG = "com.proglove.api.SET_CONFIG"

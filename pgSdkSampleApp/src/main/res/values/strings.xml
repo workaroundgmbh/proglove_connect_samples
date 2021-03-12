@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PG SDK Sample App</string>
-    <string name="last_scanned_text">Last scanned text</string>
     <string name="display_connected">Display connected</string>
     <string name="display_disconnected">Display disconnected</string>
     <string name="service_connected">service connected</string>
@@ -8,16 +7,16 @@
     <string name="connect_service">connect service</string>
     <string name="scanner_connected">Scanner connected</string>
     <string name="pair_scanner">Pair scanner</string>
-    <string name="pair_scanner_regular">Pair scanner</string>
-    <string name="connect_scanner">Connect Scanner</string>
     <string name="barcode_output_default">…</string>
-    <string name="symbology_label_text">Symbology of last scan:</string>
+    <string name="barcode_symbology">Barcode Symbology:</string>
+    <string name="barcode_content">Barcode Content:</string>
     <string name="service_connection_lbl">Service Connection:</string>
     <string name="pair_from_pinned_activity">Pair from pinned Activity</string>
     <string name="feedback_id_1">Success</string>
     <string name="feedback_id_2">Error</string>
     <string name="feedback_id_3">Info</string>
     <string name="feedback_text_hint">feedback text</string>
+    <string name="worker_feedback">Worker Feedback</string>
     <string name="trigger_feedback_button">Trigger Feedback</string>
     <string name="display_connection_state_label">Display connection state</string>
     <string name="display_state_unknown">Display state unknown</string>
@@ -57,7 +56,7 @@
     <string name="trigger_unblock">Unblock</string>
     <string name="block_trigger_success">block trigger success</string>
     <string name="unblock_trigger_success">unblock trigger success</string>
-    <string name="showDeviceVisibilityInfo">Device Visibility</string>
+    <string name="showDeviceVisibilityInfo">Device Visibility Info</string>
     <string name="device_visibility_alert_title">Device Visibility</string>
     <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nApp version: %6$s\n</string>
     <string name="device_visibility_alert_content_error">Error: %1$s</string>
