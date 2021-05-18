@@ -38,7 +38,7 @@ dependencies {
     if (findProject(':connect-sdk') != null) {
         implementation project(':connect-sdk')
     } else {
-        implementation "de.proglove:connect-sdk:1.5.+"
+        implementation "de.proglove:connect-sdk:$current_version_scanner_api"
     }
     implementation project(':common')
 }

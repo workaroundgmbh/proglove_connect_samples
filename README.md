@@ -21,7 +21,7 @@ Select the appropriate module of the sample app and use it as a starting point t
 
 Copyright
 =========
-(c) Workaround GmbH 2020
+(c) Workaround GmbH 2021
 
 End User License Agreement
 =========
