@@ -231,24 +231,36 @@
         <Button
             android:id="@+id/blockTriggerButton"
             android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/trigger_block"
+            app:layout_constraintBottom_toBottomOf="@+id/blockAllTriggersButton"
+            app:layout_constraintEnd_toStartOf="@+id/blockAllTriggersButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel" />
+
+        <Button
+            android:id="@+id/blockAllTriggersButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginStart="@dimen/margin_large"
-            android:text="@string/trigger_block"
-            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/unblockTriggerButton"/>
+            android:text="@string/trigger_block_all"
+            app:layout_constraintEnd_toStartOf="@+id/unblockTriggerButton"
+            app:layout_constraintStart_toEndOf="@+id/blockTriggerButton"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel" />
 
         <Button
             android:id="@+id/unblockTriggerButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/trigger_unblock"
-            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/blockAllTriggersButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/blockTriggerButton"/>
+            app:layout_constraintStart_toEndOf="@+id/blockAllTriggersButton"
+            app:layout_constraintTop_toBottomOf="@+id/blockTriggerLabel" />
 
 
         <TextView

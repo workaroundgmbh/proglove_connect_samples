@@ -30,6 +30,7 @@ import de.proglove.sdk.display.*;
 import de.proglove.sdk.scanner.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +68,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
 
     // Blocking trigger
     private Button blockTriggerBtn;
+    private Button blockAllTriggersBtn;
     private Button unblockTriggerBtn;
 
     // Taking image
@@ -234,7 +236,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             public void run() {
                 Toast.makeText(
                         SdkActivity.this.getApplicationContext(),
-                        "Trigger unblocked",
+                        "Triggers unblocked",
                         Toast.LENGTH_SHORT
                 ).show();
             }
@@ -272,6 +274,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         changeProfileLabel = findViewById(R.id.changeProfileLabel);
         profilesRecycler = findViewById(R.id.profilesRecycler);
         blockTriggerBtn = findViewById(R.id.blockTriggerButton);
+        blockAllTriggersBtn = findViewById(R.id.blockAllTriggersButton);
         unblockTriggerBtn = findViewById(R.id.unblockTriggerButton);
         deviceVisibilityBtn = findViewById(R.id.deviceVisibilityBtn);
     }
@@ -342,6 +345,14 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             @Override
             public void onClick(View v) {
                 blockTrigger();
+            }
+        });
+
+        // Blocking all triggers for 10 seconds
+        blockAllTriggersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                blockAllTriggersFor10s();
             }
         });
 
@@ -759,7 +770,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
 
     private void blockTrigger() {
         pgManager.blockPgTrigger(
-                new PgCommand<>(new BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger.INSTANCE)),
+                new PgCommand<>(new BlockPgTriggersParams(
+                    Collections.singletonList(PredefinedPgTrigger.DefaultPgTrigger.INSTANCE),
+                    Collections.singletonList(PredefinedPgTrigger.DoubleClickMainPgTrigger.INSTANCE),
+                    0,
+                    true)),
                 new IBlockPgTriggersCallback() {
                     @Override
                     public void onBlockTriggersCommandSuccess() {
@@ -791,9 +806,44 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 });
     }
 
+    // Requires Insight Mobile v1.13.0+ and Scanner v2.5.0+
+    private void blockAllTriggersFor10s() {
+        pgManager.blockPgTrigger(
+                new PgCommand<>(new BlockPgTriggersParams(Collections.<PredefinedPgTrigger>emptyList(), Collections.<PredefinedPgTrigger>emptyList(), 10000, true)),
+                new IBlockPgTriggersCallback() {
+                    @Override
+                    public void onBlockTriggersCommandSuccess() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                    SdkActivity.this.getApplicationContext(),
+                                    "Blocking all triggers success",
+                                    Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(@NonNull final PgError error) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(
+                                    SdkActivity.this.getApplicationContext(),
+                                    "Failed to block all triggers: " + error,
+                                    Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        });
+                    }
+                });
+    }
+
     private void unblockTrigger() {
         pgManager.blockPgTrigger(
-                new PgCommand<>(new BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger.INSTANCE)),
+                new PgCommand<>(new BlockPgTriggersParams(Collections.<PredefinedPgTrigger>emptyList(), Collections.<PredefinedPgTrigger>emptyList(), 0, false)),
                 new IBlockPgTriggersCallback() {
                     @Override
                     public void onBlockTriggersCommandSuccess() {
@@ -802,7 +852,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                             public void run() {
                                 Toast.makeText(
                                         SdkActivity.this.getApplicationContext(),
-                                        "Unblocking trigger success",
+                                        "Unblocking triggers success",
                                         Toast.LENGTH_LONG
                                 ).show();
                             }

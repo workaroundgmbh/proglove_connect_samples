@@ -213,8 +213,12 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 PAIRING_ACTIVITY_CLASS_NAME
             )
         }
-        // Make sure to use the activity context here and not the application context.
-        context.startActivity(intent)
+        try {
+            // Make sure to use the activity context here and not the application context.
+            context.startActivity(intent)
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(context, "Unable to start PairingActivity, is Insight Mobile installed?", Toast.LENGTH_LONG).show()
+        }
     }
 
     /**
@@ -308,7 +312,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     private fun notifyOnTriggerUnblocked() {
-        Toast.makeText(context, "Trigger unblocked", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Triggers unblocked", Toast.LENGTH_LONG).show()
     }
 
     /**
@@ -491,11 +495,27 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     }
 
     /**
-     * Blocks (default) trigger.
+     * Blocks (default) trigger indefinitely.
      */
     fun blockTrigger() {
         val intent = Intent().apply {
             action = ApiConstants.ACTION_BLOCK_TRIGGER
+            putExtra(ApiConstants.EXTRA_TRIGGERS_BLOCK, arrayOf("BUTTON_1_SINGLE_CLICK"))
+            putExtra(ApiConstants.EXTRA_TRIGGERS_UNBLOCK_BY, arrayOf("BUTTON_1_DOUBLE_CLICK"))
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
+     * Blocks all triggers for 10 seconds.
+     * Requires Insight Mobile v1.13.0+ and Scanner v2.5.0+
+     */
+    fun blockAllTriggersFor10s() {
+        val intent = Intent().apply {
+            action = ApiConstants.ACTION_BLOCK_TRIGGER
+            putExtra(ApiConstants.EXTRA_TRIGGERS_BLOCK, emptyArray<String>())
+            putExtra(ApiConstants.EXTRA_TRIGGERS_UNBLOCK_BY, emptyArray<String>())
+            putExtra(ApiConstants.EXTRA_DISPLAY_DURATION, 10000)
         }
         sendBroadcast(intent)
     }

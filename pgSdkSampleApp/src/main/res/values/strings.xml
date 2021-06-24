@@ -51,8 +51,9 @@
     <string name="image_success">image success</string>
     <string name="change_profile_success">change profile success</string>
     <string name="get_profiles_success">get profiles success</string>
-    <string name="block_trigger_label">Block trigger:</string>
+    <string name="block_trigger_label">Block trigger(s):</string>
     <string name="trigger_block">Block</string>
+    <string name="trigger_block_all">Block All For 10 Sec</string>
     <string name="trigger_unblock">Unblock</string>
     <string name="block_trigger_success">block trigger success</string>
     <string name="unblock_trigger_success">unblock trigger success</string>

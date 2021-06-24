@@ -50,8 +50,9 @@
     <string name="change_profile">Change profile:</string>
     <string name="custom_profile">Profile 1</string>
     <string name="profile_active">Active</string>
-    <string name="block_trigger_label">Block trigger:</string>
+    <string name="block_trigger_label">Block trigger(s):</string>
     <string name="trigger_block">Block</string>
+    <string name="trigger_block_all">Block All For 10 Sec</string>
     <string name="trigger_unblock">Unblock</string>
     <string name="showDeviceVisibilityInfo">Device Visibility</string>
     <string name="device_visibility_alert_title">Device Visibility</string>

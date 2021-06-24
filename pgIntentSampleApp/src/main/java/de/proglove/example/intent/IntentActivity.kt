@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGo
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
+import kotlinx.android.synthetic.main.activity_intent.blockAllTriggersButton
 import kotlinx.android.synthetic.main.activity_intent.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_intent.connectScannerBtn
 import kotlinx.android.synthetic.main.activity_intent.defaultFeedbackSwitch
@@ -117,6 +118,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
         blockTriggerButton.setOnClickListener {
             messageHandler.blockTrigger()
+        }
+
+        blockAllTriggersButton.setOnClickListener {
+            messageHandler.blockAllTriggersFor10s()
         }
 
         unblockTriggerButton.setOnClickListener {

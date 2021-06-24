@@ -49,6 +49,9 @@ object ApiConstants {
     const val EXTRA_DISPLAY_SET_SCREEN_ERROR_TEXT = "com.proglove.api.extra.DISPLAY_SET_SCREEN_ERROR"
     const val EXTRA_FEEDBACK_SEQUENCE_ID = "com.proglove.api.extra.FEEDBACK_SEQUENCE_ID"
 
+    const val EXTRA_TRIGGERS_BLOCK = "com.proglove.api.extra.TRIGGERS_BLOCK"
+    const val EXTRA_TRIGGERS_UNBLOCK_BY = "com.proglove.api.extra.TRIGGERS_UNBLOCK_BY"
+
     const val EXTRA_REPLACE_QUEUE = "com.proglove.api.extra.REPLACE_QUEUE"
 
     // Pick display orientation

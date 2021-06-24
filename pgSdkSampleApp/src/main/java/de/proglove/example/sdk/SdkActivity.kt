@@ -49,6 +49,7 @@ import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
 import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
+import kotlinx.android.synthetic.main.activity_main.blockAllTriggersButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
 import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
@@ -206,6 +207,10 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
         blockTriggerButton.setOnClickListener {
             blockTrigger()
+        }
+
+        blockAllTriggersButton.setOnClickListener {
+            blockAllTriggersFor10s()
         }
 
         unblockTriggerButton.setOnClickListener {
@@ -537,7 +542,11 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
     private fun blockTrigger() {
         pgManager.blockPgTrigger(
-                PgCommand(BlockPgTriggersParams(PredefinedPgTrigger.DefaultPgTrigger)),
+                PgCommand(BlockPgTriggersParams(
+                        listOf(PredefinedPgTrigger.DefaultPgTrigger),
+                        listOf(PredefinedPgTrigger.DoubleClickMainPgTrigger),
+                        0,
+                        true)),
                 object : IBlockPgTriggersCallback {
                     override fun onBlockTriggersCommandSuccess() {
                         runOnUiThread {
@@ -563,15 +572,44 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 })
     }
 
-    private fun unblockTrigger() {
+    // Requires Insight Mobile v1.13.0+ and Scanner v2.5.0+
+    private fun blockAllTriggersFor10s() {
         pgManager.blockPgTrigger(
-                PgCommand(BlockPgTriggersParams(null)),
+                PgCommand(BlockPgTriggersParams(emptyList(), emptyList(), 10000, true)),
                 object : IBlockPgTriggersCallback {
                     override fun onBlockTriggersCommandSuccess() {
                         runOnUiThread {
                             Toast.makeText(
                                     applicationContext,
-                                    "Unblocking trigger success",
+                                    "Blocking all triggers success",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = getString(R.string.block_trigger_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Failed to block all triggers: $error",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                })
+    }
+
+    private fun unblockTrigger() {
+        pgManager.blockPgTrigger(
+                PgCommand(BlockPgTriggersParams(emptyList(), emptyList(), 0, false)),
+                object : IBlockPgTriggersCallback {
+                    override fun onBlockTriggersCommandSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                    applicationContext,
+                                    "Unblocking triggers success",
                                     Toast.LENGTH_LONG
                             ).show()
                             lastResponseValue.text = getString(R.string.unblock_trigger_success)
@@ -781,7 +819,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
      */
     override fun onPgTriggersUnblocked() {
         runOnUiThread {
-            Toast.makeText(this, "Trigger unblocked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Triggers unblocked", Toast.LENGTH_SHORT).show()
         }
     }
     /*
