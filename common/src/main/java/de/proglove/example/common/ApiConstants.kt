@@ -72,6 +72,8 @@ object ApiConstants {
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_BCE_REVISION"
     const val EXTRA_DEVICE_VISIBILITY_INFO_BATTERY_LEVEL =
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_BATTERY_LEVEL"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_MANUFACTURER =
+            "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_MANUFACTURER"
     const val EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION =
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_APP_VERSION"
 

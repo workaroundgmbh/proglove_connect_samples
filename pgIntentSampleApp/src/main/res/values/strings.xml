@@ -45,7 +45,7 @@
     <string name="trigger_block_all">Block All For 10 sec</string>
     <string name="trigger_unblock">Unblock</string>
     <string name="device_visibility_alert_title">Device Visibility</string>
-    <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nApp version: %6$s\n</string>
+    <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nManufacturer: %6$s\nApp version: %7$s\n</string>
     <string name="device_visibility_alert_content_error">Error: %1$s</string>
     <string name="showDeviceVisibilityInfo">Device Visibility Info</string>
     <string name="update_goals_button">update goals</string>

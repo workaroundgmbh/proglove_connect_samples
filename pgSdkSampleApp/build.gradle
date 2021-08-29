@@ -16,7 +16,6 @@ if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.0"
 
     defaultConfig {
         applicationId "de.proglove.example.sdk"
@@ -57,7 +56,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:29.0.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation "com.google.android.material:material:1.0.0"

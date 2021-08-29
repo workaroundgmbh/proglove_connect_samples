@@ -4,17 +4,17 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-29.0.0
+    - build-tools-29.0.3
     - android-29
-    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-28
 env:
   global:
   # PROGLOVE_URL
   - secure: VqcMEAP6b35VCjrIgRJdGEjnokcdD8cb6gJxoDsRMRFiSMW42A4AE/arknP/diweGjjKzYEr7o/1VUwKPmCbiTNB+9BE2UNUXNuvRZe6BAPo09TmONGRakG9eyidWza8cRjLP1tWlNof80DdaJATBe14Tp8ygXn4VjMV26GtEslcF7QdcC3d7NRPJCdGo4T2nFhfZlA7RELvCBiVXZOCQ3OFELeeTap8VI5M5FrxTwzQNoBT2+fHH92fHdY684oUBlXiml5IUAAa4AgohGsa7WuHILo9Id4AtMCISLfV+oBPgd0Gy0cz8P+7OXkfvoIQkOgosEeIhM3JVzxQrUMmOktgZWPVpuyGJskucxs6Ck1PLImKiGUB9buWfTZ/SRjpu26dMtK1zAlhKZI6AQf/gFQwsaiWvDsFjgOothkKxYIpUxpnZe/5GjhDtkC7EhXH9AHY7RCMspLA+paRcHlLJT/1XxjwfqBN9c/TAatTkg+3GHyT9nCLgex9CAvSiite/3pJk9zqXqJBVPv+GvH+I4IyDVSnN7y86rBG49/sIruWf6r16vZWbCmVgsTiv8GPGo4OrwTBVk9k3vqiJ2FunyiK6JsMFimcD7RBe5NJKMPVtrPrWk3Z4PAXUEEYdHF1sHZIirpCS6sitiUyueOlFEzAbltfrikfs48BDAvCHg8=
 before_install:
+  # Accept license for build tools 30.0.2 which come implicitly with current version of android gradle plugin
+  - yes | sdkmanager "build-tools;30.0.2"
   # Replacing the public repo url with the alpha repo url. The url must contain a entitlement token
   - sed -i "s,url \".*\",url \"$PROGLOVE_URL\",g" build.gradle
 jobs:

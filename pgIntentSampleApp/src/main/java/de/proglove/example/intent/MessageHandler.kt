@@ -350,6 +350,8 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_BCE_REVISION) ?: ""
         val modelNumber =
                 intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_MODEL_NUMBER) ?: ""
+        val manufacturer =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_MANUFACTURER) ?: ""
         val appVersion =
                 intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION) ?: ""
 
@@ -360,6 +362,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     batteryLevel,
                     bceRevision,
                     modelNumber,
+                    manufacturer,
                     appVersion)
         }
     }

@@ -905,13 +905,14 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                     public void run() {
                         AlertDialog.Builder builder = new AlertDialog.Builder(SdkActivity.this);
 
-                        builder.setTitle("Device Visibility");
+                        builder.setTitle(R.string.device_visibility_alert_title);
                         builder.setMessage(getString(R.string.device_visibility_alert_content,
                                 deviceVisibilityInfo.getSerialNumber(),
                                 deviceVisibilityInfo.getFirmwareRevision(),
                                 deviceVisibilityInfo.getBatteryLevel(),
                                 deviceVisibilityInfo.getBceRevision(),
                                 deviceVisibilityInfo.getModelNumber(),
+                                deviceVisibilityInfo.getManufacturer(),
                                 deviceVisibilityInfo.getAppVersion()));
                         builder.create().show();
                     }

@@ -16,7 +16,6 @@ if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.0"
 
     defaultConfig {
         applicationId "de.proglove.example.intent"

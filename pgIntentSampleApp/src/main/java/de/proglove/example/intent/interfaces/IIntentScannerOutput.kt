@@ -47,5 +47,6 @@ interface IIntentScannerOutput {
                                        batteryLevel: Int,
                                        bceRevision: String,
                                        modelNumber: String,
+                                       manufacturer: String,
                                        appVersion: String)
 }

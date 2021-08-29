@@ -636,13 +636,14 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 logger.log(Level.INFO, "deviceVisibilityInfo: $deviceVisibilityInfo")
                 runOnUiThread {
                     AlertDialog.Builder(this@SdkActivity).apply {
-                        setTitle("Device Visibility")
+                        setTitle(R.string.device_visibility_alert_title)
                         setMessage(getString(R.string.device_visibility_alert_content,
                                 deviceVisibilityInfo.serialNumber,
                                 deviceVisibilityInfo.firmwareRevision,
                                 deviceVisibilityInfo.batteryLevel,
                                 deviceVisibilityInfo.bceRevision,
                                 deviceVisibilityInfo.modelNumber,
+                                deviceVisibilityInfo.manufacturer,
                                 deviceVisibilityInfo.appVersion
                         ))
                     }.create().show()

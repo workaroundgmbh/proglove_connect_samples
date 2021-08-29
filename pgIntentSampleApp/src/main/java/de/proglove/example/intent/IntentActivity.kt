@@ -275,28 +275,24 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             batteryLevel: Int,
             bceRevision: String,
             modelNumber: String,
+            manufacturer: String,
             appVersion: String
     ) {
-        // Display content of deviceVisibilityInfo
-        Log.i(TAG, "Did receive device visibility info: " +
-                "Serial number: ${serialNumber}\n" +
-                "Firmware revision: ${firmwareRevision}\n" +
-                "Battery level: ${batteryLevel}\n" +
-                "Bce revision: ${bceRevision}\n" +
-                "Model number: ${modelNumber}\n" +
-                "App Version: $appVersion"
+        val message = getString(R.string.device_visibility_alert_content,
+                serialNumber,
+                firmwareRevision,
+                batteryLevel,
+                bceRevision,
+                modelNumber,
+                manufacturer,
+                appVersion
         )
+        // Display content of deviceVisibilityInfo
+        Log.i(TAG, "Did receive device visibility info:\n$message")
         runOnUiThread {
             AlertDialog.Builder(this@IntentActivity).apply {
                 setTitle(R.string.device_visibility_alert_title)
-                setMessage(getString(R.string.device_visibility_alert_content,
-                        serialNumber,
-                        firmwareRevision,
-                        batteryLevel,
-                        bceRevision,
-                        modelNumber,
-                        appVersion
-                ))
+                setMessage(message)
             }.create().show()
         }
     }
