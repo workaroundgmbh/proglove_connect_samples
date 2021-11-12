@@ -20,6 +20,7 @@ object ApiConstants {
     const val ACTION_TRIGGER_UNBLOCKED_INTENT = "com.proglove.api.TRIGGER_UNBLOCKED"
     const val ACTION_GET_CONFIG_PROFILES = "com.proglove.api.GET_CONFIG_PROFILES"
     const val ACTION_CONFIG_PROFILES = "com.proglove.api.CONFIG_PROFILES"
+    const val ACTION_SCANNER_CONFIG_CHANGE = "com.proglove.api.SCANNER_CONFIG_CHANGE"
 
     const val ACTION_DISCONNECT_DISPLAY_INTENT = "com.proglove.api.DISPLAY_DISCONNECT"
     const val ACTION_GET_DISPLAY_STATE_INTENT = "com.proglove.api.GET_DISPLAY_STATE"
@@ -36,6 +37,8 @@ object ApiConstants {
     const val EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED = "com.proglove.api.extra.config.DEFAULT_SCAN_FEEDBACK_ENABLED"
     const val EXTRA_CONFIG_PROFILE_ID = "com.proglove.api.extra.CONFIG_PROFILE_ID"
     const val EXTRA_CONFIG_PROFILE_ACTIVE_ID = "com.proglove.api.extra.CONFIG_PROFILE_ACTIVE_ID"
+    const val EXTRA_SCANNER_CONFIG_CHANGE_STATUS = "com.proglove.api.extra.SCANNER_CONFIG_CHANGE_STATUS"
+    const val EXTRA_SCANNER_CONFIG_CHANGE_ERROR_TEXT = "com.proglove.api.extra.SCANNER_CONFIG_CHANGE_ERROR_TEXT"
 
     const val EXTRA_DISPLAY_TEMPLATE_ID = "com.proglove.api.extra.TEMPLATE_ID"
     const val EXTRA_DISPLAY_DATA = "com.proglove.api.extra.DATA"

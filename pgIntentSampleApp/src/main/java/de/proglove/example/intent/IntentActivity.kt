@@ -15,6 +15,7 @@ import de.proglove.example.intent.enums.DisplayConnectionStatus
 import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
+import de.proglove.example.intent.interfaces.IScannerConfigurationChangeOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
@@ -58,7 +59,7 @@ import java.util.Date
 /**
  * PG Intent API usage example with a scanner and a display.
  */
-class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScannerOutput, IStatusOutput {
+class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScannerOutput, IStatusOutput, IScannerConfigurationChangeOutput {
 
     override var defaultFeedbackEnabled: Boolean
         get() = defaultFeedbackSwitch.isChecked
@@ -80,6 +81,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         messageHandler.registerDisplayOutput(this)
         messageHandler.registerScannerOutput(this)
         messageHandler.setStatusListener(this)
+        messageHandler.setScannerConfigurationChangeListener(this)
 
         // Handle intent sent with start activity action which created this activity.
         // That Intent will not trigger #onNewIntent.
@@ -330,6 +332,12 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         runOnUiThread {
             changeProfileLabel.visibility = if (profiles.isEmpty()) GONE else VISIBLE
             profilesAdapter.updateProfiles(profiles)
+        }
+    }
+
+    override fun onScannerConfigurationChange(status: String, errorMessage: String?) {
+        runOnUiThread {
+            lastResponseValue.text = status
         }
     }
 

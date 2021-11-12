@@ -17,4 +17,12 @@
             </intent-filter>
         </activity>
     </application>
+
+    <!--  NOTE: This is required for apps that target API level 30 and above,
+          due Package visibility limitation introduced in Android 11.
+          It is not required if app uses ProGlove's Connect-SDK version 1.8.0 and greater.  -->
+    <queries>
+        <package android:name="de.proglove.connect" />
+    </queries>
+
 </manifest>

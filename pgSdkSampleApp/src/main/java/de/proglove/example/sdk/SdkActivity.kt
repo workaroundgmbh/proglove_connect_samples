@@ -23,8 +23,11 @@ import de.proglove.sdk.button.PredefinedPgTrigger
 import de.proglove.sdk.commands.PgCommand
 import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.configuration.IPgConfigProfileCallback
+import de.proglove.sdk.configuration.IPgScannerConfigurationChangeOutput
 import de.proglove.sdk.configuration.IPgGetConfigProfilesCallback
 import de.proglove.sdk.configuration.PgConfigProfile
+import de.proglove.sdk.configuration.PgScannerConfigurationChangeResult
+import de.proglove.sdk.configuration.ScannerConfigurationChangeStatus
 import de.proglove.sdk.display.IDisplayOutput
 import de.proglove.sdk.display.IPgSetScreenCallback
 import de.proglove.sdk.display.PgScreenData
@@ -88,7 +91,7 @@ import java.util.logging.Logger
 /**
  * PG SDK example for a scanner.
  */
-class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDisplayOutput, IButtonOutput, IPgTriggersUnblockedOutput {
+class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDisplayOutput, IButtonOutput, IPgTriggersUnblockedOutput, IPgScannerConfigurationChangeOutput {
 
     private val logger = Logger.getLogger("sample-logger")
     private val pgManager = PgManager(logger)
@@ -108,6 +111,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         pgManager.subscribeToDisplayEvents(this)
         pgManager.subscribeToButtonPresses(this)
         pgManager.subscribeToPgTriggersUnblocked(this)
+        pgManager.subscribeToPgScannerConfigurationChanges(this)
 
         serviceConnectBtn.setOnClickListener {
             pgManager.ensureConnectionToService(this.applicationContext)
@@ -699,6 +703,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         pgManager.unsubscribeFromServiceEvents(this)
         pgManager.unsubscribeFromButtonPresses(this)
         pgManager.unsubscribeFromPgTriggersUnblocked(this)
+        pgManager.unsubscribeFromPgScannerConfigurationChanges(this)
     }
 
     /*
@@ -825,6 +830,31 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     }
     /*
      * End of ITriggersUnblockedOutput Implementation
+     */
+
+
+    /*
+     * IScannerConfigurationChangeOutput Implementation:
+     */
+    override fun onScannerConfigurationChange(scannerConfigurationChangeResult: PgScannerConfigurationChangeResult) {
+        runOnUiThread {
+            var message = when (val status = scannerConfigurationChangeResult.scannerConfigurationChangeStatus) {
+                is ScannerConfigurationChangeStatus.Success -> "Scanner configuration successfully changed"
+                is ScannerConfigurationChangeStatus.NoScannerConfiguration -> "No scanner configuration in the profile"
+                is ScannerConfigurationChangeStatus.Unknown -> "Unknown scanner configuration status"
+                is ScannerConfigurationChangeStatus.Error -> "Fail to change scanner configuration, status: ${status.cause}"
+            }
+
+            Toast.makeText(
+                applicationContext,
+                message,
+                Toast.LENGTH_LONG
+            ).show()
+            lastResponseValue.text = message
+        }
+    }
+    /*
+     * End of IScannerConfigurationChangeOutput Implementation
      */
 
     companion object {

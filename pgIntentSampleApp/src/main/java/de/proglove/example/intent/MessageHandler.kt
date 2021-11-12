@@ -13,6 +13,7 @@ import de.proglove.example.common.ApiConstants
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
+import de.proglove.example.intent.interfaces.IScannerConfigurationChangeOutput
 import de.proglove.example.intent.interfaces.IStatusOutput
 import java.util.Collections
 
@@ -35,11 +36,13 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         it.addAction(ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT)
         it.addAction(ApiConstants.ACTION_TRIGGER_UNBLOCKED_INTENT)
         it.addAction(ApiConstants.ACTION_CONFIG_PROFILES)
+        it.addAction(ApiConstants.ACTION_SCANNER_CONFIG_CHANGE)
         it.addAction(ApiConstants.ACTION_RECEIVE_DEVICE_VISIBILITY_INFO)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
 
     private var statusListener: IStatusOutput? = null
+    private var scannerConfigurationChangeListener: IScannerConfigurationChangeOutput? = null
 
     /**
      * A method overridden from the [BroadcastReceiver] to intercept caught intents.
@@ -77,6 +80,15 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                                 bundle.getBoolean(ApiConstants.EXTRA_CONFIG_DEFAULT_SCAN_FEEDBACK_ENABLED)
                         notifyOnDefaultScanFeedbackChanged(defaultScanFeedbackEnabled)
                     }
+                }
+
+                ApiConstants.ACTION_SCANNER_CONFIG_CHANGE -> {
+                    log("got ACTION_SCANNER_CONFIG_CHANGE")
+                    val statusCode = intent.getStringExtra(ApiConstants.EXTRA_SCANNER_CONFIG_CHANGE_STATUS)
+                            ?: "No scanner config status"
+                    val errorMessage: String? = intent.getStringExtra(ApiConstants.EXTRA_SCANNER_CONFIG_CHANGE_ERROR_TEXT)
+                    scannerConfigurationChangeListener?.onScannerConfigurationChange(statusCode, errorMessage)
+                    notifyOnScannerConfigurationChange(statusCode, errorMessage)
                 }
 
                 ApiConstants.ACTION_DISPLAY_STATE_INTENT -> {
@@ -135,6 +147,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
 
     fun setStatusListener(statusListener: IStatusOutput) {
         this.statusListener = statusListener
+    }
+
+    fun setScannerConfigurationChangeListener(scannerConfigurationChangeListener: IScannerConfigurationChangeOutput) {
+        this.scannerConfigurationChangeListener = scannerConfigurationChangeListener
     }
 
     /**
@@ -374,7 +390,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * @param symbology symbology of that barcode, if supported.
      */
     private fun notifyOnReceivedBarcode(value: String, symbology: String?) {
-        log("received Barcode $value")
+        log("notify on Barcode $value")
 
         scannerReceivers.forEach {
             it.onBarcodeScanned(value, symbology)
@@ -410,6 +426,16 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         scannerReceivers.forEach {
             it.onConfigProfilesReceived(profileIds, activeProfileId)
         }
+    }
+
+    /**
+     * Show a toast with scanner config change result and refresh the active configuration details.
+     *
+     * @param success did it succeed
+     * @param errorMessage error message, if did not succeed.
+     */
+    private fun notifyOnScannerConfigurationChange(status: String, errorMessage: String?) {
+        Toast.makeText(context, "Set scanner configuration status: $status, error message: $errorMessage", Toast.LENGTH_LONG).show()
     }
 
     /**

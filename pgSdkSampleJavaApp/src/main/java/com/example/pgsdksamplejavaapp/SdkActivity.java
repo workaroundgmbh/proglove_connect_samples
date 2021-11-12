@@ -25,7 +25,10 @@ import de.proglove.sdk.commands.PgCommand;
 import de.proglove.sdk.commands.PgCommandParams;
 import de.proglove.sdk.configuration.IPgConfigProfileCallback;
 import de.proglove.sdk.configuration.IPgGetConfigProfilesCallback;
+import de.proglove.sdk.configuration.IPgScannerConfigurationChangeOutput;
 import de.proglove.sdk.configuration.PgConfigProfile;
+import de.proglove.sdk.configuration.PgScannerConfigurationChangeResult;
+import de.proglove.sdk.configuration.ScannerConfigurationChangeStatus;
 import de.proglove.sdk.display.*;
 import de.proglove.sdk.scanner.*;
 
@@ -36,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SdkActivity extends AppCompatActivity implements IServiceOutput, IScannerOutput, IButtonOutput,
-        IPgTriggersUnblockedOutput, IDisplayOutput {
+        IPgTriggersUnblockedOutput, IDisplayOutput, IPgScannerConfigurationChangeOutput {
 
     private static final String TAG = SdkActivity.class.getSimpleName();
     private static int DEFAULT_IMAGE_TIMEOUT = 10000;
@@ -106,6 +109,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         pgManager.subscribeToScans(this);
         pgManager.subscribeToButtonPresses(this);
         pgManager.subscribeToPgTriggersUnblocked(this);
+        pgManager.subscribeToPgScannerConfigurationChanges(this);
     }
 
     @Override
@@ -122,6 +126,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         pgManager.unsubscribeFromScans(this);
         pgManager.unsubscribeFromButtonPresses(this);
         pgManager.unsubscribeFromPgTriggersUnblocked(this);
+        pgManager.unsubscribeFromPgScannerConfigurationChanges(this);
         super.onDestroy();
     }
 
@@ -244,6 +249,38 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     }
     /*
      * End of IPgTriggersUnblockedOutput Implementation
+     */
+
+    /*
+     * IScannerConfigurationChangeOutput Implementation:
+     */
+    @Override
+    public void onScannerConfigurationChange(PgScannerConfigurationChangeResult scannerConfigurationChange) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String message = "";
+                if (scannerConfigurationChange.getScannerConfigurationChangeStatus() == ScannerConfigurationChangeStatus.Success.INSTANCE) {
+                    message = "Scanner configuration successfully changed";
+                } else if (scannerConfigurationChange.getScannerConfigurationChangeStatus() == ScannerConfigurationChangeStatus.NoScannerConfiguration.INSTANCE) {
+                    message = "No scanner configuration in the profile";
+                } else if (scannerConfigurationChange.getScannerConfigurationChangeStatus() == ScannerConfigurationChangeStatus.Unknown.INSTANCE) {
+                    message = "Unknown set scanner configuration status";
+                } else if (scannerConfigurationChange.getScannerConfigurationChangeStatus() instanceof ScannerConfigurationChangeStatus.Error) {
+                    message = "Fail to change scanner configuration, error: " + ((ScannerConfigurationChangeStatus.Error) scannerConfigurationChange.getScannerConfigurationChangeStatus()).getCause().toString();
+                }
+                Toast.makeText(
+                        SdkActivity.this.getApplicationContext(),
+                        message,
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+        // Refresh the profiles list
+        getConfigProfiles();
+    }
+    /*
+     * End of IScannerConfigurationChangeOutput Implementation
      */
 
     private void initViews() {
