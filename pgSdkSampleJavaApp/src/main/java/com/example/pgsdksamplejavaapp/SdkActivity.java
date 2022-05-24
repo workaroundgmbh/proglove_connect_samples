@@ -912,6 +912,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                 });
     }
 
+    /**
+     * NOTE: In order to use {@link IPgManager#obtainDeviceVisibilityInfo(IPgDeviceVisibilityCallback)} you need to have valid ProGlove License
+     * imported in the Insight Mobile.
+     * For more info reach out to your contact person at ProGlove.
+     */
     private void obtainDeviceVisibilityInfo() {
         pgManager.obtainDeviceVisibilityInfo(new IPgDeviceVisibilityCallback() {
             @Override

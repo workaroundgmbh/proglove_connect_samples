@@ -633,6 +633,11 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 })
     }
 
+    /**
+     * NOTE: In order to use [PgManager.obtainDeviceVisibilityInfo] you need to have valid ProGlove License
+     * imported in the Insight Mobile.
+     * For more info reach out to your contact person at ProGlove.
+     */
     private fun obtainDeviceVisibilityInfo() {
         pgManager.obtainDeviceVisibilityInfo(callback = object : IPgDeviceVisibilityCallback {
             override fun onDeviceVisibilityInfoObtained(deviceVisibilityInfo: DeviceVisibilityInfo) {

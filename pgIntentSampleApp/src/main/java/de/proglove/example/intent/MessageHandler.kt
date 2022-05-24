@@ -131,7 +131,6 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 }
                 ApiConstants.ACTION_RECEIVE_DEVICE_VISIBILITY_INFO -> {
                     log("got ACTION_RECEIVE_DEVICE_VISIBILITY_INFO")
-
                     notifyOnDeviceVisibilityInfoReceived(intent)
                 }
                 else -> {
@@ -559,6 +558,11 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         sendBroadcast(intent)
     }
 
+    /**
+     * NOTE: In order to receive device visibility info, you need to have valid ProGlove License
+     * imported in the Insight Mobile.
+     * For more info reach out to your contact person at ProGlove.
+     */
     fun obtainDeviceVisibility() {
         val intent = Intent().apply {
             action = ApiConstants.ACTION_OBTAIN_DEVICE_VISIBILITY_INFO

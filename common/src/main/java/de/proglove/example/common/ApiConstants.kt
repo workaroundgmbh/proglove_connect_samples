@@ -61,6 +61,11 @@ object ApiConstants {
     const val DISPLAY_ORIENTATION_ACTIVITY_PACKAGE_NAME = "de.proglove.connect"
     const val DISPLAY_ORIENTATION_ACTIVITY_CLASS_NAME = "de.proglove.coreui.activities.DisplayOrientationActivity"
 
+    /**
+     * NOTE: In order to receive device visibility info, you need to have valid ProGlove License
+     * imported in the Insight Mobile.
+     * For more info reach out to your contact person at ProGlove.
+     */
     const val ACTION_OBTAIN_DEVICE_VISIBILITY_INFO =
             "com.proglove.api.OBTAIN_DEVICE_VISIBILITY_INFO"
     const val ACTION_RECEIVE_DEVICE_VISIBILITY_INFO =
