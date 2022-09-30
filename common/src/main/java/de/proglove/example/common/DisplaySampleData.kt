@@ -44,4 +44,12 @@ object DisplaySampleData {
             "Scan part",
             "Scan order to begin"
     )
+
+    val SAMPLE_RIGHT_HEADERS = arrayOf(
+        "1/10",
+        "9051",
+        "",
+        "B5",
+        "P-G"
+    )
 }

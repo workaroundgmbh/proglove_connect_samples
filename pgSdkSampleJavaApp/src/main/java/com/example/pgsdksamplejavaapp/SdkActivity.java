@@ -84,7 +84,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     // Display
     private TextView displayStateTV;
     private Button disconnectDisplayBtn;
-    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, sendPG1TestScreen, sendPG1ATestScreen, pickDisplayOrientationDialogBtn;
+    private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, sendPG1TestScreen, sendPG1ATestScreen, sendPG3WithRightHeadersTestScreen, pickDisplayOrientationDialogBtn;
 
     // CommandParams
     private Switch sendFeedbackWithReplaceQueueSwitch;
@@ -304,6 +304,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         sendAnotherTestScreenBtn = findViewById(R.id.sendTestScreenBtn2);
         sendPG1TestScreen = findViewById(R.id.sendPg1TestScreenBtn);
         sendPG1ATestScreen = findViewById(R.id.sendPg1ATestScreenBtn);
+        sendPG3WithRightHeadersTestScreen = findViewById(R.id.sendPg3WithRightHeadersTestScreenBtn);
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
         pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
         sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
@@ -466,6 +467,19 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         new PgTemplateField(1, "", "Scan order to begin")
                 };
                 PgScreenData screenData = new PgScreenData("PG1A", data, RefreshType.DEFAULT);
+                sendScreen(screenData);
+            }
+        });
+
+        sendPG3WithRightHeadersTestScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PgTemplateField[] data = {
+                        new PgTemplateField(1, "Quelle", "K1111", "1/10"),
+                        new PgTemplateField(2, "Ziel", "V69SS561"),
+                        new PgTemplateField(3, "Sachnummer", "A 910 689 61 00", "9051")
+                };
+                PgScreenData screenData = new PgScreenData("PG3", data, RefreshType.DEFAULT);
                 sendScreen(screenData);
             }
         });

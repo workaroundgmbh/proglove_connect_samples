@@ -353,6 +353,19 @@
             app:layout_constraintTop_toBottomOf="@+id/sendPg1TestScreenBtn" />
 
         <Button
+            android:id="@+id/sendPg3WithRightHeadersTestScreenBtn"
+            android:text="@string/send_pg3_screen_with_right_headers"
+            android:textStyle="bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sendPg1ATestScreenBtn" />
+
+        <Button
             android:id="@+id/sendTestScreenBtnFailing"
             android:text="@string/send_screen_failing"
             android:textStyle="bold"
@@ -361,7 +374,7 @@
             android:layout_marginTop="@dimen/margin_large"
             android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sendPg1ATestScreenBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/sendPg3WithRightHeadersTestScreenBtn" />
 
         <TextView
             android:id="@+id/feedbackTitleTw"

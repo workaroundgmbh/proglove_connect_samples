@@ -42,6 +42,7 @@ object ApiConstants {
 
     const val EXTRA_DISPLAY_TEMPLATE_ID = "com.proglove.api.extra.TEMPLATE_ID"
     const val EXTRA_DISPLAY_DATA = "com.proglove.api.extra.DATA"
+    const val EXTRA_DISPLAY_RIGHT_HEADERS = "com.proglove.api.extra.RIGHT_HEADERS"
     const val EXTRA_DISPLAY_SEPARATOR = "com.proglove.api.extra.SEPARATOR"
     const val EXTRA_DISPLAY_DURATION = "com.proglove.api.extra.DURATION"
     const val EXTRA_DISPLAY_REFRESH_TYPE = "com.proglove.api.extra.REFRESH_TYPE"

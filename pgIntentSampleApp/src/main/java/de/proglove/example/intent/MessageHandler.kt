@@ -261,16 +261,27 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      *
      * @param id template ID.
      * @param content data for display.
+     * @param rightHeaders additional data for display to be shown in upper right corner(s) of the field(s).
      * @param separator separator.
      * @param durationMs the duration for which this screen should be displayed. 0 means indefinite display
      * @param refreshType the refresh type to be used for this screen setting.
      *      Valid values are: ["DEFAULT", "FULL_REFRESH", "PARTIAL_REFRESH"]
      */
-    fun sendTestScreen(id: String, content: String, separator: String, durationMs: Int = 0, refreshType: String? = null) {
+    fun sendTestScreen(
+        id: String,
+        content: String,
+        rightHeaders: String?,
+        separator: String,
+        durationMs: Int = 0,
+        refreshType: String? = null
+    ) {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_SET_SCREEN_INTENT
             it.putExtra(ApiConstants.EXTRA_DISPLAY_TEMPLATE_ID, id)
             it.putExtra(ApiConstants.EXTRA_DISPLAY_DATA, content)
+            rightHeaders?.let { rightHeaders ->
+                it.putExtra(ApiConstants.EXTRA_DISPLAY_RIGHT_HEADERS, rightHeaders)
+            }
             it.putExtra(ApiConstants.EXTRA_DISPLAY_SEPARATOR, separator)
             it.putExtra(ApiConstants.EXTRA_DISPLAY_DURATION, durationMs)
             refreshType?.let { refreshType ->

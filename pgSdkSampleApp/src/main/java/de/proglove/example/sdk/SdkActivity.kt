@@ -67,6 +67,7 @@ import kotlinx.android.synthetic.main.activity_main.sendNotificationTestScreenBt
 import kotlinx.android.synthetic.main.activity_main.sendPartialRefreshTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPg1ATestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPg1TestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendPg3WithRightHeadersTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
@@ -328,6 +329,18 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             val templateId = "PG1A"
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 PgTemplateField(index + 1, pair.first, pair.second.random())
+            }
+            pgManager.setScreen(
+                    PgScreenData(templateId, templateFields).toCommand(),
+                    loggingCallback
+            )
+        }
+
+        sendPg3WithRightHeadersTestScreenBtn.setOnClickListener {
+            val templateId = "PG3"
+            val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                val rightHeader = DisplaySampleData.SAMPLE_RIGHT_HEADERS.random()
+                PgTemplateField(index + 1, pair.first, pair.second.random(), rightHeader)
             }
             pgManager.setScreen(
                     PgScreenData(templateId, templateFields).toCommand(),

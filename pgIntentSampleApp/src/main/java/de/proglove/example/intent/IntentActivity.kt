@@ -42,6 +42,7 @@ import kotlinx.android.synthetic.main.activity_intent.sendNotificationTestScreen
 import kotlinx.android.synthetic.main.activity_intent.sendPartialRefreshTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPg1ATestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPg1TestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendPg3WithRightHeadersTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_intent.unblockTriggerButton
@@ -144,7 +145,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator)
+            messageHandler.sendTestScreen(templateId, templateFields, null, separator)
         }
 
         sendPartialRefreshTestScreenBtn.setOnClickListener {
@@ -153,7 +154,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator, 0, "PARTIAL_REFRESH")
+            messageHandler.sendTestScreen(templateId, templateFields, null, separator, 0, "PARTIAL_REFRESH")
         }
 
         sendNotificationTestScreenBtn.setOnClickListener {
@@ -162,7 +163,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+            messageHandler.sendTestScreen(templateId, templateFields, null, separator, 3000)
         }
 
         sendPg1TestScreenBtn.setOnClickListener {
@@ -171,7 +172,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+            messageHandler.sendTestScreen(templateId, templateFields, null, separator, 3000)
         }
 
         sendPg1ATestScreenBtn.setOnClickListener {
@@ -180,11 +181,26 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             val templateFields = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
                 "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
             }.joinToString(separator)
-            messageHandler.sendTestScreen(templateId, templateFields, separator, 3000)
+            messageHandler.sendTestScreen(templateId, templateFields, null, separator, 3000)
+        }
+
+        sendPg3WithRightHeadersTestScreenBtn.setOnClickListener {
+            val templateId = "PG3"
+            val separator = "|"
+
+            val allData = getSampleDataForTemplate(templateId).mapIndexed { index, pair ->
+                val headerAndText = "${index + 1}$separator${pair.first}$separator${pair.second.random()}"
+                val rightHeader = "${index + 1}$separator${DisplaySampleData.SAMPLE_RIGHT_HEADERS.random()}"
+                Pair(headerAndText, rightHeader)
+            }
+            val headerAndText = allData.joinToString(separator) { pair -> pair.first }
+            val rightHeaders = allData.joinToString(separator) { pair -> pair.second }
+
+            messageHandler.sendTestScreen(templateId, headerAndText, rightHeaders, separator, 3000)
         }
 
         sendTestScreenBtnFailing.setOnClickListener {
-            messageHandler.sendTestScreen("PG2", "|||", ";")
+            messageHandler.sendTestScreen("PG2", "|||", null, ";")
         }
 
         pickDisplayOrientationDialogBtn.setOnClickListener {

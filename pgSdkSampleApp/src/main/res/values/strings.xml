@@ -27,6 +27,7 @@
     <string name="send_notification_screen">Send notification test screen to Display</string>
     <string name="send_pg1_screen">Send PG1 test screen to Display</string>
     <string name="send_pg1a_screen">Send PG1A test screen to Display</string>
+    <string name="send_pg3_screen_with_right_headers">Send PG3 test screen with right headers to Display</string>
     <string name="send_screen_failing">Send an erroneous test screen to Display</string>
     <string name="device_name_hint">Device name</string>
     <string name="take_image_button">take image</string>
