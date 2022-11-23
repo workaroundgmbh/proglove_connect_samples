@@ -11,6 +11,27 @@
         android:layout_height="wrap_content">
 
         <TextView
+          android:id="@+id/versionLabel"
+          android:text="@string/version"
+          android:textStyle="bold"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_large"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+          android:id="@+id/versionOutput"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginEnd="@dimen/margin_large"
+          android:gravity="end"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@id/versionLabel" />
+
+        <TextView
             android:id="@+id/pairNormalLbl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -92,11 +113,11 @@
             android:id="@+id/serviceConnectBtn"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_extra_large"
             android:layout_marginEnd="@dimen/margin_large"
             android:text="@string/connect_service"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/versionLabel" />
 
         <TextView
             android:id="@+id/serviceConnectionLbl"
@@ -106,7 +127,8 @@
             android:layout_marginEnd="@dimen/margin_normal"
             android:text="@string/service_connection_lbl"
             android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/serviceConnectBtn"
+            app:layout_constraintTop_toTopOf="@id/serviceConnectBtn"
+            app:layout_constraintBottom_toBottomOf="@id/serviceConnectBtn"
             app:layout_constraintEnd_toStartOf="@+id/serviceConnectBtn"
             app:layout_constraintStart_toStartOf="parent" />
 

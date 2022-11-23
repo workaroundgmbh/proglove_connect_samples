@@ -8,7 +8,6 @@
     <string name="service_connected">service connected</string>
     <string name="service_connecting">connecting…</string>
     <string name="connect_service">connect service</string>
-    <string name="scanner_connected">Scanner connected</string>
     <string name="pair_scanner">Pair scanner</string>
     <string name="connect_to_service_first">Please connect to service first</string>
     <string name="pair_scanner_first">Please pair the scanner first</string>
@@ -59,5 +58,7 @@
     <string name="device_visibility_alert_title">Device Visibility</string>
     <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nManufacturer: %6$s\nApp version: %7$s\n</string>
     <string name="device_visibility_alert_content_error">Error: %1$s</string>
+    <string name="disconnect_scanner">Disconnect scanner</string>
+    <string name="version">Version</string>
 
 </resources>

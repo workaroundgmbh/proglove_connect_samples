@@ -46,6 +46,7 @@ import kotlinx.android.synthetic.main.activity_intent.sendPg3WithRightHeadersTes
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_intent.unblockTriggerButton
+import kotlinx.android.synthetic.main.activity_intent.versionOutput
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
@@ -87,6 +88,8 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         // Handle intent sent with start activity action which created this activity.
         // That Intent will not trigger #onNewIntent.
         messageHandler.handleNewIntent(intent)
+
+        versionOutput.text = BuildConfig.VERSION_CODE.toString()
 
         getScannerStateBtn.setOnClickListener {
             messageHandler.requestScannerState()

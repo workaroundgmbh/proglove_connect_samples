@@ -54,4 +54,6 @@
     <string name="total_steps_goal_hint">Total steps</string>
     <string name="total_scans_goal_hint">Total scans</string>
     <string name="average_scantime_goal_hint">Average scantime</string>
+    <string name="version">Version</string>
+
 </resources>

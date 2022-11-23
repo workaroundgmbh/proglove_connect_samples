@@ -9,6 +9,7 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name=".IntentActivity"
+                android:exported="true"
                 android:label="@string/title_activity_scanner_intent"
                 android:launchMode="singleTask">
             <intent-filter>

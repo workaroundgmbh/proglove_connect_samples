@@ -9,6 +9,7 @@
             android:theme="@style/AppTheme">
         <activity
                 android:label="@string/app_name"
+                android:exported="true"
                 android:name=".SdkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

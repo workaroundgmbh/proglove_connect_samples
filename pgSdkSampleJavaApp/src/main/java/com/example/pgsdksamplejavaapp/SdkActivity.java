@@ -92,12 +92,16 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     // Device Visibility
     private Button deviceVisibilityBtn;
 
+    // Version
+    private TextView versionOutput;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sdk_sample);
 
         initViews();
+        initData();
         initClickListeners();
 
         setupProfilesRecycler();
@@ -315,6 +319,11 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         blockAllTriggersBtn = findViewById(R.id.blockAllTriggersButton);
         unblockTriggerBtn = findViewById(R.id.unblockTriggerButton);
         deviceVisibilityBtn = findViewById(R.id.deviceVisibilityBtn);
+        versionOutput = findViewById(R.id.versionOutput);
+    }
+
+    private void initData(){
+        versionOutput.setText(String.valueOf(BuildConfig.VERSION_CODE));
     }
 
     private void initClickListeners() {
@@ -679,8 +688,8 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
 
     private void updateScannerButtons() {
         if (pgManager.isConnectedToService() && pgManager.isConnectedToScanner()) {
-            scannerConnectBtn.setText(R.string.scanner_connected);
-            scannerConnectPinnedBtn.setText(R.string.scanner_connected);
+            scannerConnectBtn.setText(R.string.disconnect_scanner);
+            scannerConnectPinnedBtn.setText(R.string.disconnect_scanner);
         } else {
             scannerConnectBtn.setText(R.string.pair_scanner);
             scannerConnectPinnedBtn.setText(R.string.pair_scanner);

@@ -23,8 +23,8 @@ import de.proglove.sdk.button.PredefinedPgTrigger
 import de.proglove.sdk.commands.PgCommand
 import de.proglove.sdk.commands.PgCommandParams
 import de.proglove.sdk.configuration.IPgConfigProfileCallback
-import de.proglove.sdk.configuration.IPgScannerConfigurationChangeOutput
 import de.proglove.sdk.configuration.IPgGetConfigProfilesCallback
+import de.proglove.sdk.configuration.IPgScannerConfigurationChangeOutput
 import de.proglove.sdk.configuration.PgConfigProfile
 import de.proglove.sdk.configuration.PgScannerConfigurationChangeResult
 import de.proglove.sdk.configuration.ScannerConfigurationChangeStatus
@@ -51,8 +51,8 @@ import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGo
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.setActivityGoalsBtn
-import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.blockAllTriggersButton
+import kotlinx.android.synthetic.main.activity_main.blockTriggerButton
 import kotlinx.android.synthetic.main.activity_main.connectScannerPinnedBtn
 import kotlinx.android.synthetic.main.activity_main.connectScannerRegularBtn
 import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
@@ -73,6 +73,7 @@ import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
 import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
 import kotlinx.android.synthetic.main.activity_main.symbologyResult
 import kotlinx.android.synthetic.main.activity_main.unblockTriggerButton
+import kotlinx.android.synthetic.main.activity_main.versionOutput
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId2RB
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId3RB
@@ -113,6 +114,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         pgManager.subscribeToButtonPresses(this)
         pgManager.subscribeToPgTriggersUnblocked(this)
         pgManager.subscribeToPgScannerConfigurationChanges(this)
+
+        versionOutput.text = BuildConfig.VERSION_CODE.toString()
 
         serviceConnectBtn.setOnClickListener {
             pgManager.ensureConnectionToService(this.applicationContext)
@@ -462,8 +465,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
 
     private fun updateScannerConnectionButtonState() {
         if (scannerConnected) {
-            connectScannerPinnedBtn.setText(R.string.scanner_connected)
-            connectScannerRegularBtn.setText(R.string.scanner_connected)
+            connectScannerPinnedBtn.setText(R.string.disconnect_scanner)
+            connectScannerRegularBtn.setText(R.string.disconnect_scanner)
         } else {
             connectScannerPinnedBtn.setText(R.string.pair_scanner)
             connectScannerRegularBtn.setText(R.string.pair_scanner)
@@ -485,8 +488,8 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
                 serviceConnectBtn.isEnabled = false
                 serviceConnectBtn.setText(R.string.service_connected)
 
-                connectScannerPinnedBtn.setText(R.string.scanner_connected)
-                connectScannerRegularBtn.setText(R.string.scanner_connected)
+                connectScannerPinnedBtn.setText(R.string.disconnect_scanner)
+                connectScannerRegularBtn.setText(R.string.disconnect_scanner)
             }
             ServiceConnectionStatus.DISCONNECTED -> {
                 serviceConnectBtn.isEnabled = true
