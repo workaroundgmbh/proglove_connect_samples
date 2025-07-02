@@ -47,6 +47,21 @@ import de.proglove.sdk.scanner.PgPredefinedFeedback
 import de.proglove.sdk.scanner.PgScannerConfig
 import de.proglove.sdk.utils.IPgSetActivityGoalsCallback
 import de.proglove.sdk.workerperformance.PgActivityGoals
+import de.proglove.sdk.display.model.v2.DisplayType
+import de.proglove.sdk.display.model.v2.PgActionButton.Assigned
+import de.proglove.sdk.display.model.v2.PgActionButton.IndicatorColor
+import de.proglove.sdk.display.model.v2.PgActionButton.Unassigned
+import de.proglove.sdk.display.model.v2.PgActionButtons
+import de.proglove.sdk.display.model.v2.PgListViewItem
+import de.proglove.sdk.display.model.v2.PgScreen
+import de.proglove.sdk.display.model.v2.PgScreenAction
+import de.proglove.sdk.display.model.v2.PgScreenComponent
+import de.proglove.sdk.display.model.v2.PgScreenEvent
+import de.proglove.sdk.display.model.v2.PgScreenInputMethod
+import de.proglove.sdk.display.model.v2.PgScreenOrientation
+import de.proglove.sdk.display.model.v2.PgScreenResources
+import de.proglove.sdk.display.model.v2.PgScreenTimer
+import de.proglove.sdk.display.model.v2.PgScreenView
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsAverageScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsScansGoalEdit
 import kotlinx.android.synthetic.main.activity_goals.activityGoalsStepsGoalEdit
@@ -59,8 +74,11 @@ import kotlinx.android.synthetic.main.activity_main.defaultFeedbackSwitch
 import kotlinx.android.synthetic.main.activity_main.deviceVisibilityBtn
 import kotlinx.android.synthetic.main.activity_main.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_main.displayStateOutput
+import kotlinx.android.synthetic.main.activity_main.displayTypeOutput
+import kotlinx.android.synthetic.main.activity_main.displayDeviceTypeBtn
 import kotlinx.android.synthetic.main.activity_main.inputField
 import kotlinx.android.synthetic.main.activity_main.lastResponseValue
+import kotlinx.android.synthetic.main.activity_main.lastScreenContextOutput
 import kotlinx.android.synthetic.main.activity_main.pickDisplayOrientationDialogBtn
 import kotlinx.android.synthetic.main.activity_main.sendFeedbackWithReplaceQueueSwitch
 import kotlinx.android.synthetic.main.activity_main.sendNotificationTestScreenBtn
@@ -68,8 +86,12 @@ import kotlinx.android.synthetic.main.activity_main.sendPartialRefreshTestScreen
 import kotlinx.android.synthetic.main.activity_main.sendPg1ATestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPg1TestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendPg3WithRightHeadersTestScreenBtn
+import kotlinx.android.synthetic.main.activity_main.sendPgListT1Btn
+import kotlinx.android.synthetic.main.activity_main.sendPgNtfT5Btn
+import kotlinx.android.synthetic.main.activity_main.sendPgWork3Btn2T1
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_main.sendTestScreenBtnFailing
+import kotlinx.android.synthetic.main.activity_main.sendTimerScreenBtn
 import kotlinx.android.synthetic.main.activity_main.serviceConnectBtn
 import kotlinx.android.synthetic.main.activity_main.symbologyResult
 import kotlinx.android.synthetic.main.activity_main.unblockTriggerButton
@@ -226,6 +248,7 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         }
 
         addDisplayClickListeners()
+        addDisplayV2ClickListeners()
 
         pickDisplayOrientationDialogBtn.setOnClickListener {
             val error = pgManager.showPickDisplayOrientationDialog(this)
@@ -245,6 +268,10 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     }
 
     private fun addDisplayClickListeners() {
+
+        displayDeviceTypeBtn.setOnClickListener {
+            updateDisplayConnectionUiState()
+        }
 
         val loggingCallback = object : IPgSetScreenCallback {
 
@@ -348,6 +375,298 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             pgManager.setScreen(
                     PgScreenData(templateId, templateFields).toCommand(),
                     loggingCallback
+            )
+        }
+    }
+
+    private fun addDisplayV2ClickListeners() {
+        sendPgNtfT5Btn.setOnClickListener {
+            pgManager.setScreen(
+                PgScreen(
+                    referenceId = "pgNtfT5Screen",
+                    screenView = PgScreenView.TemplateV2.NotificationView.PgNtfT5(
+                        referenceId = "",
+                        tagline = "Notification",
+                        message = "This is a message with two buttons",
+                        primaryButton = PgScreenComponent.Button(
+                            referenceId = "BUTTON_PRIMARY",
+                            text = "OK",
+                            onSingleClick = PgScreenAction.Notify
+                        ),
+                        secondaryButton = PgScreenComponent.Button(
+                            referenceId = "BUTTON_SECONDARY",
+                            text = "Cancel",
+                            onSingleClick = PgScreenAction.Notify
+                        ),
+                    ),
+                    actionButtons = PgActionButtons(
+                        frontOutside = Assigned(
+                            referenceId = "actionButton1",
+                            indicatorLabelText = "Notify",
+                            indicatorColor = IndicatorColor.Yellow,
+                            onSingleClick = PgScreenAction.Notify,
+                        ),
+                        backOutside = Assigned(
+                            referenceId = "actionButton2",
+                            indicatorLabelText = "Back",
+                            indicatorColor = IndicatorColor.Red,
+                            onSingleClick = PgScreenAction.NavigateBack,
+                        ),
+                        frontInside = Assigned(
+                            referenceId = "actionButton3",
+                            indicatorLabelText = "Ok",
+                            indicatorColor = IndicatorColor.Cyan,
+                            onSingleClick = PgScreenAction.ClickOnPgScreenComponent(
+                                "BUTTON_PRIMARY"
+                            ),
+                        ),
+                        backInside = Assigned(
+                            referenceId = "actionButton4",
+                            indicatorLabelText = "Cancel",
+                            indicatorColor = IndicatorColor.Green,
+                            onSingleClick = PgScreenAction.ClickOnPgScreenComponent(
+                                "BUTTON_SECONDARY"
+                            ),
+                        ),
+                    ),
+                    forcedOrientation = PgScreenOrientation.LANDSCAPE
+                ).toCommand(),
+                object : IPgSetScreenCallback {
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Notification screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = getString(R.string.set_screen_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Error setting notification screen: $error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                }
+            )
+        }
+        
+        sendPgWork3Btn2T1.setOnClickListener {
+            pgManager.setScreen(
+                PgScreen(
+                    referenceId = "work3Btn2T1Screen",
+                    screenViews = arrayOf(PgScreenView.TemplateV2.WorkflowView.PgWork3Btn2T1(
+                        fieldTop = PgScreenComponent.TextField(
+                            referenceId = "fieldTop",
+                            headerText = "Top Field",
+                            contentText = "Workflow View with 2 buttons and 1 text field"
+                        ),
+                        fieldMiddleLeft = PgScreenComponent.TextField(
+                            headerText = "Middle Left Field",
+                            contentText = "This is the left field in the middle section"
+                        ),
+                        fieldMiddleRight = PgScreenComponent.TextField(
+                            referenceId = "fieldMiddleRight",
+                            headerText = "Middle Right Field",
+                            contentText = "This is the right field in the middle section",
+                            inputMethod = PgScreenInputMethod.NumPad()
+                        ),
+                        button1 = PgScreenComponent.Button(
+                            referenceId = "button1",
+                            text = "Ok",
+                            onSingleClick = PgScreenAction.Notify
+                        ),
+                        button2 = PgScreenComponent.Button(
+                            referenceId = "button2",
+                            text = "Cancel",
+                            onSingleClick = PgScreenAction.Notify
+                        )),
+                        PgScreenView.TemplateV2.WorkflowView.PgWork1T1(
+                            fieldMain = PgScreenComponent.TextField(
+                                headerText = "Main Field",
+                                contentText = "This is the main text field"
+                            ),
+                        )),
+                    actionButtons = PgActionButtons(
+                        frontOutside = Unassigned,
+                        backOutside = Unassigned,
+                        frontInside = Assigned(
+                            referenceId = "actionButton1",
+                            indicatorLabelText = "Action 1",
+                            indicatorColor = IndicatorColor.Green,
+                            onSingleClick = PgScreenAction.Notify
+                        ),
+                        backInside = Assigned(
+                            referenceId = "actionButton2",
+                            indicatorLabelText = "Back",
+                            indicatorColor = IndicatorColor.Red,
+                            onSingleClick = PgScreenAction.NavigateBack
+                        )
+                    ),
+                    forcedOrientation = PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+
+                object : IPgSetScreenCallback {
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Work3T1 screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = getString(R.string.set_screen_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Error setting Work3T1 screen: $error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                }
+            )
+        }
+
+        sendPgListT1Btn.setOnClickListener {
+            val listItems = listOf(
+                PgListViewItem.PgListT1Item(
+                    mainText = "Item 1",
+                    underlineText = "Description 1",
+                    trailingIcon = PgScreenResources.ListItemTrailingIcon.None,
+                    trailingText = "1"
+                ),
+                PgListViewItem.PgListT1Item(
+                    mainText = "Item 2",
+                    underlineText = "Description 2",
+                    trailingIcon = PgScreenResources.ListItemTrailingIcon.Arrow,
+                    trailingText = "2"
+                ),
+                PgListViewItem.PgListT1Item(
+                    mainText = "Item 3",
+                    underlineText = "Description 3",
+                    trailingIcon = PgScreenResources.ListItemTrailingIcon.None,
+                    trailingText = "3"
+                ),
+                PgListViewItem.PgListT1Item(
+                    mainText = "Item 4",
+                    underlineText = "Description 4",
+                    trailingIcon = PgScreenResources.ListItemTrailingIcon.Arrow,
+                    trailingText = "4"
+                ),
+                PgListViewItem.PgListT1Item(
+                    mainText = "Item 5",
+                    underlineText = "Description 5",
+                    trailingIcon = PgScreenResources.ListItemTrailingIcon.None,
+                    trailingText = "5"
+                )
+            )
+
+            pgManager.setScreen(
+                PgScreen(
+                    referenceId = "listScreen",
+                    screenView = PgScreenView.TemplateV2.ListView.PgListT1(
+                        referenceId = "",
+                        header = "List View Example",
+                        items = listItems
+                    ),
+                    actionButtons = PgActionButtons(
+                        frontOutside = Unassigned,
+                        backOutside = Unassigned,
+                        frontInside = Assigned(
+                            referenceId = "actionButton1",
+                            indicatorLabelText = "Notify",
+                            indicatorColor = IndicatorColor.Yellow,
+                            onSingleClick = PgScreenAction.Notify
+                        ),
+                        backInside = Assigned(
+                            referenceId = "actionButton2",
+                            indicatorLabelText = "Back",
+                            indicatorColor = IndicatorColor.Red,
+                            onSingleClick = PgScreenAction.NavigateBack
+                        )
+                    ),
+                    forcedOrientation = PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+
+                object : IPgSetScreenCallback {
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "List T1 screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = getString(R.string.set_screen_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Error setting List T1 screen: $error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                }
+            )
+        }
+
+        sendTimerScreenBtn.setOnClickListener {
+            pgManager.setScreen(
+                PgScreen(
+                    referenceId = "timerScreen",
+                    screenView = PgScreenView.TemplateV2.WorkflowView.PgWork1T1(
+                        referenceId = "",
+                        fieldMain = PgScreenComponent.TextField(
+                        headerText = "Timer Example",
+                        contentText = "This screen will automatically navigate back after 2 seconds.",
+                            state = PgScreenComponent.TextField.State.Focused(true)
+                        )
+                    ),
+                    timer = PgScreenTimer.Enabled(
+                        timeoutMs = 2000,
+                        onExpire = PgScreenAction.NavigateBack
+                    ),
+                    forcedOrientation = PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+
+                object : IPgSetScreenCallback {
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Timer screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = getString(R.string.set_screen_success)
+                        }
+                    }
+
+                    override fun onError(error: PgError) {
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@SdkActivity,
+                                "Error setting Timer screen: $error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            lastResponseValue.text = error.toString()
+                        }
+                    }
+                }
             )
         }
     }
@@ -460,6 +779,14 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
             serviceConnectionState != ServiceConnectionStatus.CONNECTED -> displayStateOutput.setText(R.string.display_disconnected)
             displayConnected -> displayStateOutput.setText(R.string.display_connected)
             else -> displayStateOutput.setText(R.string.display_disconnected)
+        }
+
+        when (pgManager.getConnectedDisplayType()) {
+            DisplayType.UNKNOWN -> displayTypeOutput.setText(R.string.display_type_unknown)
+            DisplayType.NOT_CONNECTED -> displayTypeOutput.setText(R.string.display_not_connected)
+            DisplayType.NOT_DISPLAY_DEVICE -> displayTypeOutput.setText(R.string.not_a_display_device)
+            DisplayType.V1 -> displayTypeOutput.setText(R.string.display_type_v1)
+            DisplayType.V2 -> displayTypeOutput.setText(R.string.display_type_v2)
         }
     }
 
@@ -759,6 +1086,11 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         runOnUiThread {
             inputField.text = barcodeScanResults.barcodeContent
             symbologyResult.text = barcodeScanResults.symbology ?: ""
+            barcodeScanResults.screenContext?.let {
+                lastScreenContextOutput.text = "Screen ID: ${barcodeScanResults.screenContext?.screenId}"
+            } ?: run {
+                lastScreenContextOutput.text = ""
+            }
             if (barcodeScanResults.symbology?.isNotEmpty() == true) {
                 Toast.makeText(
                         this,
@@ -825,6 +1157,22 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
         }
     }
 
+    override fun onScreenEvent(screenEvent: PgScreenEvent) {
+        runOnUiThread {
+            val toastText = when (screenEvent) {
+                is PgScreenEvent.ScreenDataUpdated ->
+                    "Screen data updated: ${screenEvent.componentId}"
+
+                is PgScreenEvent.ScreenComponentClicked ->
+                    "Screen component clicked: ${screenEvent.componentId}"
+
+                is PgScreenEvent.ScreenTimerExpired ->
+                    "Screen timer expired: ${screenEvent.screenContext.screenId}"
+            }
+            Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     /*
      * End of IDisplayOutput Implementation
      */
@@ -835,6 +1183,11 @@ class SdkActivity : AppCompatActivity(), IScannerOutput, IServiceOutput, IDispla
     override fun onButtonPressed(buttonPressed: ButtonPress) {
         runOnUiThread {
             Toast.makeText(this, "Button Pressed: ${buttonPressed.id}", Toast.LENGTH_SHORT).show()
+            buttonPressed.screenContext?.let {
+                lastScreenContextOutput.text = "Screen ID: ${buttonPressed.screenContext?.screenId}"
+            } ?: run {
+                lastScreenContextOutput.text = ""
+            }
         }
     }
     /*

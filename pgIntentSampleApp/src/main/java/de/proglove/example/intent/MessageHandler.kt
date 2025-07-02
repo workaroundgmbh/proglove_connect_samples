@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Toast
 import de.proglove.example.common.ApiConstants
 import de.proglove.example.intent.enums.DeviceConnectionStatus
+import de.proglove.example.intent.enums.DisplayDeviceType
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
 import de.proglove.example.intent.interfaces.IScannerConfigurationChangeOutput
@@ -38,6 +39,9 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         it.addAction(ApiConstants.ACTION_CONFIG_PROFILES)
         it.addAction(ApiConstants.ACTION_SCANNER_CONFIG_CHANGE)
         it.addAction(ApiConstants.ACTION_RECEIVE_DEVICE_VISIBILITY_INFO)
+        it.addAction(ApiConstants.ACTION_DISPLAY_DEVICE_TYPE_INTENT)
+        it.addAction(ApiConstants.ACTION_SET_DISPLAY_SCREEN_V2_RESULT_INTENT)
+        it.addAction(ApiConstants.ACTION_DISPLAY_SCREEN_EVENT_INTENT)
         it.addCategory(Intent.CATEGORY_DEFAULT)
     }
 
@@ -100,9 +104,10 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 }
                 ApiConstants.ACTION_BUTTON_PRESSED_INTENT -> {
                     log("got ACTION_BUTTON_PRESSED_INTENT")
-                    intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_BUTTON)?.let { s ->
-                        notifyOnButtonPressed(s)
-                    }
+                    val buttonId = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_BUTTON)
+                    val screenContext = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SCREEN_CONTEXT)
+
+                    notifyOnButtonPressed(buttonId ?: "", screenContext ?: "")
                 }
                 ApiConstants.ACTION_SET_SCREEN_RESULT_INTENT -> {
                     log("got ACTION_SET_SCREEN_RESULT_INTENT")
@@ -133,11 +138,42 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     log("got ACTION_RECEIVE_DEVICE_VISIBILITY_INFO")
                     notifyOnDeviceVisibilityInfoReceived(intent)
                 }
+                ApiConstants.ACTION_DISPLAY_DEVICE_TYPE_INTENT -> {
+                    log("got ACTION_DISPLAY_DEVICE_TYPE_INTENT")
+                    intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_DEVICE_TYPE)?.let { s ->
+                        log("got display type $s")
+                        notifyOnDisplayTypeChanged(DisplayDeviceType.valueOf(s))
+                    }
+                }
+                ApiConstants.ACTION_SET_DISPLAY_SCREEN_V2_RESULT_INTENT -> {
+                    log("got ACTION_SET_DISPLAY_SCREEN_V2_RESULT_INTENT")
+                    val success = intent.getBooleanExtra(ApiConstants.EXTRA_DISPLAY_SET_SCREEN_SUCCESS, false)
+                    var errorMessage: String? = null
+                    if (!success) {
+                        errorMessage = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SET_SCREEN_ERROR_TEXT)
+                        statusListener?.onStatusReceived("set screen v2 error")
+                    } else {
+                        statusListener?.onStatusReceived("set screen v2 success")
+                    }
+                    notifyOnSetScreenSuccess(success, errorMessage)
+                }
+                ApiConstants.ACTION_DISPLAY_SCREEN_EVENT_INTENT -> {
+                    log("got ACTION_DISPLAY_SCREEN_EVENT_INTENT")
+                    val screenContext = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SCREEN_CONTEXT)?.also { s ->
+                        log("got display screen context $s")
+                    } ?: ""
+
+                    val screenEvent = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SCREEN_EVENT)?.also { s ->
+                        log("got display screen event $s")
+                    } ?: ""
+
+                    notifyOnDisplayEventReceived(screenEvent, screenContext)
+                }
                 else -> {
                     if (intent.hasExtra(ApiConstants.EXTRA_DATA_STRING_PG) || intent.hasExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)) {
                         handleScannedBarcode(it)
                     } else {
-                        log("Unrecognized Intent")
+                        log("Unrecognized Intent: $it")
                     }
                 }
             }
@@ -214,6 +250,16 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     fun requestDisplayState() {
         val intent = Intent().also {
             it.action = ApiConstants.ACTION_GET_DISPLAY_STATE_INTENT
+        }
+        sendBroadcast(intent)
+    }
+
+    /**
+     * Request current display device type to be broadcast and sent down to the registered display callback output.
+     */
+    fun requestDisplayDeviceType() {
+        val intent = Intent().also {
+            it.action = ApiConstants.ACTION_GET_DISPLAY_DEVICE_TYPE_INTENT
         }
         sendBroadcast(intent)
     }
@@ -296,11 +342,12 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      */
     private fun handleScannedBarcode(intent: Intent) {
         val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
-        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
+        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG) ?: ""
+        val screenContext = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SCREEN_CONTEXT) ?: ""
 
         barcodeContent?.let { s ->
             log("received Barcode pg: $s")
-            notifyOnReceivedBarcode(s, symbology)
+            notifyOnReceivedBarcode(s, symbology, screenContext)
         }
     }
 
@@ -309,7 +356,8 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      */
     private fun handleIvantiBarcode(intent: Intent) {
         val barcodeContent = intent.getStringExtra(ApiConstants.EXTRA_DATA_STRING_PG)
-        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG)
+        val symbology = intent.getStringExtra(ApiConstants.EXTRA_SYMBOLOGY_STRING_PG) ?: ""
+        val screenContext = intent.getStringExtra(ApiConstants.EXTRA_DISPLAY_SCREEN_CONTEXT) ?: ""
 
         // When configured, Ivanti barcode intent is triggered by double click
         // on a connected device. In this case button ID is added as extra
@@ -317,7 +365,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
 
         barcodeContent?.let { s ->
             log("received Ivanti Barcode: $s")
-            notifyOnReceivedBarcode(s, symbology)
+            notifyOnReceivedBarcode(s, symbology, screenContext)
         }
 
         buttonId?.let {
@@ -344,11 +392,11 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
     /**
      * Notify display receivers of a button press on D3.
      */
-    private fun notifyOnButtonPressed(buttonId: String) {
+    private fun notifyOnButtonPressed(buttonId: String, screenContext: String) {
         log("ButtonId: $buttonId")
 
         displayReceivers.forEach {
-            it.onButtonPressed(buttonId)
+            it.onButtonPressed(buttonId, screenContext)
         }
     }
 
@@ -361,6 +409,18 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
         log("received displayState $newState")
         displayReceivers.forEach {
             it.onDisplayStateChanged(newState)
+        }
+    }
+
+    /**
+     * Notify display receivers of a device type change.
+     *
+     * @param displayDeviceType the new display device type.
+     */
+    private fun notifyOnDisplayTypeChanged(displayDeviceType: DisplayDeviceType) {
+        log("received displayDeviceType $displayDeviceType")
+        displayReceivers.forEach {
+            it.onDisplayDeviceTypeChanged(displayDeviceType)
         }
     }
 
@@ -380,6 +440,8 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                 intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_MANUFACTURER) ?: ""
         val appVersion =
                 intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION) ?: ""
+        val deviceBluetoothMacAddress =
+                intent.getStringExtra(ApiConstants.EXTRA_DEVICE_VISIBILITY_INFO_DEVICE_BLUETOOTH_MAC_ADDRESS) ?: ""
 
         scannerReceivers.forEach {
             it.onDeviceVisibilityInfoReceived(
@@ -389,6 +451,7 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
                     bceRevision,
                     modelNumber,
                     manufacturer,
+                    deviceBluetoothMacAddress,
                     appVersion)
         }
     }
@@ -399,11 +462,11 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      * @param value scanned barcode string.
      * @param symbology symbology of that barcode, if supported.
      */
-    private fun notifyOnReceivedBarcode(value: String, symbology: String?) {
+    private fun notifyOnReceivedBarcode(value: String, symbology: String, screenContext: String) {
         log("notify on Barcode $value")
 
         scannerReceivers.forEach {
-            it.onBarcodeScanned(value, symbology)
+            it.onBarcodeScanned(value, symbology, screenContext)
         }
     }
 
@@ -446,6 +509,18 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
      */
     private fun notifyOnScannerConfigurationChange(status: String, errorMessage: String?) {
         Toast.makeText(context, "Set scanner configuration status: $status, error message: $errorMessage", Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Notify display receivers of a display event.
+     *
+     * @param event the display event.
+     */
+    private fun notifyOnDisplayEventReceived(event: String, context: String) {
+        log("received display event: $event")
+        displayReceivers.forEach {
+            it.onDisplayEventReceived(event, context)
+        }
     }
 
     /**
@@ -579,6 +654,22 @@ class MessageHandler(private val context: Context) : BroadcastReceiver() {
             action = ApiConstants.ACTION_OBTAIN_DEVICE_VISIBILITY_INFO
         }
         sendBroadcast(intent)
+    }
+
+    fun sendPgNtfT5() {
+        sendBroadcast(DisplayV2Examples.PgNtfT5)
+    }
+
+    fun sendPgWork3Btn2T1() {
+        sendBroadcast(DisplayV2Examples.PgWork3Btn2T1)
+    }
+
+    fun sendPgListT1() {
+        sendBroadcast(DisplayV2Examples.PgListT1)
+    }
+
+    fun sendTimerScreen() {
+        sendBroadcast(DisplayV2Examples.TimerScreen)
     }
 
     fun updateGoals(totalStepsGoal: Int, totalScansGoal: Int, averageScantimeGoal: Float) {

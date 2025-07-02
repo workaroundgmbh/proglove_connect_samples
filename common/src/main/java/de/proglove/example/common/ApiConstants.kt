@@ -4,7 +4,6 @@ package de.proglove.example.common
  * These are the constants used by the intent API.
  */
 object ApiConstants {
-
     const val ACTION_DISCONNECT_INTENT = "com.proglove.api.DISCONNECT"
     const val ACTION_GET_STATE_INTENT = "com.proglove.api.GET_SCANNER_STATE"
     const val ACTION_SCANNER_STATE_INTENT = "com.proglove.api.SCANNER_STATE"
@@ -28,6 +27,8 @@ object ApiConstants {
     const val ACTION_BUTTON_PRESSED_INTENT = "com.proglove.api.DISPLAY_BUTTON"
     const val ACTION_SET_SCREEN_INTENT = "com.proglove.api.SET_DISPLAY_SCREEN"
     const val ACTION_SET_SCREEN_RESULT_INTENT = "com.proglove.api.SET_DISPLAY_SCREEN_RESULT"
+    const val ACTION_GET_DISPLAY_DEVICE_TYPE_INTENT = "com.proglove.api.GET_DISPLAY_DEVICE_TYPE"
+    const val ACTION_DISPLAY_DEVICE_TYPE_INTENT = "com.proglove.api.DISPLAY_DEVICE_TYPE"
 
     const val EXTRA_SCANNER_STATE = "com.proglove.api.extra.SCANNER_STATE"
     const val EXTRA_DATA_STRING_PG = "com.proglove.api.extra.BARCODE_DATA"
@@ -52,6 +53,7 @@ object ApiConstants {
     const val EXTRA_DISPLAY_SET_SCREEN_SUCCESS = "com.proglove.api.extra.DISPLAY_SET_SCREEN_SUCCESS"
     const val EXTRA_DISPLAY_SET_SCREEN_ERROR_TEXT = "com.proglove.api.extra.DISPLAY_SET_SCREEN_ERROR"
     const val EXTRA_FEEDBACK_SEQUENCE_ID = "com.proglove.api.extra.FEEDBACK_SEQUENCE_ID"
+    const val EXTRA_DISPLAY_DEVICE_TYPE = "com.proglove.api.extra.DISPLAY_DEVICE_TYPE"
 
     const val EXTRA_TRIGGERS_BLOCK = "com.proglove.api.extra.TRIGGERS_BLOCK"
     const val EXTRA_TRIGGERS_UNBLOCK_BY = "com.proglove.api.extra.TRIGGERS_UNBLOCK_BY"
@@ -85,10 +87,33 @@ object ApiConstants {
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_MANUFACTURER"
     const val EXTRA_DEVICE_VISIBILITY_INFO_APP_VERSION =
             "com.proglove.api.extra.DEVICE_VISIBILITY_INFO_APP_VERSION"
+    const val EXTRA_DEVICE_VISIBILITY_INFO_DEVICE_BLUETOOTH_MAC_ADDRESS =
+            "com.proglove.api.extra.EXTRA_DEVICE_VISIBILITY_INFO_DEVICE_BLUETOOTH_MAC_ADDRESS"
 
 
     const val ACTION_CONFIGURE_ACTIVITY_GOALS = "com.proglove.api.CONFIGURE_WORKER_GOALS"
     const val EXTRA_ACTIVITY_GOAL_TOTAL_STEPS = "com.proglove.api.extra.WORKER_GOAL_TOTAL_STEPS"
     const val EXTRA_ACTIVITY_GOAL_TOTAL_SCANS = "com.proglove.api.extra.WORKER_GOAL_TOTAL_SCANS"
     const val EXTRA_ACTIVITY_GOAL_AVERAGE_SCAN_SPEED = "com.proglove.api.extra.WORKER_GOAL_AVERAGE_SCAN_SPEED"
+
+    // Set Display V2 Extras
+    const val ACTION_SET_SCREEN_V2_INTENT = "com.proglove.api.SET_DISPLAY_SCREEN_V2"
+
+    const val EXTRA_DISPLAY_SCREEN_ID = "com.proglove.api.extra.SCREEN_ID"
+    const val EXTRA_DISPLAY_SCREEN_VIEWS = "com.proglove.api.extra.SCREEN_VIEWS"
+    const val EXTRA_DISPLAY_ACTIVE_SCREEN_VIEW_ID = "com.proglove.api.extra.ACTIVE_SCREEN_VIEW_ID"
+    const val EXTRA_ACTION_BUTTONS = "com.proglove.api.extra.ACTION_BUTTONS"
+    const val EXTRA_DISPLAY_SCREEN_TIMER = "com.proglove.api.extra.SCREEN_TIMER"
+    const val EXTRA_ORIENTATION = "com.proglove.api.extra.DISPLAY_FORCED_ORIENTATION"
+
+    const val ACTION_SET_DISPLAY_SCREEN_V2_RESULT_INTENT = "com.proglove.api.SET_DISPLAY_SCREEN_V2_RESULT"
+    const val ACTION_DISPLAY_SCREEN_EVENT_INTENT = "com.proglove.api.DISPLAY_SCREEN_EVENT"
+    const val EXTRA_DISPLAY_SCREEN_CONTEXT = "com.proglove.api.extra.SCREEN_CONTEXT"
+    const val EXTRA_DISPLAY_SCREEN_EVENT = "com.proglove.api.extra.SCREEN_EVENT"
+
+    const val EVENT_COMPONENT_CLICKED = "component_clicked"
+    const val EVENT_DATA_UPDATED = "data_updated"
+    const val EVENT_TIMER_EXPIRED = "timer_expired"
+
+    const val EVENT_REFERENCE_ID = "ref_id"
 }

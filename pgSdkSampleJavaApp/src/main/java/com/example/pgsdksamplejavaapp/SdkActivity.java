@@ -6,15 +6,24 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
-
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import de.proglove.sdk.*;
+import de.proglove.sdk.ConnectionStatus;
+import de.proglove.sdk.IPgManager;
+import de.proglove.sdk.IServiceOutput;
+import de.proglove.sdk.PgError;
+import de.proglove.sdk.PgManager;
 import de.proglove.sdk.button.BlockPgTriggersParams;
 import de.proglove.sdk.button.ButtonPress;
 import de.proglove.sdk.button.IBlockPgTriggersCallback;
@@ -29,11 +38,56 @@ import de.proglove.sdk.configuration.IPgScannerConfigurationChangeOutput;
 import de.proglove.sdk.configuration.PgConfigProfile;
 import de.proglove.sdk.configuration.PgScannerConfigurationChangeResult;
 import de.proglove.sdk.configuration.ScannerConfigurationChangeStatus;
-import de.proglove.sdk.display.*;
-import de.proglove.sdk.scanner.*;
-
+import de.proglove.sdk.display.IDisplayOutput;
+import de.proglove.sdk.display.IPgSetScreenCallback;
+import de.proglove.sdk.display.PgScreenData;
+import de.proglove.sdk.display.PgTemplateField;
+import de.proglove.sdk.display.RefreshType;
+import de.proglove.sdk.display.model.v2.DisplayType;
+import de.proglove.sdk.display.model.v2.PgActionButton.Assigned;
+import de.proglove.sdk.display.model.v2.PgActionButton.IndicatorColor.Cyan;
+import de.proglove.sdk.display.model.v2.PgActionButton.IndicatorColor.Green;
+import de.proglove.sdk.display.model.v2.PgActionButton.IndicatorColor.Red;
+import de.proglove.sdk.display.model.v2.PgActionButton.IndicatorColor.Yellow;
+import de.proglove.sdk.display.model.v2.PgActionButton.Unassigned;
+import de.proglove.sdk.display.model.v2.PgActionButtons;
+import de.proglove.sdk.display.model.v2.PgListViewItem;
+import de.proglove.sdk.display.model.v2.PgListViewItem.PgListT1Item;
+import de.proglove.sdk.display.model.v2.PgScreen;
+import de.proglove.sdk.display.model.v2.PgScreenAction;
+import de.proglove.sdk.display.model.v2.PgScreenAction.NavigateBack;
+import de.proglove.sdk.display.model.v2.PgScreenAction.Notify;
+import de.proglove.sdk.display.model.v2.PgScreenComponent;
+import de.proglove.sdk.display.model.v2.PgScreenComponent.TextField;
+import de.proglove.sdk.display.model.v2.PgScreenComponent.TextField.State.NoState;
+import de.proglove.sdk.display.model.v2.PgScreenContext;
+import de.proglove.sdk.display.model.v2.PgScreenEvent;
+import de.proglove.sdk.display.model.v2.PgScreenInputMethod.NumPad;
+import de.proglove.sdk.display.model.v2.PgScreenOrientation;
+import de.proglove.sdk.display.model.v2.PgScreenResources.ListItemTrailingIcon.Arrow;
+import de.proglove.sdk.display.model.v2.PgScreenResources.ListItemTrailingIcon.None;
+import de.proglove.sdk.display.model.v2.PgScreenTimer;
+import de.proglove.sdk.display.model.v2.PgScreenTimer.Disabled;
+import de.proglove.sdk.display.model.v2.PgScreenView;
+import de.proglove.sdk.display.model.v2.PgScreenView.TemplateV2.WorkflowView;
+import de.proglove.sdk.display.model.v2.PgScreenView.TemplateV2.WorkflowView.PgWork1T1;
+import de.proglove.sdk.display.model.v2.PgScreenView.TemplateV2.WorkflowView.PgWork3Btn2T1;
+import de.proglove.sdk.scanner.BarcodeScanResults;
+import de.proglove.sdk.scanner.DeviceVisibilityInfo;
+import de.proglove.sdk.scanner.IPgDeviceVisibilityCallback;
+import de.proglove.sdk.scanner.IPgFeedbackCallback;
+import de.proglove.sdk.scanner.IPgImageCallback;
+import de.proglove.sdk.scanner.IPgScannerConfigCallback;
+import de.proglove.sdk.scanner.IScannerOutput;
+import de.proglove.sdk.scanner.ImageResolution;
+import de.proglove.sdk.scanner.PgImage;
+import de.proglove.sdk.scanner.PgImageConfig;
+import de.proglove.sdk.scanner.PgPredefinedFeedback;
+import de.proglove.sdk.scanner.PgScannerConfig;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +140,10 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     private Button disconnectDisplayBtn;
     private Button sendTestScreenBtn, sendAnotherTestScreenBtn, sendTestScreenFailBtn, sendPG1TestScreen, sendPG1ATestScreen, sendPG3WithRightHeadersTestScreen, pickDisplayOrientationDialogBtn;
 
+    // Display V2
+    private Button sendPgNtfT5Btn, sendPgWork3Btn2T1, sendPgListT1Btn, sendTimerScreenBtn, displayDeviceTypeBtn;
+		private TextView displayTypeOutput, screenContextOutput;
+
     // CommandParams
     private Switch sendFeedbackWithReplaceQueueSwitch;
 
@@ -103,6 +161,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         initViews();
         initData();
         initClickListeners();
+        addDisplayV2ClickListeners();
 
         setupProfilesRecycler();
 
@@ -114,6 +173,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         pgManager.subscribeToButtonPresses(this);
         pgManager.subscribeToPgTriggersUnblocked(this);
         pgManager.subscribeToPgScannerConfigurationChanges(this);
+        pgManager.subscribeToDisplayEvents(this);
     }
 
     @Override
@@ -202,6 +262,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
     @Override
     public void onButtonPressed(@NonNull final ButtonPress buttonPress) {
         String msg = getString(R.string.button_pressed, buttonPress.getId());
+        updateScreenContextOutput(buttonPress.getScreenContext());
         showMessage(msg, false);
     }
     /*
@@ -312,6 +373,13 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         sendTestScreenFailBtn = findViewById(R.id.sendTestScreenD3BtnFailing);
         pickDisplayOrientationDialogBtn = findViewById(R.id.pickDisplayOrientationDialogBtn);
         sendFeedbackWithReplaceQueueSwitch = findViewById(R.id.sendFeedbackWithReplaceQueueSwitch);
+        sendPgNtfT5Btn = findViewById(R.id.sendPgNtfT5Btn);
+        sendPgWork3Btn2T1 = findViewById(R.id.sendPgWork3Btn2T1);
+        sendPgListT1Btn = findViewById(R.id.sendPgListT1Btn);
+        sendTimerScreenBtn = findViewById(R.id.sendTimerScreenBtn);
+				displayDeviceTypeBtn = findViewById(R.id.displayDeviceTypeBtn);
+				displayTypeOutput = findViewById(R.id.displayTypeOutput);
+        screenContextOutput = findViewById(R.id.lastScreenContextOutput);
         refreshConfigProfilesBtn = findViewById(R.id.refreshConfigProfilesButton);
         changeProfileLabel = findViewById(R.id.changeProfileLabel);
         profilesRecycler = findViewById(R.id.profilesRecycler);
@@ -432,6 +500,19 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             }
         });
 
+        // display device type
+        displayDeviceTypeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pgManager.isConnectedToService() && pgManager.isConnectedToDisplay()) {
+                    updateDisplayConnectionState();
+                } else {
+                    String msg = getString(R.string.no_display_connected);
+                    showMessage(msg, false);
+                }
+            }
+        });
+
         // Changing display screen
         sendTestScreenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -525,6 +606,322 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         });
     }
 
+    private void addDisplayV2ClickListeners() {
+        sendPgNtfT5Btn.setOnClickListener(view -> {
+            pgManager.setScreen(
+                new PgScreen(
+                    "screenId",
+                    new PgScreenView.TemplateV2.NotificationView.PgNtfT5(
+                        "",
+                        "Notification",
+                        "This is a message with two buttons",
+                        new PgScreenComponent.Button(
+                            "BUTTON_PRIMARY",
+                            "OK",
+                            Notify.INSTANCE
+                        ),
+                        new PgScreenComponent.Button(
+                            "BUTTON_SECONDARY",
+                            "Cancel",
+                            Notify.INSTANCE
+                        )
+                    ),
+                    new PgActionButtons(
+                        new Assigned(
+                            "actionButton1",
+                            "Notify",
+                            Yellow.INSTANCE,
+                            Notify.INSTANCE
+                        ),
+                        new Assigned(
+                            "actionButton3",
+                            "Ok",
+                            Cyan.INSTANCE,
+                            new PgScreenAction.ClickOnPgScreenComponent("BUTTON_PRIMARY")
+                        ),
+                        new Assigned(
+                            "actionButton4",
+                            "Cancel",
+                            Green.INSTANCE,
+                            new PgScreenAction.ClickOnPgScreenComponent("BUTTON_SECONDARY")
+                        ),
+                        new Assigned(
+                            "actionButton2",
+                            "Back",
+                            Red.INSTANCE,
+                            NavigateBack.INSTANCE
+                        )
+                    ),
+                    Disabled.INSTANCE,
+                    PgScreenOrientation.LANDSCAPE
+                ).toCommand(),
+                new IPgSetScreenCallback() {
+                    @Override
+                    public void onSuccess() {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Notification screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+
+                    @Override
+                    public void onError(PgError error) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Error setting notification screen: " + error,
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+                }
+            );
+        });
+
+        sendPgWork3Btn2T1.setOnClickListener(view -> {
+            pgManager.setScreen(
+                new PgScreen(
+                    "screenId",
+                    new WorkflowView[] {
+                        new PgWork3Btn2T1(
+                            "",
+                            new TextField(
+                                "fieldTop",
+                                "Top Field",
+                                "Workflow View with 2 buttons and 1 text field",
+                                NoState.INSTANCE
+                            ),
+                            new TextField(
+                                "",
+                                "Middle Left Field",
+                                "This is the left field in the middle section",
+                                NoState.INSTANCE
+                            ),
+                            new TextField(
+                                "fieldMiddleRight",
+                                "Middle Right Field",
+                                "This is the right field in the middle section",
+                                NoState.INSTANCE,
+                                new NumPad()
+                            ),
+                            new PgScreenComponent.Button(
+                                "button1",
+                                "Ok",
+                                Notify.INSTANCE
+                            ),
+                            new PgScreenComponent.Button(
+                                "button2",
+                                "Cancel",
+                                Notify.INSTANCE
+                            )
+                        ),
+                        new PgWork1T1(
+                            "",
+                            new TextField(
+                                "",
+                                "Main Field",
+                                "This is the main text field",
+                                NoState.INSTANCE
+                            )
+                        )
+                    },
+                    "",
+                    new PgActionButtons(
+                        Unassigned.INSTANCE,
+                        Unassigned.INSTANCE,
+                        new Assigned(
+                            "actionButton1",
+                            "Notify",
+                            Green.INSTANCE,
+                            Notify.INSTANCE
+                        ),
+                        new Assigned(
+                            "actionButton2",
+                            "Back",
+                            Red.INSTANCE,
+                            NavigateBack.INSTANCE
+                        )
+                    ),
+                    Disabled.INSTANCE,
+                    PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+                new IPgSetScreenCallback() {
+                    @Override
+                    public void onSuccess() {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Work3T1 screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+
+                    @Override
+                    public void onError(PgError error) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Error setting Work3T1 screen: " + error,
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+                }
+            );
+        });
+
+        sendPgListT1Btn.setOnClickListener(view -> {
+            List<PgListT1Item> listItems = Arrays.asList(
+                new PgListViewItem.PgListT1Item(
+                    "",
+                    Notify.INSTANCE,
+                    "Item 1",
+                    "Description 1",
+                    None.INSTANCE,
+                    "1"
+                ),
+                new PgListViewItem.PgListT1Item(
+                    "",
+                    Notify.INSTANCE,
+                    "Item 2",
+                    "Description 2",
+                    Arrow.INSTANCE,
+                    "2"
+                ),
+                new PgListViewItem.PgListT1Item(
+                    "",
+                    Notify.INSTANCE,
+                    "Item 3",
+                    "Description 3",
+                    None.INSTANCE,
+                    "3"
+                ),
+                new PgListViewItem.PgListT1Item(
+                    "",
+                    Notify.INSTANCE,
+                    "Item 4",
+                    "Description 4",
+                    Arrow.INSTANCE,
+                    "4"
+                ),
+                new PgListViewItem.PgListT1Item(
+                    "",
+                    Notify.INSTANCE,
+                    "Item 5",
+                    "Description 5",
+                    None.INSTANCE,
+                    "5"
+                )
+            );
+
+            pgManager.setScreen(
+                new PgScreen(
+                    "screenId",
+                    new PgScreenView.TemplateV2.ListView.PgListT1(
+                        "",
+                        "List View Example",
+                        listItems
+                    ),
+                    new PgActionButtons(
+                        Unassigned.INSTANCE,
+                        Unassigned.INSTANCE,
+                        new Assigned(
+                            "actionButton1",
+                            "Notify",
+                            Yellow.INSTANCE,
+                            Notify.INSTANCE
+                        ),
+                        new Assigned(
+                            "actionButton2",
+                            "Back",
+                            Red.INSTANCE,
+                            NavigateBack.INSTANCE
+                        )
+                    ),
+                    Disabled.INSTANCE,
+                    PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+                new IPgSetScreenCallback() {
+                    @Override
+                    public void onSuccess() {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "List T1 screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+
+                    @Override
+                    public void onError(PgError error) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Error setting List T1 screen: " + error,
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+                }
+            );
+        });
+
+        sendTimerScreenBtn.setOnClickListener(view -> {
+            pgManager.setScreen(
+                new PgScreen(
+                    "timerScreen",
+                    new PgScreenView.TemplateV2.WorkflowView.PgWork1T1(
+                        "",
+                        new PgScreenComponent.TextField(
+                            "",
+                            "Timer Example",
+                            "This screen will automatically navigate back after 2 seconds.",
+                            new PgScreenComponent.TextField.State.Focused(true)
+                        )
+                    ),
+										new PgActionButtons(
+												Unassigned.INSTANCE,
+												Unassigned.INSTANCE,
+												Unassigned.INSTANCE,
+												Unassigned.INSTANCE),
+                    new PgScreenTimer.Enabled(
+                        2000,
+                        NavigateBack.INSTANCE
+                    ),
+                    PgScreenOrientation.PORTRAIT
+                ).toCommand(),
+                new IPgSetScreenCallback() {
+                    @Override
+                    public void onSuccess() {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Timer screen set successfully",
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+
+                    @Override
+                    public void onError(PgError error) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(
+                                SdkActivity.this,
+                                "Error setting Timer screen: " + error,
+                                Toast.LENGTH_SHORT
+                            ).show();
+                        });
+                    }
+                }
+            );
+        });
+    }
+
     private void onScannerConnectBtnClick(boolean isPinnedMode) {
         if (!pgManager.isConnectedToService()) {
             String msg = getString(R.string.connect_to_service_first);
@@ -569,12 +966,7 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
             @Override
             public void onScannerConfigSuccess(@NonNull PgScannerConfig pgScannerConfig) {
                 Log.d(TAG, "Successfully updated config on scanner");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        defaultFeedbackSwitch.setEnabled(true);
-                    }
-                });
+                runOnUiThread(() -> defaultFeedbackSwitch.setEnabled(true));
             }
 
             @Override
@@ -702,6 +1094,25 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         } else {
             displayStateTV.setText(R.string.display_disconnected);
         }
+
+        DisplayType deviceType = pgManager.getConnectedDisplayType();
+        switch (deviceType) {
+            case NOT_CONNECTED:
+                displayTypeOutput.setText(R.string.display_not_connected);
+                break;
+            case UNKNOWN:
+                displayTypeOutput.setText(R.string.display_state_unknown);
+                break;
+            case NOT_DISPLAY_DEVICE:
+                displayTypeOutput.setText(R.string.not_a_display_device);
+                break;
+            case V1:
+                displayTypeOutput.setText(R.string.display_type_v1);
+                break;
+            case V2:
+                displayTypeOutput.setText(R.string.display_type_v2);
+                break;
+        }
     }
 
     private void updateScannedResults(@NonNull BarcodeScanResults barcodeScanResults) {
@@ -710,12 +1121,22 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
         if (symbology == null) {
             symbology = "";
         }
+        updateScreenContextOutput(barcodeScanResults.getScreenContext());
+
         resultSymbologyTV.setText(symbology);
 
         String msg = !symbology.isEmpty() ?
                 getString(R.string.new_scan_notification, barcodeScanResults.getBarcodeContent(), symbology) :
                 getString(R.string.new_scan_no_symbology_notification, barcodeScanResults.getBarcodeContent());
         showMessage(msg, false);
+    }
+
+    private void updateScreenContextOutput(PgScreenContext screenContext) {
+        runOnUiThread(() -> {
+            String screenId = screenContext == null ? "" : screenContext.getScreenId();
+            String outputText = "Screen ID: " + screenId;
+            screenContextOutput.setText(screenId.isEmpty() ? "" : outputText);
+        });
     }
 
     private void setupProfilesRecycler() {
@@ -982,6 +1403,29 @@ public class SdkActivity extends AppCompatActivity implements IServiceOutput, IS
                         builder.create().show();
                     }
                 });
+            }
+        });
+    }
+
+    @Override
+    public void onScreenEvent(@NonNull PgScreenEvent screenEvent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String msg = "Unknown event";
+
+                if (screenEvent instanceof PgScreenEvent.ScreenComponentClicked) {
+                    PgScreenEvent.ScreenComponentClicked clickedEvent = (PgScreenEvent.ScreenComponentClicked) screenEvent;
+                    msg = "Component clicked: " + clickedEvent.getComponentId();
+                } else if (screenEvent instanceof PgScreenEvent.ScreenDataUpdated) {
+                    PgScreenEvent.ScreenDataUpdated screenDataUpdated = (PgScreenEvent.ScreenDataUpdated) screenEvent;
+                    msg = "Screen Data Updated: " + screenDataUpdated.getComponentId();
+                } else if (screenEvent instanceof PgScreenEvent.ScreenTimerExpired) {
+                    msg = "Timer expired for screen: " + screenEvent.getScreenContext().getScreenId();
+                }
+
+                showMessage(msg, false);
+                updateDisplayConnectionState();
             }
         });
     }

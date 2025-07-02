@@ -4,9 +4,18 @@
     <string name="title_activity_display_intent">Display Intent Activity</string>
     <string name="scanner_connection_state_label">Scanner connection state</string>
     <string name="display_connection_state_label">Display connection state</string>
+    <string name="display_type_label">Display type</string>
+    <string name="display_v1_commands">Display V1 Actions</string>
+    <string name="display_v2_commands">Display V2 Actions</string>
     <string name="display_state_unknown">Display state unknown</string>
+    <string name="display_type_unknown">Display type unknown</string>
+    <string name="display_not_connected">Display not connected</string>
+    <string name="not_a_display_device">Not a display device</string>
+    <string name="display_type_v1">Display type V1</string>
+    <string name="display_type_v2">Display type V2</string>
     <string name="disconnect_display">Disconnect Display</string>
     <string name="get_display_state">Get Display State</string>
+    <string name="get_display_device_type">Get Display Device Type</string>
     <string name="send_screen">Send test screen to Display</string>
     <string name="send_partial_refresh_screen">Send partial refresh test screen to Display</string>
     <string name="send_notification_screen">Send notification test screen to Display</string>
@@ -28,6 +37,7 @@
     <string name="pair_scanner">Pair scanner</string>
     <string name="disconnect_scanner">Disconnect Scanner</string>
     <string name="barcode_symbology">Barcode Symbology:</string>
+    <string name="screen_context">Screen Context:</string>
     <string name="barcode_content">Barcode Content:</string>
     <string name="barcode_output_default">…</string>
     <string name="symbology_label_text">Symbology of last scan:</string>
@@ -37,6 +47,10 @@
     <string name="send_with_replace_queue">Send feedback with replaceQueue?</string>
     <string name="pick_display_orientation">Pick display orientation</string>
     <string name="refresh_config_profiles">Refresh config profiles</string>
+    <string name="send_PgNtfT5_test_screen">Send PgNtfT5 Test screen to display</string>
+    <string name="send_PgWork3Btn2T1_test_screen">Send PgWork3Btn2T1 Test screen to display</string>
+    <string name="send_PgListT1_test_screen">Send PgListT1 Test screen to display</string>
+    <string name="send_timer_test_screen">Send Test screen with 2s timeout to display</string>
     <string name="change_profile">Change profile:</string>
     <string name="custom_profile">Profile 1</string>
     <string name="profile_active">Active</string>
@@ -46,7 +60,7 @@
     <string name="trigger_block_all">Block All For 10 sec</string>
     <string name="trigger_unblock">Unblock</string>
     <string name="device_visibility_alert_title">Device Visibility</string>
-    <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nManufacturer: %6$s\nApp version: %7$s\n</string>
+    <string name="device_visibility_alert_content">Serial number: %1$s\nFirmware revision: %2$s\nBattery level: %3$d\nBce revision: %4$s\nModel number: %5$s\nManufacturer: %6$s\nDevice Bluetooth MAC address: %7$s\nApp version: %8$s\n</string>
     <string name="device_visibility_alert_content_error">Error: %1$s</string>
     <string name="showDeviceVisibilityInfo">Device Visibility Info</string>
     <string name="update_goals_button">update goals</string>

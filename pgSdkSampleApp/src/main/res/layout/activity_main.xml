@@ -54,21 +54,6 @@
             app:layout_constraintTop_toBottomOf="@+id/serviceConnectBtn" />
 
         <TextView
-            android:id="@+id/lastScannedLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_extra_large"
-            android:layout_marginEnd="@dimen/margin_large"
-            android:text="@string/barcode_content"
-            android:textStyle="bold"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/symbologyLabel" />
-
-        <TextView
             android:id="@+id/symbologyLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -91,6 +76,41 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/connectScannerPinnedBtn" />
+
+        <TextView
+          android:id="@+id/lastScreenContextLabel"
+          android:text="@string/screen_context"
+          android:textStyle="bold"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_extra_large"
+          app:layout_constraintTop_toBottomOf="@+id/symbologyResult"
+          app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+          android:id="@+id/lastScreenContextOutput"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/margin_large"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/lastScreenContextLabel"
+          app:layout_constraintBottom_toBottomOf="@+id/lastScreenContextLabel" />
+
+        <TextView
+          android:id="@+id/lastScannedLabel"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_extra_large"
+          android:layout_marginEnd="@dimen/margin_large"
+          android:text="@string/barcode_content"
+          android:textStyle="bold"
+          android:visibility="visible"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.0"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/lastScreenContextLabel" />
 
         <TextView
             android:id="@+id/inputField"
@@ -309,6 +329,30 @@
             app:layout_constraintTop_toTopOf="@+id/displayStateLabel"
             app:layout_constraintBottom_toBottomOf="@+id/displayStateLabel" />
 
+        <TextView
+          android:id="@+id/displayTypeLabel"
+          android:text="@string/display_type_label"
+          android:textStyle="bold"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_large"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/displayStateLabel" />
+
+        <TextView
+          android:id="@+id/displayTypeOutput"
+          android:text="@string/display_type_unknown"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_small"
+          android:layout_marginEnd="@dimen/margin_large"
+          android:gravity="end"
+          app:layout_constraintStart_toEndOf="@+id/displayTypeLabel"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="@+id/displayTypeLabel"
+          app:layout_constraintBottom_toBottomOf="@+id/displayTypeLabel" />
+
         <Button
             android:id="@+id/disconnectDisplayBtn"
             android:layout_width="wrap_content"
@@ -317,7 +361,42 @@
             android:layout_marginTop="@dimen/margin_normal"
             android:text="@string/disconnect_display"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/displayStateLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/displayTypeOutput" />
+
+        <Button
+          android:id="@+id/displayDeviceTypeBtn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:text="@string/get_display_device_type"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
+
+        <Button
+          android:id="@+id/deviceVisibilityBtn"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:layout_marginEnd="@dimen/margin_large"
+          android:layout_marginBottom="@dimen/margin_extra_large"
+          android:text="@string/showDeviceVisibilityInfo"
+          android:textStyle="bold"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/displayDeviceTypeBtn" />
+
+        <TextView
+          android:id="@+id/displayV1Label"
+          android:text="@string/display_v1_commands"
+          android:textStyle="bold"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_large"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/deviceVisibilityBtn" />
 
         <Button
             android:id="@+id/sendTestScreenBtn"
@@ -328,7 +407,7 @@
             android:layout_marginTop="@dimen/margin_large"
             android:layout_marginStart="@dimen/margin_large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/disconnectDisplayBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/displayV1Label" />
 
         <Button
             android:id="@+id/sendPartialRefreshTestScreenBtn"
@@ -425,19 +504,60 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sendTestScreenBtnFailing" />
 
+        <TextView
+          android:id="@+id/displayV2Label"
+          android:text="@string/display_v2_commands"
+          android:textStyle="bold"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_large"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/pickDisplayOrientationDialogBtn" />
+
         <Button
-            android:id="@+id/deviceVisibilityBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_large"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:layout_marginEnd="@dimen/margin_large"
-            android:layout_marginBottom="@dimen/margin_extra_large"
-            android:text="@string/showDeviceVisibilityInfo"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pickDisplayOrientationDialogBtn" />
+          android:id="@+id/sendPgNtfT5Btn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:text="@string/send_PgNtfT5_test_screen"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/displayV2Label" />
+
+        <Button
+          android:id="@+id/sendPgWork3Btn2T1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:text="@string/send_PgWork3Btn2T1_test_screen"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/sendPgNtfT5Btn" />
+
+        <Button
+          android:id="@+id/sendPgListT1Btn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:text="@string/send_PgListT1_test_screen"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/sendPgWork3Btn2T1" />
+
+        <Button
+          android:id="@+id/sendTimerScreenBtn"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/margin_large"
+          android:layout_marginTop="@dimen/margin_normal"
+          android:text="@string/send_timer_test_screen"
+          android:textStyle="bold"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/sendPgListT1Btn" />
 
         <include
             android:id="@+id/activity_goals"
@@ -448,7 +568,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/deviceVisibilityBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/sendTimerScreenBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,0 +1,39 @@
+version: v1.0
+name: Build and deploy
+agent:
+  machine:
+    type: e2-standard-2
+    os_image: ubuntu2004
+  containers:
+    - name: main
+      image: 'registry.semaphoreci.com/android:33'
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - 'cache restore gradle-wrapper-${SEMAPHORE_GIT_TAG_NAME:-$SEMAPHORE_GIT_BRANCH},gradle-wrapper-development'
+      - 'cache restore gradle-caches-${SEMAPHORE_GIT_TAG_NAME:-$SEMAPHORE_GIT_BRANCH},gradle-caches-development'
+blocks:
+  - name: Build
+    task:
+      jobs:
+        - name: Build
+          commands:
+            - ./gradlew assembleDebug
+      epilogue:
+        always:
+          commands:
+            - 'cache store gradle-wrapper-${SEMAPHORE_GIT_TAG_NAME:-$SEMAPHORE_GIT_BRANCH} ~/.gradle/wrapper'
+            - 'cache store gradle-caches-${SEMAPHORE_GIT_TAG_NAME:-$SEMAPHORE_GIT_BRANCH} ~/.gradle/caches'
+  - name: Deploy
+    run:
+      when: pull_request !~ '.*' AND branch = 'master'
+    task:
+      secrets:
+        - name: Github
+        - name: android-keys
+      jobs:
+        - name: Deploy
+          commands:
+            - '# Publish code to the public Github project'
+            - ./scripts/publish_code.sh

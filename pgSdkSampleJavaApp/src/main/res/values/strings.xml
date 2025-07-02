@@ -2,6 +2,12 @@
     <string name="app_name">PG SDK Sample Java App</string>
     <string name="title_activity_main">Scanner Sample</string>
     <string name="title_activity_display">Display Sample</string>
+    <string name="display_v1_commands">Display V1 Actions</string>
+    <string name="display_v2_commands">Display V2 Actions</string>
+    <string name="display_not_connected">Display not connected</string>
+    <string name="not_a_display_device">Not a display device</string>
+    <string name="display_type_v1">Display type V1</string>
+    <string name="display_type_v2">Display type V2</string>
     <string name="last_scanned_text">Last scanned text</string>
     <string name="display_connected">Display connected</string>
     <string name="display_disconnected">Display disconnected</string>
@@ -13,8 +19,12 @@
     <string name="pair_scanner_first">Please pair the scanner first</string>
     <string name="barcode_output_default">…</string>
     <string name="symbology_label_text">Symbology of last scan:</string>
+    <string name="screen_context">Screen Context:</string>
     <string name="service_connection_lbl">Service Connection:</string>
     <string name="pair_from_pinned_activity">Pair from pinned Activity</string>
+    <string name="get_display_device_type">Get Display Device Type</string>
+    <string name="display_type_label">Display Device Type</string>
+    <string name="display_type_unknown">Display type unknown</string>
     <string name="feedback_id_1">Success</string>
     <string name="feedback_id_2">Error</string>
     <string name="feedback_id_3">Info</string>
@@ -30,6 +40,10 @@
     <string name="send_pg1_screen">Send PG1 test screen to Display</string>
     <string name="send_pg1a_screen">Send PG1A test screen to Display</string>
     <string name="send_pg3_screen_with_right_headers">Send PG3 test screen with right headers to Display</string>
+    <string name="send_PgNtfT5_test_screen">Send PgNtfT5 Test screen to display</string>
+    <string name="send_PgWork3Btn2T1_test_screen">Send PgWork3Btn2T1 Test screen to display</string>
+    <string name="send_PgListT1_test_screen">Send PgListT1 Test screen to display</string>
+    <string name="send_timer_test_screen">Send Test screen with 2s timeout to display</string>
     <string name="device_name_hint">Device name</string>
     <string name="take_image_button">take image</string>
     <string name="image_configurations">Image Configurations</string>

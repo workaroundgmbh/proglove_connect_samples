@@ -2,6 +2,12 @@
     <string name="app_name">PG SDK Sample App</string>
     <string name="display_connected">Display connected</string>
     <string name="display_disconnected">Display disconnected</string>
+    <string name="display_v1_commands">Display V1 Actions</string>
+    <string name="display_v2_commands">Display V2 Actions</string>
+    <string name="display_not_connected">Display not connected</string>
+    <string name="not_a_display_device">Not a display device</string>
+    <string name="display_type_v1">Display type V1</string>
+    <string name="display_type_v2">Display type V2</string>
     <string name="service_connected">service connected</string>
     <string name="service_connecting">connecting…</string>
     <string name="connect_service">connect service</string>
@@ -9,6 +15,7 @@
     <string name="barcode_output_default">…</string>
     <string name="barcode_symbology">Barcode Symbology:</string>
     <string name="barcode_content">Barcode Content:</string>
+    <string name="screen_context">Screen Context:</string>
     <string name="service_connection_lbl">Service Connection:</string>
     <string name="pair_from_pinned_activity">Pair from pinned Activity</string>
     <string name="feedback_id_1">Success</string>
@@ -20,6 +27,9 @@
     <string name="display_connection_state_label">Display connection state</string>
     <string name="display_state_unknown">Display state unknown</string>
     <string name="disconnect_display">Disconnect Display</string>
+    <string name="get_display_device_type">Get Display Device Type</string>
+    <string name="display_type_label">Display Device Type</string>
+    <string name="display_type_unknown">Display type unknown</string>
     <string name="get_display_state">Get Display State</string>
     <string name="send_screen">Send test screen to Display</string>
     <string name="send_partial_refresh_screen">Send partial refresh test screen to Display</string>
@@ -40,6 +50,10 @@
     <string name="use_default_scan_feedback">Use Default Scan Feedback</string>
     <string name="send_with_replace_queue">Send feedback with replaceQueue?</string>
     <string name="pick_display_orientation">Pick display orientation</string>
+    <string name="send_PgNtfT5_test_screen">Send PgNtfT5 Test screen to display</string>
+    <string name="send_PgWork3Btn2T1_test_screen">Send PgWork3Btn2T1 Test screen to display</string>
+    <string name="send_PgListT1_test_screen">Send PgListT1 Test screen to display</string>
+    <string name="send_timer_test_screen">Send Test screen with 2s timeout to display</string>
     <string name="refresh_config_profiles">Refresh config profiles</string>
     <string name="change_profile">Change profile:</string>
     <string name="custom_profile">Profile 1</string>

@@ -18,8 +18,9 @@ interface IIntentScannerOutput {
      * @param barcode The scanned barcode as a string representation, based on the currently configured scanner
      * settings.
      * @param symbology (Optional) Symbology of the scanned barcode.
+     * @param screenContext The screen context from which the barcode was scanned.
      */
-    fun onBarcodeScanned(barcode: String, symbology: String?)
+    fun onBarcodeScanned(barcode: String, symbology: String, screenContext: String)
 
     /**
      * A more detailed callback for the scanner status.
@@ -48,5 +49,6 @@ interface IIntentScannerOutput {
                                        bceRevision: String,
                                        modelNumber: String,
                                        manufacturer: String,
+                                       deviceBluetoothMacAddress: String,
                                        appVersion: String)
 }

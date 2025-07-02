@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import de.proglove.example.common.ApiConstants
 import de.proglove.example.common.DisplaySampleData
 import de.proglove.example.intent.enums.DeviceConnectionStatus
 import de.proglove.example.intent.enums.DisplayConnectionStatus
+import de.proglove.example.intent.enums.DisplayDeviceType
 import de.proglove.example.intent.enums.ScannerConnectionStatus
 import de.proglove.example.intent.interfaces.IIntentDisplayOutput
 import de.proglove.example.intent.interfaces.IIntentScannerOutput
@@ -29,11 +31,14 @@ import kotlinx.android.synthetic.main.activity_intent.deviceVisibilityBtn
 import kotlinx.android.synthetic.main.activity_intent.disconnectDisplayBtn
 import kotlinx.android.synthetic.main.activity_intent.disconnectScannerBtn
 import kotlinx.android.synthetic.main.activity_intent.displayStateOutput
+import kotlinx.android.synthetic.main.activity_intent.displayTypeOutput
+import kotlinx.android.synthetic.main.activity_intent.getDisplayDeviceTypeBtn
 import kotlinx.android.synthetic.main.activity_intent.getDisplayStateBtn
 import kotlinx.android.synthetic.main.activity_intent.getScannerStateBtn
 import kotlinx.android.synthetic.main.activity_intent.intentInputField
 import kotlinx.android.synthetic.main.activity_intent.lastContactOutput
 import kotlinx.android.synthetic.main.activity_intent.lastResponseValue
+import kotlinx.android.synthetic.main.activity_intent.lastScreenContextOutput
 import kotlinx.android.synthetic.main.activity_intent.lastSymbologyOutput
 import kotlinx.android.synthetic.main.activity_intent.pickDisplayOrientationDialogBtn
 import kotlinx.android.synthetic.main.activity_intent.scannerStateOutput
@@ -43,8 +48,12 @@ import kotlinx.android.synthetic.main.activity_intent.sendPartialRefreshTestScre
 import kotlinx.android.synthetic.main.activity_intent.sendPg1ATestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPg1TestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendPg3WithRightHeadersTestScreenBtn
+import kotlinx.android.synthetic.main.activity_intent.sendPgListT1Btn
+import kotlinx.android.synthetic.main.activity_intent.sendPgNtfT5Btn
+import kotlinx.android.synthetic.main.activity_intent.sendPgWork3Btn2T1
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.sendTestScreenBtnFailing
+import kotlinx.android.synthetic.main.activity_intent.sendTimerScreenBtn
 import kotlinx.android.synthetic.main.activity_intent.unblockTriggerButton
 import kotlinx.android.synthetic.main.activity_intent.versionOutput
 import kotlinx.android.synthetic.main.feedback_selection_layout.feedbackId1RB
@@ -55,6 +64,7 @@ import kotlinx.android.synthetic.main.feedback_selection_layout.triggerFeedbackB
 import kotlinx.android.synthetic.main.profiles_layout.changeProfileLabel
 import kotlinx.android.synthetic.main.profiles_layout.profilesRecycler
 import kotlinx.android.synthetic.main.profiles_layout.refreshConfigProfilesButton
+import org.json.JSONObject
 import java.text.DateFormat
 import java.util.Date
 
@@ -73,6 +83,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
     private var scannerConnectionState = ScannerConnectionStatus.DISCONNECTED
     private var displayConnectionState = DisplayConnectionStatus.DISCONNECTED
+    private var displayType = DisplayDeviceType.UNKNOWN
     private val messageHandler: MessageHandler = MessageHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,6 +151,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
 
         getDisplayStateBtn.setOnClickListener {
             messageHandler.requestDisplayState()
+        }
+
+        getDisplayDeviceTypeBtn.setOnClickListener {
+            messageHandler.requestDisplayDeviceType()
         }
 
         sendTestScreenBtn.setOnClickListener {
@@ -214,6 +229,22 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             messageHandler.obtainDeviceVisibility()
         }
 
+        sendPgNtfT5Btn.setOnClickListener {
+            messageHandler.sendPgNtfT5()
+        }
+
+        sendPgWork3Btn2T1.setOnClickListener {
+            messageHandler.sendPgWork3Btn2T1()
+        }
+
+        sendPgListT1Btn.setOnClickListener {
+            messageHandler.sendPgListT1()
+        }
+
+        sendTimerScreenBtn.setOnClickListener {
+            messageHandler.sendTimerScreen()
+        }
+
         setActivityGoalsBtn.setOnClickListener {
             setActivityGoals()
         }
@@ -276,6 +307,14 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             } else if (displayConnectionState == DisplayConnectionStatus.DISCONNECTED) {
                 displayStateOutput.setText(R.string.display_disconnected)
             }
+
+            when (displayType) {
+                DisplayDeviceType.UNKNOWN -> displayTypeOutput.setText(R.string.display_type_unknown)
+                DisplayDeviceType.NOT_CONNECTED -> displayTypeOutput.setText(R.string.display_not_connected)
+                DisplayDeviceType.NOT_DISPLAY_DEVICE -> displayTypeOutput.setText(R.string.not_a_display_device)
+                DisplayDeviceType.DISPLAY_V1 -> displayTypeOutput.setText(R.string.display_type_v1)
+                DisplayDeviceType.DISPLAY_V2 -> displayTypeOutput.setText(R.string.display_type_v2)
+            }
         }
 
         updateLastContact()
@@ -290,6 +329,26 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         }
     }
 
+    private fun updateScreenContextOutput(screenContext: String) {
+        val screenContextJsonObject = screenContext.getJSONObject()
+        if (screenContextJsonObject.has(ApiConstants.EVENT_REFERENCE_ID)) {
+            runOnUiThread {
+                lastScreenContextOutput.text =
+                    "Screen ID: ${screenContextJsonObject.getString(ApiConstants.EVENT_REFERENCE_ID)}"
+            }
+        } else {
+            runOnUiThread {
+                lastScreenContextOutput.text = ""
+            }
+        }
+    }
+
+    private fun String.getJSONObject() = if (isNullOrEmpty()) {
+        JSONObject()
+    } else {
+        JSONObject(this)
+    }
+
     override fun onDeviceVisibilityInfoReceived(
             serialNumber: String,
             firmwareRevision: String,
@@ -297,6 +356,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             bceRevision: String,
             modelNumber: String,
             manufacturer: String,
+            deviceBluetoothMacAddress: String,
             appVersion: String
     ) {
         val message = getString(R.string.device_visibility_alert_content,
@@ -306,6 +366,7 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
                 bceRevision,
                 modelNumber,
                 manufacturer,
+                deviceBluetoothMacAddress,
                 appVersion
         )
         // Display content of deviceVisibilityInfo
@@ -318,12 +379,13 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         }
     }
 
-    override fun onBarcodeScanned(barcode: String, symbology: String?) {
+    override fun onBarcodeScanned(barcode: String, symbology: String, screenContext: String) {
         runOnUiThread {
             intentInputField?.text = barcode
             Toast.makeText(this, "Got barcode: $barcode", Toast.LENGTH_LONG).show()
-            lastSymbologyOutput.text = symbology ?: ""
+            lastSymbologyOutput.text = symbology
         }
+        updateScreenContextOutput(screenContext)
         updateLastContact()
     }
 
@@ -378,8 +440,10 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
         messageHandler.updateGoals(totalStepsGoal, totalScansGoal, averageScantimeGoal)
     }
 
-    override fun onButtonPressed(buttonId: String) {
+    override fun onButtonPressed(buttonId: String, screenContext: String) {
         Toast.makeText(this, "Button $buttonId pressed", Toast.LENGTH_SHORT).show()
+
+        updateScreenContextOutput(screenContext)
     }
 
     override fun onDisplayStateChanged(status: DeviceConnectionStatus) {
@@ -396,6 +460,44 @@ class IntentActivity : AppCompatActivity(), IIntentDisplayOutput, IIntentScanner
             }
         }
         updateConnectionLabel()
+    }
+
+    override fun onDisplayDeviceTypeChanged(displayType: DisplayDeviceType) {
+        Log.i(TAG, "Did receive display type: $displayType")
+        this.displayType = displayType
+        updateConnectionLabel()
+    }
+
+    override fun onDisplayEventReceived(event: String, context: String) {
+        Log.i(TAG, "Did receive display event: $event")
+
+        val eventJsonObject = event.getJSONObject()
+        val contextJsonObject = context.getJSONObject()
+        val screenMessage = when {
+            eventJsonObject.has(ApiConstants.EVENT_COMPONENT_CLICKED) -> {
+                "Component clicked: ${
+                    eventJsonObject.getJSONObject(ApiConstants.EVENT_COMPONENT_CLICKED)
+                        .getString(ApiConstants.EVENT_REFERENCE_ID)
+                }"
+            }
+
+            eventJsonObject.has(ApiConstants.EVENT_TIMER_EXPIRED) -> {
+                "Timer expired on screen: ${contextJsonObject.getString(ApiConstants.EVENT_REFERENCE_ID)}"
+            }
+
+            eventJsonObject.has(ApiConstants.EVENT_DATA_UPDATED) -> {
+                "Data updated: ${
+                    eventJsonObject.getJSONObject(ApiConstants.EVENT_DATA_UPDATED)
+                        .getString(ApiConstants.EVENT_REFERENCE_ID)
+                }"
+            }
+
+            else -> "Unknown event"
+        }
+
+        runOnUiThread {
+            Toast.makeText(this, screenMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onStatusReceived(status: String) {
